@@ -177,7 +177,11 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-page-main { max-width: var(--page-width); margin: 0 auto; }
 .contact-page-label { padding-top: 42px; font: 400 10px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--acid); }
 .contact-page-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: clamp(50px, 10vw, 190px); align-items: center; min-height: calc(100svh - 205px); padding: 50px 0 70px; }
-.contact-page-copy h1 { margin: 0; font-size: clamp(70px, 10vw, 176px); font-weight: 500; line-height: 0.84; letter-spacing: -0.1em; }
+.contact-page-copy h1 { margin: 0; font-size: clamp(70px, 10vw, 176px); font-weight: 500; line-height: 0.9; letter-spacing: -0.1em; }
+.contact-greeting { display: flex; flex-direction: column; align-items: flex-start; gap: 0.16em; min-height: 1.96em; }
+.contact-greeting > span { display: block; min-height: 0.9em; white-space: nowrap; }
+.contact-greeting em { display: block; min-height: 0.9em; color: var(--acid); font-style: normal; }
+.typing-caret { display: inline-block; width: 0.06em; height: 0.72em; margin-left: 0.1em; vertical-align: -0.04em; background: var(--acid); animation: typing-blink 760ms steps(1) infinite; }
 .contact-page-intro { margin: 44px 0 0; font-size: clamp(17px, 1.45vw, 24px); line-height: 1.45; color: rgba(241,240,235,0.66); }
 .contact-page-links { max-width: 620px; margin-top: 68px; border-top: 1px solid var(--line-dark); }
 .contact-page-links a { display: grid; grid-template-columns: 95px 1fr auto; gap: 20px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--line-dark); transition: color 180ms ease, padding 180ms ease; }
@@ -198,6 +202,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 
 @keyframes scan { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(100%); opacity: 1; } }
 @keyframes orbit-drift { from { transform: translate3d(0, 0, 0) rotate(-4deg); } to { transform: translate3d(-20px, 16px, 0) rotate(5deg); } }
+@keyframes typing-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } }
 
 @media (max-width: 1050px) {
   .page-width, .site-header { width: min(calc(100% - 52px), var(--page-width)); }
@@ -277,7 +282,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
   .contact-back { font-size: 9px; }
   .contact-page-label { padding-top: 32px; }
   .contact-page-grid { display: flex; flex-direction: column; align-items: stretch; min-height: auto; padding: 58px 0 50px; gap: 50px; }
-  .contact-page-copy h1 { font-size: clamp(66px, 22vw, 110px); }
+  .contact-page-copy h1 { font-size: clamp(66px, 22vw, 110px); line-height: 0.92; }
   .contact-page-intro { margin-top: 30px; font-size: 16px; }
   .contact-page-links { margin-top: 45px; }
   .contact-page-links a { grid-template-columns: 68px 1fr auto; gap: 10px; padding: 15px 0; }

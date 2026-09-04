@@ -54,6 +54,50 @@ const capabilityItems = [
 ];
 
 function ContactPage() {
+  const [typedGreeting, setTypedGreeting] = useState('');
+
+  useEffect(() => {
+    const greetings = ['你好，我是', '欢迎来到'];
+    let phraseIndex = 0;
+    let index = 0;
+    let deleting = false;
+    let holdUntil = 0;
+    let timer;
+
+    const tick = () => {
+      const phrase = greetings[phraseIndex];
+      if (!deleting && index < phrase.length) {
+        index += 1;
+        setTypedGreeting(phrase.slice(0, index));
+        timer = window.setTimeout(tick, 110);
+        return;
+      }
+      if (!deleting && holdUntil === 0) {
+        holdUntil = Date.now() + 2800;
+        timer = window.setTimeout(tick, 80);
+        return;
+      }
+      if (!deleting && Date.now() < holdUntil) {
+        timer = window.setTimeout(tick, 80);
+        return;
+      }
+      if (!deleting) deleting = true;
+      if (index > 0) {
+        index -= 1;
+        setTypedGreeting(phrase.slice(0, index));
+        timer = window.setTimeout(tick, 52);
+        return;
+      }
+      deleting = false;
+      holdUntil = 0;
+      phraseIndex = (phraseIndex + 1) % greetings.length;
+      timer = window.setTimeout(tick, 360);
+    };
+
+    tick();
+    return () => window.clearTimeout(timer);
+  }, []);
+
   return (
     <div className="contact-page">
       <header className="contact-page-header">
@@ -65,7 +109,7 @@ function ContactPage() {
         <div className="contact-page-grid">
           <div className="contact-page-copy">
             <p className="section-kicker">A direct line to the practice</p>
-            <h1>你好，我是<br /><em>浩祈。</em></h1>
+            <h1 className="contact-greeting"><span>{typedGreeting}<i className="typing-caret" aria-hidden="true" /></span><em>浩祈</em></h1>
             <p className="contact-page-intro">游戏策划、视觉设计师、AI 编曲人。<br />如果你有一个正在成形的世界，欢迎来聊聊。</p>
             <div className="contact-page-links">
               <a href="mailto:1370228191@qq.com"><span>Email</span><strong>1370228191@qq.com</strong><i aria-hidden="true">↗</i></a>
