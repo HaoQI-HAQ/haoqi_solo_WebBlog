@@ -170,6 +170,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-orbit-b { width: min(40vw, 650px); aspect-ratio: 1; right: 4vw; top: 27%; border-color: rgba(241,240,235,0.18); animation: orbit-drift 13s ease-in-out infinite alternate-reverse; }
 
 .contact-page { min-height: 100svh; padding: 28px 48px 30px; color: var(--paper); background: var(--ink); }
+.contact-page, .contact-page a { cursor: auto; }
 .contact-page-header { display: flex; justify-content: space-between; align-items: center; max-width: var(--page-width); margin: 0 auto; padding-bottom: 18px; border-bottom: 1px solid var(--line-dark); }
 .contact-back { font: 400 11px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--paper); }
 .contact-back span { color: var(--acid); margin-left: 7px; font-size: 16px; }
