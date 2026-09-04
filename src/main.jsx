@@ -265,7 +265,6 @@ function App() {
                 into <em>worlds.</em>
               </h1>
               <div className="hero-bottomline">
-                <p className="hero-intro">浩祈的个人作品集。<br />把抽象的感受，做成可以被看见、被游玩、被听见的东西。</p>
                 <a className="round-link" href="#work" aria-label="查看精选项目">
                   <span>Explore<br />the work</span>
                   <span className="round-link-arrow" aria-hidden="true">↓</span>
