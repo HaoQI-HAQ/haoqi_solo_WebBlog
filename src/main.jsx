@@ -53,10 +53,45 @@ const capabilityItems = [
   },
 ];
 
+function ContactPage() {
+  return (
+    <div className="contact-page">
+      <header className="contact-page-header">
+        <a className="brand-lockup" href="/" aria-label="返回首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
+        <a className="contact-back" href="/">Back to studio <span aria-hidden="true">↗</span></a>
+      </header>
+      <main className="contact-page-main">
+        <div className="contact-page-label">Contact / 04</div>
+        <div className="contact-page-grid">
+          <div className="contact-page-copy">
+            <p className="section-kicker">A direct line to the practice</p>
+            <h1>你好，我是<br /><em>浩祈。</em></h1>
+            <p className="contact-page-intro">游戏策划、视觉设计师、AI 编曲人。<br />如果你有一个正在成形的世界，欢迎来聊聊。</p>
+            <div className="contact-page-links">
+              <a href="mailto:1370228191@qq.com"><span>Email</span><strong>1370228191@qq.com</strong><i aria-hidden="true">↗</i></a>
+              <a href="https://space.bilibili.com/65369165?spm_id_from=333.1387.0.0" target="_blank" rel="noreferrer"><span>Bilibili</span><strong>我的 B 站首页</strong><i aria-hidden="true">↗</i></a>
+            </div>
+          </div>
+          <div className="contact-page-portrait"><img src="/assets/haoqi-portrait.jpg" alt="浩祈个人头像" /><span className="portrait-tag">Portrait / HAOQI</span></div>
+        </div>
+      </main>
+      <footer className="contact-page-footer"><span>Available for selected collaborations / 2026</span><span>25° 02' N / 121° 32' E</span></footer>
+    </div>
+  );
+}
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
   const cursorRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -117,7 +152,7 @@ function App() {
   return (
     <div className="site-shell">
       <div ref={cursorRef} className="custom-cursor" aria-hidden="true" />
-      <header className={`site-header ${menuOpen ? 'menu-is-open' : ''}`}>
+      <header className={`site-header ${menuOpen ? 'menu-is-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
         <a className="brand-lockup" href="#top" onClick={closeMenu} aria-label="回到首页">
           <span className="brand-orbit" aria-hidden="true" />
           <span>HAOQI<span className="brand-slash">/</span>STUDIO</span>
@@ -126,10 +161,10 @@ function App() {
           <a href="#about">About</a>
           <a href="#work">Work</a>
           <a href="#capabilities">Capabilities</a>
-          <a href="#contact">Contact</a>
+          <a href="/contact.html">Contact</a>
         </nav>
-        <a className="header-contact" href="mailto:hello@haoqi.studio">
-          Start a conversation <span aria-hidden="true">↗</span>
+        <a className="header-contact" href="/contact.html">
+          联系我 <span aria-hidden="true">↗</span>
         </a>
         <button
           className="menu-toggle"
@@ -145,7 +180,7 @@ function App() {
           <a href="#about" onClick={closeMenu}>About <span>01</span></a>
           <a href="#work" onClick={closeMenu}>Work <span>02</span></a>
           <a href="#capabilities" onClick={closeMenu}>Capabilities <span>03</span></a>
-          <a href="#contact" onClick={closeMenu}>Contact <span>04</span></a>
+          <a href="/contact.html" onClick={closeMenu}>Contact <span>04</span></a>
         </nav>
       </header>
 
@@ -302,4 +337,5 @@ function App() {
   );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+const isContactPage = window.location.pathname.endsWith('/contact.html');
+createRoot(document.getElementById('root')).render(isContactPage ? <ContactPage /> : <App />);
