@@ -180,6 +180,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-page-copy h1 { margin: 0; font-size: clamp(70px, 10vw, 176px); font-weight: 500; line-height: 0.9; letter-spacing: -0.1em; }
 .contact-greeting { display: flex; flex-direction: column; align-items: flex-start; gap: 0.16em; min-height: 1.96em; }
 .contact-greeting > span { display: block; min-height: 0.9em; white-space: nowrap; }
+.contact-greeting-second-line { white-space: nowrap; }
 .contact-greeting em { display: block; min-height: 0.9em; color: var(--acid); font-style: normal; }
 .typing-caret { display: inline-block; width: 0.06em; height: 0.72em; margin-left: 0.1em; vertical-align: -0.04em; background: var(--acid); animation: typing-blink 760ms steps(1) infinite; }
 .contact-page-intro { margin: 44px 0 0; font-size: clamp(17px, 1.45vw, 24px); line-height: 1.45; color: rgba(241,240,235,0.66); }

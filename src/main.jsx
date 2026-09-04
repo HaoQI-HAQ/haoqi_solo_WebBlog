@@ -57,7 +57,7 @@ function ContactPage() {
   const [typedGreeting, setTypedGreeting] = useState('');
 
   useEffect(() => {
-    const greetings = ['你好，我是', '欢迎来到'];
+    const greetings = ['欢迎来到浩祈的博客', '你好，我是浩祈'];
     let phraseIndex = 0;
     let index = 0;
     let deleting = false;
@@ -109,7 +109,15 @@ function ContactPage() {
         <div className="contact-page-grid">
           <div className="contact-page-copy">
             <p className="section-kicker">A direct line to the practice</p>
-            <h1 className="contact-greeting"><span>{typedGreeting}<i className="typing-caret" aria-hidden="true" /></span><em>浩祈</em></h1>
+            <h1 className="contact-greeting">
+              {(() => {
+                const prefix = typedGreeting.startsWith('欢迎') ? '欢迎来到' : '你好，我是';
+                const suffix = typedGreeting.slice(prefix.length);
+                const suffixLength = prefix === '欢迎来到' ? 5 : 2;
+                const phraseLength = prefix.length + suffixLength;
+                return <><span>{typedGreeting.slice(0, prefix.length)}{typedGreeting.length < prefix.length && <i className="typing-caret" aria-hidden="true" />}</span><span className="contact-greeting-second-line"><em>{suffix}</em>{suffix.length > 0 && suffix.length < suffixLength && <i className="typing-caret" aria-hidden="true" />}{suffix.length >= suffixLength && typedGreeting.length < phraseLength && <i className="typing-caret" aria-hidden="true" />}</span></>;
+              })()}
+            </h1>
             <p className="contact-page-intro">游戏策划、视觉设计师、AI 编曲人。<br />如果你有一个正在成形的世界，欢迎来聊聊。</p>
             <div className="contact-page-links">
               <a href="mailto:1370228191@qq.com"><span>Email</span><strong>1370228191@qq.com</strong><i aria-hidden="true">↗</i></a>
