@@ -44,18 +44,28 @@ function getRuntimeParts(language) {
   return { days, hours, minutes, suffix: copy[language]?.days || copy.zh.days };
 }
 
-function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen, t }) {
-  const navTargets = ['about', 'games', 'music', 'contact'];
+const navItems = [
+  { key: 'about', href: 'about.html' },
+  { key: 'work', href: 'work.html' },
+  { key: 'music', href: 'music.html' },
+  { key: 'contact', href: 'contact.html' },
+];
+
+function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen, t, currentPage, onNavigate }) {
+  const navigate = (event, href) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    onNavigate(event, href);
+  };
 
   return (
     <header className={'site-header ' + (menuOpen ? 'is-open' : '')}>
-      <a className="brand-lockup" href="#top" onClick={() => setMenuOpen(false)} aria-label="Back to top">
+      <a className="brand-lockup" href="index.html" onClick={(event) => { setMenuOpen(false); navigate(event, 'index.html'); }} aria-label="Back to home">
         <span className="brand-orbit" aria-hidden="true" />
         <span>HAOQI<span>/</span>STUDIO</span>
       </a>
       <nav className="desktop-nav" aria-label="Primary navigation">
-        {navTargets.map((target, index) => (
-          <a href={'#' + target} key={target}>{t.nav[index]}</a>
+        {navItems.map((item, index) => (
+          <a className={currentPage === item.key ? 'is-active' : ''} href={item.href} key={item.key} aria-current={currentPage === item.key ? 'page' : undefined} onClick={(event) => navigate(event, item.href)}>{t.nav[index]}</a>
         ))}
       </nav>
       <div className="header-actions">
@@ -72,8 +82,8 @@ function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen,
         <button className="menu-toggle" type="button" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Close' : 'Menu'}</button>
       </div>
       <nav className="mobile-nav" aria-label="Mobile navigation">
-        {navTargets.map((target, index) => (
-          <a href={'#' + target} key={target} onClick={() => setMenuOpen(false)}>{t.nav[index]} <span>0{index + 1}</span></a>
+        {navItems.map((item, index) => (
+          <a className={currentPage === item.key ? 'is-active' : ''} href={item.href} key={item.key} aria-current={currentPage === item.key ? 'page' : undefined} onClick={(event) => { setMenuOpen(false); navigate(event, item.href); }}>{t.nav[index]} <span>0{index + 1}</span></a>
         ))}
         <div className="mobile-preferences">
           <button type="button" onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}>{theme === 'night' ? 'DAY MODE' : 'NIGHT MODE'}</button>
@@ -88,7 +98,7 @@ function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen,
   );
 }
 
-function Hero({ t, runtime }) {
+function Hero({ t, runtime, onNavigate }) {
   return (
     <section id="top" className="hero-section">
       <video className="hero-video" autoPlay muted loop playsInline poster="/assets/hero-poster.png" aria-hidden="true">
@@ -104,7 +114,7 @@ function Hero({ t, runtime }) {
           <p className="eyebrow">{t.heroKicker}</p>
           <h1>{t.heroTitle}</h1>
           <p>{t.heroBody}</p>
-          <a className="round-link" href="#games"><span>{t.explore}</span><b aria-hidden="true">↓</b></a>
+          <a className="round-link" href="work.html" onClick={(event) => onNavigate(event, 'work.html')}><span>{t.explore}</span><b aria-hidden="true">↓</b></a>
         </div>
       </div>
     </section>
@@ -374,8 +384,17 @@ function App() {
   const [activeTrack, setActiveTrack] = useStoredState('haoqi-track', musicTracks[0].id);
   const [menuOpen, setMenuOpen] = useState(false);
   const [runtime, setRuntime] = useState(() => getRuntimeParts(language));
+  const [isLeaving, setIsLeaving] = useState(false);
   const cursorRef = useRef(null);
   const t = copy[language] || copy.zh;
+  const currentPage = document.body.dataset.page || 'home';
+
+  const onNavigate = (event, href) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    setIsLeaving(true);
+    window.setTimeout(() => { window.location.href = href; }, 260);
+  };
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -397,21 +416,26 @@ function App() {
     return () => window.removeEventListener('pointermove', move);
   }, []);
 
-  const pageClassName = useMemo(() => 'site-shell theme-' + theme, [theme]);
+  const pageClassName = useMemo(() => 'site-shell theme-' + theme + (isLeaving ? ' is-leaving' : ''), [theme, isLeaving]);
+
+  let pageContent;
+  if (currentPage === 'about') {
+    pageContent = <AboutSection t={t} runtime={runtime} />;
+  } else if (currentPage === 'work') {
+    pageContent = <><GameSection t={t} /><PhotoSection t={t} /></>;
+  } else if (currentPage === 'music') {
+    pageContent = <><MusicSection t={t} activeTrack={activeTrack} setActiveTrack={setActiveTrack} /><UploadSection t={t} /></>;
+  } else if (currentPage === 'contact') {
+    pageContent = <ContactSection t={t} />;
+  } else {
+    pageContent = <Hero t={t} runtime={runtime} onNavigate={onNavigate} />;
+  }
 
   return (
     <div className={pageClassName}>
       <div className="custom-cursor" ref={cursorRef} aria-hidden="true" />
-      <Header language={language} setLanguage={setLanguage} theme={theme} setTheme={setTheme} menuOpen={menuOpen} setMenuOpen={setMenuOpen} t={t} />
-      <main>
-        <Hero t={t} runtime={runtime} />
-        <AboutSection t={t} runtime={runtime} />
-        <GameSection t={t} />
-        <MusicSection t={t} activeTrack={activeTrack} setActiveTrack={setActiveTrack} />
-        <PhotoSection t={t} />
-        <UploadSection t={t} />
-        <ContactSection t={t} />
-      </main>
+      <Header language={language} setLanguage={setLanguage} theme={theme} setTheme={setTheme} menuOpen={menuOpen} setMenuOpen={setMenuOpen} t={t} currentPage={currentPage} onNavigate={onNavigate} />
+      <main className="page-content">{pageContent}</main>
       <SidebarPlayer t={t} activeTrack={activeTrack} setActiveTrack={setActiveTrack} />
     </div>
   );

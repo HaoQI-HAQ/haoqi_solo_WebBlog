@@ -5,6 +5,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'index.html',
+        about: 'about.html',
+        work: 'work.html',
+        music: 'music.html',
         contact: 'contact.html',
       },
     },
