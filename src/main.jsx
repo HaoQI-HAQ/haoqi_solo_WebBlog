@@ -45,28 +45,31 @@ function getRuntimeParts(language) {
 }
 
 const navItems = [
-  { key: 'about', href: 'about.html' },
-  { key: 'work', href: 'work.html' },
+  { key: 'home', href: 'index.html' },
+  { key: 'games', href: 'work.html' },
+  { key: 'photo', href: 'photography.html' },
   { key: 'music', href: 'music.html' },
   { key: 'contact', href: 'contact.html' },
 ];
 
-function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen, t, currentPage, onNavigate }) {
+function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen, t, currentPage, isScrolled, onNavigate }) {
   const navigate = (event, href) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     onNavigate(event, href);
   };
 
   return (
-    <header className={'site-header ' + (menuOpen ? 'is-open' : '')}>
+    <header className={'site-header ' + (menuOpen ? 'is-open ' : '') + (isScrolled ? 'is-scrolled' : '')}>
       <a className="brand-lockup" href="index.html" onClick={(event) => { setMenuOpen(false); navigate(event, 'index.html'); }} aria-label="Back to home">
         <span className="brand-orbit" aria-hidden="true" />
         <span>HAOQI<span>/</span>STUDIO</span>
       </a>
       <nav className="desktop-nav" aria-label="Primary navigation">
+        <span className="nav-edge" aria-hidden="true">‹</span>
         {navItems.map((item, index) => (
           <a className={currentPage === item.key ? 'is-active' : ''} href={item.href} key={item.key} aria-current={currentPage === item.key ? 'page' : undefined} onClick={(event) => navigate(event, item.href)}>{t.nav[index]}</a>
         ))}
+        <span className="nav-edge" aria-hidden="true">›</span>
       </nav>
       <div className="header-actions">
         <button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'night' ? 'day' : 'night')}>
@@ -98,7 +101,7 @@ function Header({ language, setLanguage, theme, setTheme, menuOpen, setMenuOpen,
   );
 }
 
-function Hero({ t, runtime, onNavigate }) {
+function Hero({ t, runtime }) {
   return (
     <section id="top" className="hero-section">
       <video className="hero-video" autoPlay muted loop playsInline poster="/assets/hero-poster.png" aria-hidden="true">
@@ -114,7 +117,7 @@ function Hero({ t, runtime, onNavigate }) {
           <p className="eyebrow">{t.heroKicker}</p>
           <h1>{t.heroTitle}</h1>
           <p>{t.heroBody}</p>
-          <a className="round-link" href="work.html" onClick={(event) => onNavigate(event, 'work.html')}><span>{t.explore}</span><b aria-hidden="true">↓</b></a>
+          <a className="round-link" href="#games"><span>{t.explore}</span><b aria-hidden="true">↓</b></a>
         </div>
       </div>
     </section>
@@ -379,15 +382,18 @@ function SidebarPlayer({ t, activeTrack, setActiveTrack }) {
 }
 
 function App() {
+  const currentPage = document.body.dataset.page || 'home';
+  const initialNavKey = currentPage === 'work' ? 'games' : currentPage;
   const [language, setLanguage] = useStoredState('haoqi-language', defaultLanguage);
   const [theme, setTheme] = useStoredState('haoqi-theme', 'night');
   const [activeTrack, setActiveTrack] = useStoredState('haoqi-track', musicTracks[0].id);
   const [menuOpen, setMenuOpen] = useState(false);
   const [runtime, setRuntime] = useState(() => getRuntimeParts(language));
   const [isLeaving, setIsLeaving] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeNavKey, setActiveNavKey] = useState(initialNavKey);
   const cursorRef = useRef(null);
   const t = copy[language] || copy.zh;
-  const currentPage = document.body.dataset.page || 'home';
 
   const onNavigate = (event, href) => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -395,6 +401,34 @@ function App() {
     setIsLeaving(true);
     window.setTimeout(() => { window.location.href = href; }, 260);
   };
+
+  useEffect(() => {
+    const updateScrollState = () => {
+      setIsScrolled(window.scrollY > 28);
+
+      if (currentPage !== 'home') {
+        setActiveNavKey(initialNavKey);
+        return;
+      }
+
+      const anchorY = window.scrollY + window.innerHeight * 0.38;
+      const sections = [
+        ['home', 'top'],
+        ['games', 'games'],
+        ['photo', 'photo'],
+        ['music', 'music'],
+        ['contact', 'contact'],
+      ];
+      const activeSection = sections.reduce((current, [key, id]) => {
+        const element = document.getElementById(id);
+        return element && element.offsetTop <= anchorY ? key : current;
+      }, 'home');
+      setActiveNavKey(activeSection);
+    };
+    updateScrollState();
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollState);
+  }, [currentPage, initialNavKey]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -421,6 +455,10 @@ function App() {
   let pageContent;
   if (currentPage === 'about') {
     pageContent = <AboutSection t={t} runtime={runtime} />;
+  } else if (currentPage === 'games') {
+    pageContent = <GameSection t={t} />;
+  } else if (currentPage === 'photo') {
+    pageContent = <PhotoSection t={t} />;
   } else if (currentPage === 'work') {
     pageContent = <><GameSection t={t} /><PhotoSection t={t} /></>;
   } else if (currentPage === 'music') {
@@ -428,13 +466,21 @@ function App() {
   } else if (currentPage === 'contact') {
     pageContent = <ContactSection t={t} />;
   } else {
-    pageContent = <Hero t={t} runtime={runtime} onNavigate={onNavigate} />;
+    pageContent = <>
+      <Hero t={t} runtime={runtime} />
+      <AboutSection t={t} runtime={runtime} />
+      <GameSection t={t} />
+      <PhotoSection t={t} />
+      <MusicSection t={t} activeTrack={activeTrack} setActiveTrack={setActiveTrack} />
+      <UploadSection t={t} />
+      <ContactSection t={t} />
+    </>;
   }
 
   return (
     <div className={pageClassName}>
       <div className="custom-cursor" ref={cursorRef} aria-hidden="true" />
-      <Header language={language} setLanguage={setLanguage} theme={theme} setTheme={setTheme} menuOpen={menuOpen} setMenuOpen={setMenuOpen} t={t} currentPage={currentPage} onNavigate={onNavigate} />
+      <Header language={language} setLanguage={setLanguage} theme={theme} setTheme={setTheme} menuOpen={menuOpen} setMenuOpen={setMenuOpen} t={t} currentPage={activeNavKey} isScrolled={isScrolled} onNavigate={onNavigate} />
       <main className="page-content">{pageContent}</main>
       <SidebarPlayer t={t} activeTrack={activeTrack} setActiveTrack={setActiveTrack} />
     </div>

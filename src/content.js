@@ -17,7 +17,7 @@ export const socials = [
 
 export const copy = {
   zh: {
-    nav: ['关于', '作品', '能力', '联系'],
+    nav: ['首页', '游戏作品', '摄影', '音乐CD', '联系'],
     heroKicker: '游戏策划 · 视觉设计 · AI 编曲',
     heroTitle: '把玩法、影像与声音做成可以进入的世界。',
     heroBody: '先按作品集档案馆的结构搭底：游戏作品、摄影系统、音乐分析与侧边栏播放器都先可运行，后续再逐步替换真实内容。',
@@ -50,7 +50,7 @@ export const copy = {
     date: '日期',
   },
   ja: {
-    nav: ['紹介', '作品', '能力', '連絡'],
+    nav: ['ホーム', 'ゲーム作品', '写真', '音楽CD', '連絡'],
     heroKicker: 'ゲームデザイン · ビジュアル · AI 作曲',
     heroTitle: '遊び、映像、音を、入れる世界にする。',
     heroBody: 'まずは作品アーカイブ、写真システム、音楽分析、サイドプレイヤーが動く土台を用意しました。',
@@ -83,7 +83,7 @@ export const copy = {
     date: '日付',
   },
   en: {
-    nav: ['About', 'Work', 'Capabilities', 'Contact'],
+    nav: ['Home', 'Game Works', 'Photography', 'Music CD', 'Contact'],
     heroKicker: 'Game design · Visual direction · AI composition',
     heroTitle: 'I shape play, image and sound into worlds you can enter.',
     heroBody: 'The working base now follows an archive structure: games, photography, music notes and a persistent side player.',
@@ -116,7 +116,7 @@ export const copy = {
     date: 'Date',
   },
   ru: {
-    nav: ['Обо мне', 'Работы', 'Возможности', 'Контакты'],
+    nav: ['Главная', 'Игры', 'Фото', 'Музыка CD', 'Контакты'],
     heroKicker: 'Игровой дизайн · Визуал · AI музыка',
     heroTitle: 'Я собираю игру, образ и звук в миры, куда можно войти.',
     heroBody: 'Основа готова: игры, фотоархив, музыкальные заметки и боковой плеер.',

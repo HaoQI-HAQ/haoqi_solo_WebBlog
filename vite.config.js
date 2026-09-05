@@ -7,6 +7,7 @@ export default defineConfig({
         main: 'index.html',
         about: 'about.html',
         work: 'work.html',
+        photography: 'photography.html',
         music: 'music.html',
         contact: 'contact.html',
       },
