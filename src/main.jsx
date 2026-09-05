@@ -294,7 +294,7 @@ function PhotoSection({ t }) {
 
 function UploadSection({ t }) {
   return (
-    <section id="upload" className="section section-light compact-section">
+    <section id="upload" className="section section-dark compact-section">
       <div className="page-width upload-card">
         <div>
           <div className="section-marker"><span>06</span><span>Upload seam</span></div>
@@ -309,7 +309,7 @@ function UploadSection({ t }) {
 
 function ContactSection({ t }) {
   return (
-    <section id="contact" className="section section-dark contact-section">
+    <section id="contact" className="section section-light contact-section">
       <div className="page-width">
         <div className="section-heading">
           <div className="section-marker section-marker-dark"><span>07</span><span>Contact</span></div>

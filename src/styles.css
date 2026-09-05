@@ -91,7 +91,8 @@ img { display: block; max-width: 100%; }
 .runtime-card strong { font-size: clamp(70px, 8vw, 140px); font-weight: 500; line-height: .8; letter-spacing: -.1em; }
 .runtime-card small { color: var(--fog); }
 
-.section-heading h2 { color: var(--ink); }
+.section-light .section-heading h2 { color: var(--paper); }
+.section-dark .section-heading h2 { color: var(--ink); }
 .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 90px; }
 .work-card { min-width: 0; }
 .media-frame { position: relative; display: block; overflow: hidden; aspect-ratio: 1.12; background: var(--ink-soft); }
@@ -203,6 +204,8 @@ img { display: block; max-width: 100%; }
 .upload-card h2 { margin-top: 32px; font-size: clamp(36px, 4.8vw, 74px); color: var(--ink); }
 .upload-card p { max-width: 470px; margin: 0; color: rgba(13,15,16,.66); font-size: 15px; line-height: 1.6; }
 .upload-card button { padding: 13px 15px; border: 1px solid var(--line); background: transparent; color: var(--ink); }
+.section-light .upload-card h2 { color: var(--paper); }
+.section-dark .upload-card h2 { color: var(--ink); }
 
 .contact-section { padding-bottom: 180px; }
 .social-grid { max-width: 920px; margin-top: 90px; border-top: 1px solid var(--line-inverse); }
