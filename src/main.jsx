@@ -112,7 +112,7 @@ function FunctionalPage({ page }) {
   return <div className="site-shell functional-shell">
     <header className="site-header is-scrolled functional-header">
       <a className="brand-lockup" href="/" aria-label="回到首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
-      <nav className="desktop-nav" aria-label="主导航"><a href="/about.html">About</a><a href="/work.html">Work</a><a href="/photography.html">Photography</a><a href="/music.html">Music</a><a href="/contact.html">Contact</a></nav>
+      <nav className="desktop-nav" aria-label="主导航"><a href="/">Home</a><a href="/work.html">Work</a><a href="/photography.html">Photography</a><a href="/music.html">Music</a><a href="/contact.html">Contact</a><a href="/about.html">About</a></nav>
       <a className="header-contact" href="/contact.html">联系我 <span aria-hidden="true">↗</span></a>
     </header>
     <section className="archive-page section-light">
@@ -323,12 +323,13 @@ function App() {
           <span className="brand-orbit" aria-hidden="true" />
           <span>HAOQI<span className="brand-slash">/</span>STUDIO</span>
         </a>
-        <nav className="desktop-nav" aria-label="主导航">
-          <a href="/about.html">About</a>
+      <nav className="desktop-nav" aria-label="主导航">
+          <a href="/">Home</a>
           <a href="/work.html">Work</a>
           <a href="/photography.html">Photography</a>
           <a href="/music.html">Music</a>
           <a href="/contact.html">Contact</a>
+          <a href="/about.html">About</a>
         </nav>
         <a className="header-contact" href="/contact.html">
           联系我 <span aria-hidden="true">↗</span>
@@ -344,11 +345,12 @@ function App() {
           <span className="menu-icon" aria-hidden="true"><i /><i /></span>
         </button>
         <nav id="mobile-nav" className="mobile-nav" aria-label="移动端导航">
-          <a href="/about.html" onClick={closeMenu}>About <span>01</span></a>
+          <a href="/" onClick={closeMenu}>Home <span>01</span></a>
           <a href="/work.html" onClick={closeMenu}>Work <span>02</span></a>
           <a href="/photography.html" onClick={closeMenu}>Photography <span>03</span></a>
           <a href="/music.html" onClick={closeMenu}>Music <span>04</span></a>
           <a href="/contact.html" onClick={closeMenu}>Contact <span>05</span></a>
+          <a href="/about.html" onClick={closeMenu}>About <span>06</span></a>
         </nav>
       </header>
 
