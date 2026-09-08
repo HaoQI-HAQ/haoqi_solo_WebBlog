@@ -121,11 +121,11 @@ function parseHeadlineMarkup(markup) {
   return parts;
 }
 
-function TypewriterHeadline({ markup, as = 'span', className = '' }) {
+function TypewriterHeadline({ markup, as = 'span', className = '', stripPunctuation = false }) {
   const ref = useRef(null);
   const [started, setStarted] = useState(false);
   const [visibleChars, setVisibleChars] = useState(0);
-  const parts = parseHeadlineMarkup(markup);
+  const parts = parseHeadlineMarkup(stripPunctuation ? markup.replace(/[,.，、。]/g, '') : markup);
   const textLength = parts.reduce((total, part) => total + (part.type === 'text' ? part.text.length : 0), 0);
 
   useEffect(() => {
@@ -492,7 +492,7 @@ function App({ language, setLanguage }) {
             </div>
             <div className="hero-content">
               <p className="eyebrow">{t.heroKicker}</p>
-              <TypewriterHeadline as="h1" className="hero-typewriter" markup={t.heroTitle} />
+              <TypewriterHeadline as="h1" className="hero-typewriter" markup={t.heroTitle} stripPunctuation />
               <div className="hero-bottomline">
                 <a className="round-link" href="#work" aria-label="查看精选项目">
                   <span>{t.explore}</span>
