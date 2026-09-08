@@ -351,6 +351,11 @@ function ContactPage({ language, setLanguage }) {
             <div className="contact-page-links">
               <a href="mailto:1370228191@qq.com"><span>{ct.email}</span><strong>1370228191@qq.com</strong><i aria-hidden="true">↗</i></a>
               <a href="https://space.bilibili.com/65369165?spm_id_from=333.1387.0.0" target="_blank" rel="noreferrer"><span>{ct.bilibili}</span><strong>{t.nav[4] === 'Контакты' ? 'Моя страница Bilibili' : language === 'en' ? 'My Bilibili page' : language === 'ja' ? 'Bilibili ページ' : language === 'zh' ? '我的 B 站首页' : '我的 B 站首页'}</strong><i aria-hidden="true">↗</i></a>
+              <a href="https://github.com/HaoQI-HAQ" target="_blank" rel="noreferrer"><span><b className="contact-service-mark" aria-hidden="true">GH</b> GitHub</span><strong>HaoQI-HAQ</strong><i aria-hidden="true">↗</i></a>
+              <div className="contact-social-pair">
+                <a href="https://x.com/HAOQIHAQ" target="_blank" rel="noreferrer"><span>X / Twitter</span><strong>@HAOQIHAQ</strong><i aria-hidden="true">↗</i></a>
+                <a href="https://www.instagram.com/qitongwei0001/" target="_blank" rel="noreferrer"><span>Instagram</span><strong>@qitongwei0001</strong><i aria-hidden="true">↗</i></a>
+              </div>
             </div>
           </div>
           <div className="contact-page-portrait"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span className="portrait-tag">{ct.portrait}</span></div>

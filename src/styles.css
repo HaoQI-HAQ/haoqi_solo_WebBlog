@@ -206,6 +206,11 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-page-links span { font: 400 10px/1 var(--mono); text-transform: uppercase; color: var(--fog); }
 .contact-page-links strong { font-size: clamp(17px, 1.4vw, 23px); font-weight: 400; }
 .contact-page-links i { color: var(--acid); font-size: 19px; font-style: normal; }
+.contact-service-mark { display: inline-grid; width: 18px; height: 18px; margin-right: 7px; place-items: center; border: 1px solid currentColor; border-radius: 50%; color: var(--paper); font: 500 7px/1 var(--mono); letter-spacing: -0.08em; vertical-align: -4px; }
+.contact-social-pair { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line-dark); }
+.contact-social-pair a { grid-template-columns: auto 1fr auto; gap: 12px; min-width: 0; border-bottom: 0; }
+.contact-social-pair a + a { border-left: 1px solid var(--line-dark); padding-left: 20px; }
+.contact-social-pair strong { min-width: 0; font-size: clamp(14px, 1.15vw, 18px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .contact-page-portrait { position: relative; max-width: 560px; justify-self: end; }
 .contact-page-portrait::after { content: ''; position: absolute; inset: 15px; border: 1px solid rgba(216,255,79,0.48); pointer-events: none; }
 .contact-page-portrait img { width: 100%; aspect-ratio: 1.08; object-fit: cover; filter: grayscale(0.2) contrast(1.06); }
@@ -424,6 +429,9 @@ html[data-language='en'] .archive-flow-inner > h2 { letter-spacing: -0.085em; }
   .contact-page-links { margin-top: 45px; }
   .contact-page-links a { grid-template-columns: 68px 1fr auto; gap: 10px; padding: 15px 0; }
   .contact-page-links strong { font-size: 15px; word-break: break-all; }
+  .contact-social-pair { grid-template-columns: 1fr; }
+  .contact-social-pair a { grid-template-columns: 80px 1fr auto; }
+  .contact-social-pair a + a { padding-left: 0; border-left: 0; border-top: 1px solid var(--line-dark); }
   .contact-page-portrait { width: 100%; max-width: none; }
   .contact-page-portrait::after { inset: 10px; }
   .portrait-tag { left: 18px; bottom: 18px; }
