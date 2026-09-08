@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { createElement, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.js';
@@ -63,10 +63,10 @@ const languageOptions = [{ code: 'mixed', label: '混' }, ...languages];
 const mixedText = {
   nav: ['Home', 'Work', 'Photography', 'Music', 'Contact', 'About'],
   heroKicker: 'Game design · Visual direction · AI composition',
-  heroTitle: 'I shape <em>play</em>,<br /><span class="headline-indent">image</span> &amp; sound<br />into <em>worlds.</em>',
+  heroTitle: 'I shape <em>play</em><br /><span class="headline-indent">image</span> &amp; sound<br />into <em>worlds</em>',
   heroBody: '我是一名游戏策划、视觉设计师，也是一名 AI 编曲人。',
   explore: 'Explore the work', status: 'Available for selected collaborations', scroll: 'Scroll to enter',
-  aboutMarker: 'About the practice', aboutKicker: 'A multidisciplinary practice', aboutTitle: '一半在系统里，<br />一半在感觉里。',
+  aboutMarker: 'About the practice', aboutKicker: 'A multidisciplinary practice', aboutTitle: '一半在<em>系统</em>里，<br />一半在<span>感觉里。</span>',
   aboutLarge: '我是一名游戏策划、视觉设计师，也是一名 AI 编曲人。我的工作总是在寻找同一件事：让一个想法拥有自己的气候、节奏和入口。',
   aboutBody: '我相信好的体验不会把答案直接交给你。它会留下一个动作、一种声音或一块空白，让人愿意继续靠近。',
   openContact: 'Open contact page', currently: 'Currently exploring', playable: 'Playable atmospheres', disciplines: 'creative disciplines', iterations: 'iterations before the right feeling', practice: 'practice in progress', statsNote: 'Numbers are placeholders<br />until the archive is filled.',
@@ -79,10 +79,10 @@ const mixedText = {
 
 const languageText = {
   mixed: mixedText,
-  zh: { ...mixedText, nav: ['首页', '作品', '摄影', '音乐', '联系', '关于'], heroKicker: '游戏策划 · 视觉设计 · AI 编曲', heroTitle: '把<em>玩法</em>、影像与声音做成可以进入的<em>世界</em>。', heroBody: '我是一名游戏策划、视觉设计师，也是一名 AI 编曲人。', explore: '进入作品', status: '欢迎合作', scroll: '向下浏览', aboutMarker: '关于实践', aboutKicker: '跨学科创作实践', aboutTitle: '一半在系统里，<br />一半在感觉里。', openContact: '打开联系页', currently: '正在探索', playable: '可进入的氛围', disciplines: '创作方向', iterations: '直到找到正确感觉的迭代', practice: '进行中的实践', selectedWork: '精选作品', selectedNote: '三个方向，同一种好奇：<br />什么让一个世界被记住？', workIntro: '正在<br /><em>成为。</em>', archiveProgress: '档案持续整理中', viewNotes: '查看全部记录', capabilities: '能力', capabilitiesNote: '不同工具，同一种直觉：<br />让不可见之物变得清晰。', capabilitiesKicker: '我带来的东西', capabilitiesTitle: '从问题出发，<br /><span>到体验落地。</span>', photoTitle: '摄影作品', musicTitle: '个人音乐分析', contactTitle: '联系', contactKicker: '有一个正在形成的世界？', contactHeading: '一起让它<br /><em>变得可以进入。</em>', contactFooter: '开放精选合作 / 2026', backTop: '回到顶部', contactMe: '联系我', pageAbout: '关于', pageGames: '游戏作品', pagePhoto: '摄影作品', pageMusic: '个人音乐分析', pageContact: '联系与社交', photoIntro: '摄影系统按城市与年份归档，点击相册可打开完整帧组。', all: '全部', city: '城市', year: '年份', viewAlbum: '查看相册', mapTitle: '拍摄城市地图', mapNote: '城市标记会随着摄影档案增加而扩展。', nowPlaying: '正在播放', audioPending: '音频文件待添加', close: '关闭', previous: '上一张', next: '下一张' },
-  ja: { ...mixedText, nav: ['ホーム', '作品', '写真', '音楽', '連絡', '概要'], heroKicker: 'ゲームデザイン · ビジュアル · AI 作曲', heroTitle: '<em>遊び</em>、映像、音を、入れる<em>世界</em>にする。', heroBody: 'ゲーム、ビジュアル、AI 作曲を横断して、体験の入口をつくります。', explore: '作品を見る', status: '選択的な協業を受付中', scroll: 'スクロールして入る', aboutMarker: '実践について', aboutKicker: '複合的な創作実践', aboutTitle: '半分はシステム、<br />半分は感覚。', openContact: '連絡ページを開く', currently: '現在の探索', playable: '入れる雰囲気', disciplines: '創作分野', iterations: '正しい感覚までの反復', practice: '進行中の実践', selectedWork: '選択した作品', selectedNote: '三つの方向、ひとつの好奇心：<br />世界を記憶に残すものは？', workIntro: '生まれつつある<br /><em>断片。</em>', archiveProgress: 'アーカイブ整理中', viewNotes: '記録を見る', capabilities: 'できること', capabilitiesNote: '異なる道具、同じ直感：<br />見えないものを明らかにする。', capabilitiesKicker: '持ち込めるもの', capabilitiesTitle: '問いから始め、<br /><span>体験へ。</span>', photoTitle: '写真作品', musicTitle: '音楽分析', contactTitle: '連絡', contactKicker: '思い描いている世界がありますか？', contactHeading: '一緒に<br /><em>入れるものへ。</em>', contactFooter: '選択的な協業を受付中 / 2026', backTop: 'トップへ戻る', contactMe: '連絡する', pageAbout: '概要', pageGames: 'ゲーム作品', pagePhoto: '写真作品', pageMusic: '音楽分析', pageContact: '連絡とSNS', photoIntro: '都市と年ごとに写真を整理しています。アルバムをクリックするとフレームを開けます。', all: 'すべて', city: '都市', year: '年', viewAlbum: 'アルバムを見る', mapTitle: '撮影都市マップ', mapNote: '写真アーカイブに合わせて都市マーカーが増えます。', nowPlaying: '再生中', audioPending: '音源は未追加', close: '閉じる', previous: '前へ', next: '次へ' },
-  en: { ...mixedText, nav: ['Home', 'Work', 'Photography', 'Music', 'Contact', 'About'], heroKicker: legacyCopy.en.heroKicker, heroTitle: legacyCopy.en.heroTitle, heroBody: legacyCopy.en.heroBody, explore: legacyCopy.en.explore, status: 'Available for selected collaborations', scroll: 'Scroll to enter', aboutMarker: 'About the practice', aboutKicker: 'A multidisciplinary practice', aboutTitle: 'Half system,<br />half feeling.', aboutLarge: legacyCopy.en.aboutBody, aboutBody: 'Good experiences leave an action, a sound or a blank space that invites people closer.', openContact: 'Open contact page', currently: 'Currently exploring', playable: 'Playable atmospheres', disciplines: 'creative disciplines', iterations: 'iterations before the right feeling', practice: 'practice in progress', selectedWork: legacyCopy.en.workTitle, selectedNote: 'Three directions, one curiosity:<br />what makes a world stay with you?', workIntro: 'Pieces of<br /><em>becoming.</em>', archiveProgress: 'Archive in progress', viewNotes: 'View all notes', capabilities: 'Capabilities', capabilitiesNote: 'Different tools, same instinct:<br />make the invisible legible.', capabilitiesKicker: 'What I bring into the room', capabilitiesTitle: 'From problem to<br /><span>lived experience.</span>', photoTitle: legacyCopy.en.photoTitle, musicTitle: legacyCopy.en.musicTitle, contactTitle: legacyCopy.en.contactTitle, contactKicker: 'Have a world in mind?', contactHeading: 'Let’s make<br /><em>something enterable.</em>', contactFooter: 'Open to selected collaborations / 2026', backTop: 'Back to top', contactMe: 'Contact', pageAbout: 'About', pageGames: 'Game Works', pagePhoto: 'Photography', pageMusic: 'Music Notes', pageContact: 'Contact & Social', photoIntro: legacyCopy.en.photoIntro, all: 'All', city: 'City', year: 'Year', viewAlbum: 'View album', mapTitle: legacyCopy.en.mapTitle, mapNote: legacyCopy.en.mapNote, nowPlaying: legacyCopy.en.nowPlaying, audioPending: legacyCopy.en.noAudio, close: legacyCopy.en.close, previous: legacyCopy.en.previous, next: legacyCopy.en.next },
-  ru: { ...mixedText, nav: ['Главная', 'Работы', 'Фото', 'Музыка', 'Контакты', 'Обо мне'], heroKicker: legacyCopy.ru.heroKicker, heroTitle: 'Я собираю <em>игру</em>, образ и звук в <em>миры</em>, куда можно войти.', heroBody: legacyCopy.ru.heroBody, explore: legacyCopy.ru.explore, status: 'Открыт для выбранных коллабораций', scroll: 'Листайте вниз', aboutMarker: 'О практике', aboutKicker: 'Междисциплинарная практика', aboutTitle: 'Половина — система,<br />половина — чувство.', aboutLarge: legacyCopy.ru.aboutBody, aboutBody: 'Хороший опыт оставляет действие, звук или пустоту, которая зовёт подойти ближе.', openContact: 'Открыть контакты', currently: 'Сейчас исследую', playable: 'Входящие атмосферы', disciplines: 'творческие направления', iterations: 'итераций до правильного чувства', practice: 'практика в процессе', selectedWork: legacyCopy.ru.workTitle, selectedNote: 'Три направления, одно любопытство:<br />что удерживает мир в памяти?', workIntro: 'Фрагменты<br /><em>становления.</em>', archiveProgress: 'Архив пополняется', viewNotes: 'Все заметки', capabilities: 'Возможности', capabilitiesNote: 'Разные инструменты, один инстинкт:<br />сделать невидимое ясным.', capabilitiesKicker: 'Что я привношу', capabilitiesTitle: 'От вопроса к<br /><span>опыту.</span>', photoTitle: legacyCopy.ru.photoTitle, musicTitle: legacyCopy.ru.musicTitle, contactTitle: legacyCopy.ru.contactTitle, contactKicker: 'У вас есть мир в замысле?', contactHeading: 'Давайте создадим<br /><em>то, куда можно войти.</em>', contactFooter: 'Открыт для выбранных коллабораций / 2026', backTop: 'Наверх', contactMe: 'Контакты', pageAbout: 'Обо мне', pageGames: 'Игровые работы', pagePhoto: 'Фотография', pageMusic: 'Музыкальный анализ', pageContact: 'Контакты и соцсети', photoIntro: legacyCopy.ru.photoIntro, all: 'Все', city: 'Город', year: 'Год', viewAlbum: 'Открыть альбом', mapTitle: legacyCopy.ru.mapTitle, mapNote: legacyCopy.ru.mapNote, nowPlaying: legacyCopy.ru.nowPlaying, audioPending: legacyCopy.ru.noAudio, close: legacyCopy.ru.close, previous: legacyCopy.ru.previous, next: legacyCopy.ru.next },
+  zh: { ...mixedText, nav: ['首页', '作品', '摄影', '音乐', '联系', '关于'], heroKicker: '游戏策划 · 视觉设计 · AI 编曲', heroTitle: '把<em>玩法</em>、影像与声音做成可以进入的<em>世界</em>。', heroBody: '我是一名游戏策划、视觉设计师，也是一名 AI 编曲人。', explore: '进入作品', status: '欢迎合作', scroll: '向下浏览', aboutMarker: '关于实践', aboutKicker: '跨学科创作实践', aboutTitle: '一半在<em>系统</em>里，<br />一半在<span>感觉里。</span>', openContact: '打开联系页', currently: '正在探索', playable: '可进入的氛围', disciplines: '创作方向', iterations: '直到找到正确感觉的迭代', practice: '进行中的实践', selectedWork: '精选作品', selectedNote: '三个方向，同一种好奇：<br />什么让一个世界被记住？', workIntro: '正在<br /><em>成为。</em>', archiveProgress: '档案持续整理中', viewNotes: '查看全部记录', capabilities: '能力', capabilitiesNote: '不同工具，同一种直觉：<br />让不可见之物变得清晰。', capabilitiesKicker: '我带来的东西', capabilitiesTitle: '从问题出发，<br /><span>到体验落地。</span>', photoTitle: '摄影作品', musicTitle: '个人音乐分析', contactTitle: '联系', contactKicker: '有一个正在形成的世界？', contactHeading: '一起让它<br /><em>变得可以进入。</em>', contactFooter: '开放精选合作 / 2026', backTop: '回到顶部', contactMe: '联系我', pageAbout: '关于', pageGames: '游戏作品', pagePhoto: '摄影作品', pageMusic: '个人音乐分析', pageContact: '联系与社交', photoIntro: '摄影系统按城市与年份归档，点击相册可打开完整帧组。', all: '全部', city: '城市', year: '年份', viewAlbum: '查看相册', mapTitle: '拍摄城市地图', mapNote: '城市标记会随着摄影档案增加而扩展。', nowPlaying: '正在播放', audioPending: '音频文件待添加', close: '关闭', previous: '上一张', next: '下一张' },
+  ja: { ...mixedText, nav: ['ホーム', '作品', '写真', '音楽', '連絡', '概要'], heroKicker: 'ゲームデザイン · ビジュアル · AI 作曲', heroTitle: '<em>遊び</em>、映像、音を、入れる<em>世界</em>にする。', heroBody: 'ゲーム、ビジュアル、AI 作曲を横断して、体験の入口をつくります。', explore: '作品を見る', status: '選択的な協業を受付中', scroll: 'スクロールして入る', aboutMarker: '実践について', aboutKicker: '複合的な創作実践', aboutTitle: '半分は<em>システム</em>、<br />半分は<span>感覚。</span>', openContact: '連絡ページを開く', currently: '現在の探索', playable: '入れる雰囲気', disciplines: '創作分野', iterations: '正しい感覚までの反復', practice: '進行中の実践', selectedWork: '選択した作品', selectedNote: '三つの方向、ひとつの好奇心：<br />世界を記憶に残すものは？', workIntro: '生まれつつある<br /><em>断片。</em>', archiveProgress: 'アーカイブ整理中', viewNotes: '記録を見る', capabilities: 'できること', capabilitiesNote: '異なる道具、同じ直感：<br />見えないものを明らかにする。', capabilitiesKicker: '持ち込めるもの', capabilitiesTitle: '問いから始め、<br /><span>体験へ。</span>', photoTitle: '写真作品', musicTitle: '音楽分析', contactTitle: '連絡', contactKicker: '思い描いている世界がありますか？', contactHeading: '一緒に<br /><em>入れるものへ。</em>', contactFooter: '選択的な協業を受付中 / 2026', backTop: 'トップへ戻る', contactMe: '連絡する', pageAbout: '概要', pageGames: 'ゲーム作品', pagePhoto: '写真作品', pageMusic: '音楽分析', pageContact: '連絡とSNS', photoIntro: '都市と年ごとに写真を整理しています。アルバムをクリックするとフレームを開けます。', all: 'すべて', city: '都市', year: '年', viewAlbum: 'アルバムを見る', mapTitle: '撮影都市マップ', mapNote: '写真アーカイブに合わせて都市マーカーが増えます。', nowPlaying: '再生中', audioPending: '音源は未追加', close: '閉じる', previous: '前へ', next: '次へ' },
+  en: { ...mixedText, nav: ['Home', 'Work', 'Photography', 'Music', 'Contact', 'About'], heroKicker: legacyCopy.en.heroKicker, heroTitle: 'I shape <em>play</em><br /><span class="headline-indent">image</span> &amp; sound<br />into <em>worlds</em>', heroBody: legacyCopy.en.heroBody, explore: legacyCopy.en.explore, status: 'Available for selected collaborations', scroll: 'Scroll to enter', aboutMarker: 'About the practice', aboutKicker: 'A multidisciplinary practice', aboutTitle: 'Half <em>system</em>,<br />half <span>feeling.</span>', aboutLarge: legacyCopy.en.aboutBody, aboutBody: 'Good experiences leave an action, a sound or a blank space that invites people closer.', openContact: 'Open contact page', currently: 'Currently exploring', playable: 'Playable atmospheres', disciplines: 'creative disciplines', iterations: 'iterations before the right feeling', practice: 'practice in progress', selectedWork: legacyCopy.en.workTitle, selectedNote: 'Three directions, one curiosity:<br />what makes a world stay with you?', workIntro: 'Pieces of<br /><em>becoming.</em>', archiveProgress: 'Archive in progress', viewNotes: 'View all notes', capabilities: 'Capabilities', capabilitiesNote: 'Different tools, same instinct:<br />make the invisible legible.', capabilitiesKicker: 'What I bring into the room', capabilitiesTitle: 'From problem to<br /><span>lived experience.</span>', photoTitle: legacyCopy.en.photoTitle, musicTitle: legacyCopy.en.musicTitle, contactTitle: legacyCopy.en.contactTitle, contactKicker: 'Have a world in mind?', contactHeading: 'Let’s make<br /><em>something enterable.</em>', contactFooter: 'Open to selected collaborations / 2026', backTop: 'Back to top', contactMe: 'Contact', pageAbout: 'About', pageGames: 'Game Works', pagePhoto: 'Photography', pageMusic: 'Music Notes', pageContact: 'Contact & Social', photoIntro: legacyCopy.en.photoIntro, all: 'All', city: 'City', year: 'Year', viewAlbum: 'View album', mapTitle: legacyCopy.en.mapTitle, mapNote: legacyCopy.en.mapNote, nowPlaying: legacyCopy.en.nowPlaying, audioPending: legacyCopy.en.noAudio, close: legacyCopy.en.close, previous: legacyCopy.en.previous, next: legacyCopy.en.next },
+  ru: { ...mixedText, nav: ['Главная', 'Работы', 'Фото', 'Музыка', 'Контакты', 'Обо мне'], heroKicker: legacyCopy.ru.heroKicker, heroTitle: 'Я собираю <em>игру</em>, образ и звук в <em>миры</em>, куда можно войти.', heroBody: legacyCopy.ru.heroBody, explore: legacyCopy.ru.explore, status: 'Открыт для выбранных коллабораций', scroll: 'Листайте вниз', aboutMarker: 'О практике', aboutKicker: 'Междисциплинарная практика', aboutTitle: 'Половина — <em>система</em>,<br />половина — <span>чувство.</span>', aboutLarge: legacyCopy.ru.aboutBody, aboutBody: 'Хороший опыт оставляет действие, звук или пустоту, которая зовёт подойти ближе.', openContact: 'Открыть контакты', currently: 'Сейчас исследую', playable: 'Входящие атмосферы', disciplines: 'творческие направления', iterations: 'итераций до правильного чувства', practice: 'практика в процессе', selectedWork: legacyCopy.ru.workTitle, selectedNote: 'Три направления, одно любопытство:<br />что удерживает мир в памяти?', workIntro: 'Фрагменты<br /><em>становления.</em>', archiveProgress: 'Архив пополняется', viewNotes: 'Все заметки', capabilities: 'Возможности', capabilitiesNote: 'Разные инструменты, один инстинкт:<br />сделать невидимое ясным.', capabilitiesKicker: 'Что я привношу', capabilitiesTitle: 'От вопроса к<br /><span>опыту.</span>', photoTitle: legacyCopy.ru.photoTitle, musicTitle: legacyCopy.ru.musicTitle, contactTitle: legacyCopy.ru.contactTitle, contactKicker: 'У вас есть мир в замысле?', contactHeading: 'Давайте создадим<br /><em>то, куда можно войти.</em>', contactFooter: 'Открыт для выбранных коллабораций / 2026', backTop: 'Наверх', contactMe: 'Контакты', pageAbout: 'Обо мне', pageGames: 'Игровые работы', pagePhoto: 'Фотография', pageMusic: 'Музыкальный анализ', pageContact: 'Контакты и соцсети', photoIntro: legacyCopy.ru.photoIntro, all: 'Все', city: 'Город', year: 'Год', viewAlbum: 'Открыть альбом', mapTitle: legacyCopy.ru.mapTitle, mapNote: legacyCopy.ru.mapNote, nowPlaying: legacyCopy.ru.nowPlaying, audioPending: legacyCopy.ru.noAudio, close: legacyCopy.ru.close, previous: legacyCopy.ru.previous, next: legacyCopy.ru.next },
 };
 
 const contactText = {
@@ -95,6 +95,86 @@ const contactText = {
 
 function LanguageSwitcher({ language, setLanguage }) {
   return <div className="language-switcher" aria-label="Language switcher">{languageOptions.map((item) => <button type="button" className={language === item.code ? 'is-active' : ''} key={item.code} onClick={() => setLanguage(item.code)}>{item.label}</button>)}</div>;
+}
+
+function parseHeadlineMarkup(markup) {
+  const parts = [];
+  const tagPattern = /(<br\s*\/?\s*>|<em>|<\/em>|<span[^>]*>|<\/span>)/gi;
+  let cursor = 0;
+  let state = { accent: false, className: '' };
+  const stack = [];
+  const pushText = (value) => {
+    const text = value.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
+    if (text) parts.push({ type: 'text', text, ...state });
+  };
+  for (const match of markup.matchAll(tagPattern)) {
+    pushText(markup.slice(cursor, match.index));
+    const tag = match[0].toLowerCase();
+    if (tag.startsWith('<br')) parts.push({ type: 'br' });
+    else if (tag === '<em>') { stack.push(state); state = { ...state, accent: true }; }
+    else if (tag === '</em>') state = stack.pop() || { accent: false, className: '' };
+    else if (tag.startsWith('<span')) { stack.push(state); const classMatch = tag.match(/class=["']([^"']+)["']/); state = { ...state, className: classMatch?.[1] || '' }; }
+    else if (tag === '</span>') state = stack.pop() || { accent: false, className: '' };
+    cursor = match.index + match[0].length;
+  }
+  pushText(markup.slice(cursor));
+  return parts;
+}
+
+function TypewriterHeadline({ markup, as = 'span', className = '' }) {
+  const ref = useRef(null);
+  const [started, setStarted] = useState(false);
+  const [visibleChars, setVisibleChars] = useState(0);
+  const parts = parseHeadlineMarkup(markup);
+  const textLength = parts.reduce((total, part) => total + (part.type === 'text' ? part.text.length : 0), 0);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || started) return undefined;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setStarted(true); observer.disconnect(); }
+    }, { threshold: 0.12 });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [started]);
+
+  useEffect(() => {
+    if (!started) return undefined;
+    let index = 0;
+    let mode = 'typing';
+    let timer;
+    const tick = () => {
+      if (mode === 'typing') {
+        index += 1;
+        setVisibleChars(index);
+        if (index >= textLength) { mode = 'hold'; timer = window.setTimeout(tick, 2600); }
+        else timer = window.setTimeout(tick, 82);
+      } else if (mode === 'hold') {
+        mode = 'deleting';
+        timer = window.setTimeout(tick, 700);
+      } else if (index > 0) {
+        index -= 1;
+        setVisibleChars(index);
+        timer = window.setTimeout(tick, 42);
+      } else {
+        mode = 'typing';
+        timer = window.setTimeout(tick, 520);
+      }
+    };
+    setVisibleChars(0);
+    tick();
+    return () => window.clearTimeout(timer);
+  }, [markup, started, textLength]);
+
+  let remaining = visibleChars;
+  return createElement(as, { ref, className: `typewriter-headline ${className}`.trim(), 'aria-label': parts.filter((part) => part.type === 'text').map((part) => part.text).join('') }, parts.map((part, index) => {
+    if (part.type === 'br') return <br key={`br-${index}`} />;
+    const amount = Math.min(remaining, part.text.length);
+    remaining -= amount;
+    if (!amount) return null;
+    const Tag = part.accent ? 'em' : 'span';
+    return <Tag className={part.className || undefined} key={`text-${index}`}>{part.text.slice(0, amount)}</Tag>;
+  }));
 }
 
 function usePersistentState(key, fallback) {
@@ -153,19 +233,19 @@ function FunctionalPage({ page, language, setLanguage }) {
     <header className="site-header is-scrolled functional-header">
       <a className="brand-lockup" href="/" aria-label="回到首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
       <nav className="desktop-nav" aria-label="主导航"><a href="/">Home</a><a href="/work.html">Work</a><a href="/photography.html">Photography</a><a href="/music.html">Music</a><a href="/contact.html">Contact</a><a href="/about.html">About</a></nav>
-      <div className="header-actions"><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a><span className="header-divider" aria-hidden="true">/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
+      <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
     </header>
     <section className="archive-page section-light">
       <div className="page-width archive-page-inner">
         <div className="section-marker"><span>/{page}</span><span>Archive view</span></div>
-        <h1>{pageTitle}</h1>
-        {page === 'about' && <div className="about-archive"><div><p className="archive-intro">{t.heroKicker}</p><h2 dangerouslySetInnerHTML={{ __html: t.aboutTitle }} /><p>{t.aboutLarge}</p></div><div className="about-archive-profile"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span>HAOQI / PRACTICE / 2026</span></div></div>}
+        <TypewriterHeadline as="h1" className="archive-page-title" markup={pageTitle} />
+        {page === 'about' && <div className="about-archive"><div><p className="archive-intro">{t.heroKicker}</p><TypewriterHeadline as="h2" markup={t.aboutTitle} /><p>{t.aboutLarge}</p></div><div className="about-archive-profile"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span>HAOQI / PRACTICE / 2026</span></div></div>}
         {page === 'games' && <div className="archive-grid">{gameWorks.map((work) => <article className="archive-card" key={work.id}><a href={work.videoUrl} target={work.videoUrl.startsWith('http') ? '_blank' : undefined} rel="noreferrer"><img src={work.image} alt={work.title} /></a><small>{work.number} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p><a href={work.downloadUrl}>下载 / 跳转 ↗</a></article>)}</div>}
         {page === 'photo' && <>
           <p className="archive-intro">{t.photoIntro}</p>
           <div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}<span>{t.year}</span>{['all', ...new Set(photoAlbums.map((album) => album.year))].map((value) => <button type="button" className={year === value ? 'is-active' : ''} onClick={() => setYear(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div>
           <div className="archive-grid">{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={() => openAlbum(album)}><img src={album.cover} alt={album.title} /><span>{album.number} / {album.frameCount} frames ↗</span></button><small>{album.city} / {album.year} · {album.date}</small><h2>{album.title}</h2><p>{album.summary}</p><button type="button" onClick={() => openAlbum(album)}>查看相册 ↗</button></article>)}</div>
-          <div className="archive-map"><div><small>Map inside photography</small><h2>{t.mapTitle}</h2><p>{t.mapNote}</p></div><div className="archive-map-shape">{mapCities.map((item) => <button type="button" key={item.city} style={{ left: `${item.x}%`, top: `${item.y}%` }} className={item.count ? 'has-work' : ''}>{item.city}</button>)}</div></div>
+          <div className="archive-map"><div><small>Map inside photography</small><TypewriterHeadline as="h2" className="map-typewriter" markup={t.mapTitle} /><p>{t.mapNote}</p></div><div className="archive-map-shape">{mapCities.map((item) => <button type="button" key={item.city} style={{ left: `${item.x}%`, top: `${item.y}%` }} className={item.count ? 'has-work' : ''}>{item.city}</button>)}</div></div>
         </>}
         {page === 'music' && <div className="music-archive"><div><p className="archive-intro">{t.musicTitle}</p>{musicTracks.map((track) => <button type="button" className="track-row" key={track.id}><span>{track.title}</span><small>{track.mood}</small></button>)}</div><aside><small>{t.nowPlaying}</small><h2>{musicTracks[0].title}</h2><p>{musicTracks[0].analysis}</p><span>{t.audioPending}</span></aside></div>}
         {page === 'contact' && <div className="archive-contact-grid">{socials.map((item) => <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" key={item.label}><small>{item.label}</small><strong>{item.value}</strong><span>↗</span></a>)}</div>}
@@ -184,8 +264,8 @@ function HomeArchiveFlow({ language }) {
   const t = languageText[language] || mixedText;
   const albums = photoAlbums.filter((album) => city === 'all' || album.city === city);
   return <>
-    <section id="photo" className="archive-flow section-dark"><div className="page-width archive-flow-inner"><div className="section-marker section-marker-dark"><span>04</span><span>Photography archive</span></div><h2>{t.photoTitle}</h2><div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div><div className="archive-grid">{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={() => { setActiveAlbum(album); setImageIndex(0); }}><img src={album.cover} alt={album.title} /><span>{album.number} / {album.frameCount} frames ↗</span></button><small>{album.city} / {album.year} · {album.date}</small><h3>{album.title}</h3><p>{album.summary}</p></article>)}</div></div></section>
-    <section id="music" className="archive-flow section-light"><div className="page-width archive-flow-inner"><div className="section-marker"><span>05</span><span>Sound studies</span></div><h2>{t.musicTitle}</h2><div className="music-archive"><div>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small>{track.mood}</small></button>)}</div><aside><small>{t.nowPlaying}</small><h3>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).title}</h3><p>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).analysis}</p><span>{t.audioPending}</span></aside></div></div></section>
+    <section id="photo" className="archive-flow section-dark"><div className="page-width archive-flow-inner"><div className="section-marker section-marker-dark"><span>04</span><span>Photography archive</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.photoTitle} /><div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div><div className="archive-grid">{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={() => { setActiveAlbum(album); setImageIndex(0); }}><img src={album.cover} alt={album.title} /><span>{album.number} / {album.frameCount} frames ↗</span></button><small>{album.city} / {album.year} · {album.date}</small><h3>{album.title}</h3><p>{album.summary}</p></article>)}</div></div></section>
+    <section id="music" className="archive-flow section-light"><div className="page-width archive-flow-inner"><div className="section-marker"><span>05</span><span>Sound studies</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.musicTitle} /><div className="music-archive"><div>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small>{track.mood}</small></button>)}</div><aside><small>{t.nowPlaying}</small><h3>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).title}</h3><p>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).analysis}</p><span>{t.audioPending}</span></aside></div></div></section>
     {activeAlbum && <Lightbox album={activeAlbum} index={imageIndex} onChange={setImageIndex} onClose={() => setActiveAlbum(null)} />}
   </>;
 }
@@ -193,7 +273,6 @@ function HomeArchiveFlow({ language }) {
 function ContactPage({ language, setLanguage }) {
   const [typedGreeting, setTypedGreeting] = useState('');
   const [activePhraseIndex, setActivePhraseIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
   const t = languageText[language] || mixedText;
   const ct = contactText[language] || contactText.mixed;
 
@@ -208,14 +287,12 @@ function ContactPage({ language, setLanguage }) {
       const phrase = contactGreetings[phraseIndex];
       const fullText = `${phrase.prefix}${phrase.name}${phrase.suffix}`;
       if (!deleting && index < fullText.length) {
-        setIsTyping(true);
         index += 1;
         setTypedGreeting(fullText.slice(0, index));
         timer = window.setTimeout(tick, 110);
         return;
       }
       if (!deleting && holdUntil === 0) {
-        setIsTyping(false);
         holdUntil = Date.now() + 2800;
         timer = window.setTimeout(tick, 80);
         return;
@@ -226,13 +303,11 @@ function ContactPage({ language, setLanguage }) {
       }
       if (!deleting) deleting = true;
       if (index > 0) {
-        setIsTyping(true);
         index -= 1;
         setTypedGreeting(fullText.slice(0, index));
         timer = window.setTimeout(tick, 52);
         return;
       }
-      setIsTyping(false);
       deleting = false;
       holdUntil = 0;
       phraseIndex = (phraseIndex + 1) % contactGreetings.length;
@@ -263,14 +338,11 @@ function ContactPage({ language, setLanguage }) {
                 const name = typedGreeting.slice(nameStart, nameStart + phrase.name.length);
                 const suffixStart = nameStart + phrase.name.length;
                 const suffix = typedGreeting.slice(suffixStart, suffixStart + phrase.suffix.length);
-                const cursor = isTyping && typedGreeting.length < phrase.prefix.length + phrase.name.length + phrase.suffix.length
-                  ? <i className="typing-caret" aria-hidden="true" />
-                  : null;
                 const isPrefixTyping = typedGreeting.length <= phrase.prefix.length;
                 return (
                   <>
-                    <span className="contact-greeting-prefix"><span className="contact-typed-fragment">{prefix}{isPrefixTyping && cursor}</span></span>
-                    <span className="contact-greeting-second-line"><span className="contact-typed-fragment"><em>{name}</em>{suffix}{!isPrefixTyping && cursor}</span></span>
+                    <span className="contact-greeting-prefix"><span className="contact-typed-fragment">{prefix}</span></span>
+                    <span className="contact-greeting-second-line"><span className="contact-typed-fragment"><em>{name}</em>{suffix}</span></span>
                   </>
                 );
               })()}
@@ -375,7 +447,7 @@ function App({ language, setLanguage }) {
           <a href="/contact.html">{t.nav[4]}</a>
           <a href="/about.html">{t.nav[5]}</a>
         </nav>
-        <div className="header-actions"><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a><span className="header-divider" aria-hidden="true">/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
+        <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
         <button
           className="menu-toggle"
           type="button"
@@ -420,7 +492,7 @@ function App({ language, setLanguage }) {
             </div>
             <div className="hero-content">
               <p className="eyebrow">{t.heroKicker}</p>
-              <h1 dangerouslySetInnerHTML={{ __html: t.heroTitle }} />
+              <TypewriterHeadline as="h1" className="hero-typewriter" markup={t.heroTitle} />
               <div className="hero-bottomline">
                 <a className="round-link" href="#work" aria-label="查看精选项目">
                   <span>{t.explore}</span>
@@ -441,7 +513,7 @@ function App({ language, setLanguage }) {
             <div className="section-marker" data-reveal><span>01</span><span>{t.aboutMarker}</span></div>
             <div className="about-copy" data-reveal>
               <p className="section-kicker">{t.aboutKicker}</p>
-              <h2 dangerouslySetInnerHTML={{ __html: t.aboutTitle }} />
+              <TypewriterHeadline as="h2" className="about-typewriter" markup={t.aboutTitle} />
               <p className="large-copy">{t.aboutLarge}</p>
               <p className="body-copy">{t.aboutBody}</p>
               <div className="about-links">
@@ -475,7 +547,7 @@ function App({ language, setLanguage }) {
               <p className="section-note" dangerouslySetInnerHTML={{ __html: t.selectedNote }} />
             </div>
             <div className="work-intro" data-reveal>
-              <h2 dangerouslySetInnerHTML={{ __html: t.workIntro }} />
+              <TypewriterHeadline as="h2" className="work-typewriter" markup={t.workIntro} />
               <span className="work-count">[ 03 / 03 ]</span>
             </div>
             <div className="project-grid">
@@ -509,7 +581,7 @@ function App({ language, setLanguage }) {
             </div>
             <div className="capability-lead" data-reveal>
               <p className="section-kicker">{t.capabilitiesKicker}</p>
-              <h2 dangerouslySetInnerHTML={{ __html: t.capabilitiesTitle }} />
+              <TypewriterHeadline as="h2" className="capabilities-typewriter" markup={t.capabilitiesTitle} />
             </div>
             <div className="capability-grid">
               {capabilityItems.map((item) => (
@@ -533,7 +605,7 @@ function App({ language, setLanguage }) {
             <div className="section-marker section-marker-dark" data-reveal><span>06</span><span>{t.contactTitle}</span></div>
             <div className="contact-content" data-reveal>
               <p className="section-kicker">{t.contactKicker}</p>
-              <h2 dangerouslySetInnerHTML={{ __html: t.contactHeading }} />
+              <TypewriterHeadline as="h2" className="contact-typewriter" markup={t.contactHeading} />
               <a className="contact-email" href="mailto:1370228191@qq.com">1370228191@qq.com <span aria-hidden="true">↗</span></a>
             </div>
             <div className="contact-footer" data-reveal>
@@ -552,7 +624,10 @@ const pageByRoute = { 'about.html': 'about', 'work.html': 'games', 'photography.
 
 function SiteRouter() {
   const [language, setLanguage] = usePersistentState('haoqi-language', 'mixed');
-  useEffect(() => { document.documentElement.lang = language === 'mixed' ? 'zh-CN' : language; }, [language]);
+  useEffect(() => {
+    document.documentElement.lang = language === 'mixed' ? 'zh-CN' : language;
+    document.documentElement.dataset.language = language;
+  }, [language]);
   if (route === 'contact.html') return <ContactPage language={language} setLanguage={setLanguage} />;
   if (pageByRoute[route]) return <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} />;
   return <App language={language} setLanguage={setLanguage} />;

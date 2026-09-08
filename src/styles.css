@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
 
 :root {
   --ink: #0d0f10;
@@ -15,6 +15,7 @@
   --page-width: 1700px;
   --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
   --display: 'Space Grotesk', 'Arial Narrow', Arial, sans-serif;
+  --display-en: 'Syne', 'Space Grotesk', sans-serif;
   font-family: var(--display);
   color: var(--ink);
   background: var(--ink);
@@ -75,6 +76,8 @@ img { display: block; max-width: 100%; }
 .eyebrow { color: var(--acid); }
 .hero-content .eyebrow { grid-column: 1 / -1; margin-bottom: 24px; }
 .hero-content h1 { grid-column: 1; grid-row: 2; max-width: 1180px; margin: 0; font-size: clamp(58px, 8.7vw, 150px); font-weight: 500; line-height: 0.87; letter-spacing: -0.08em; text-wrap: pretty; }
+.typewriter-headline { display: block; }
+.hero-typewriter { min-height: 2.61em; }
 h1 em, h2 em { color: var(--acid); font-style: normal; }
 .headline-indent { padding-left: clamp(28px, 5vw, 92px); }
 .hero-bottomline { grid-column: 2; grid-row: 2; display: flex; align-items: flex-end; justify-content: flex-start; gap: 30px; width: auto; max-width: none; margin: 0 0 8px; padding: 0; }
@@ -94,6 +97,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .section-marker-dark span:first-child { color: var(--acid); }
 .about-copy { max-width: 770px; }
 .about-copy h2, .capability-lead h2 { margin: 0; font-size: clamp(46px, 5.6vw, 98px); font-weight: 500; line-height: 0.92; letter-spacing: -0.075em; text-wrap: pretty; }
+.about-typewriter, .capabilities-typewriter { min-height: 1.84em; }
 .about-copy h2 span, .capability-lead h2 span { color: var(--fog); }
 .large-copy { max-width: 635px; margin: 46px 0 24px; font-size: clamp(20px, 1.55vw, 28px); line-height: 1.38; letter-spacing: -0.04em; }
 .body-copy { max-width: 515px; margin: 0; color: #6f7677; font-size: 14px; line-height: 1.72; }
@@ -123,6 +127,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .section-note { margin: 0; font: 400 11px/1.5 var(--mono); letter-spacing: 0.04em; color: var(--fog); text-align: right; }
 .work-intro { display: flex; justify-content: space-between; align-items: flex-end; margin: clamp(76px, 8vw, 132px) 0 68px; }
 .work-intro h2 { margin: 0; font-size: clamp(62px, 8.4vw, 142px); font-weight: 500; line-height: 0.86; letter-spacing: -0.09em; }
+.work-typewriter { min-height: 1.72em; }
 .work-count { padding-bottom: 9px; font: 400 11px/1 var(--mono); color: var(--acid); }
 .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 2.5vw, 44px); }
 .project-card { min-width: 0; }
@@ -167,6 +172,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-inner { min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between; padding-top: 150px; padding-bottom: 35px; }
 .contact-content { position: relative; z-index: 1; margin: auto 0; padding: clamp(80px, 10vh, 145px) 0; }
 .contact-content h2 { max-width: 1220px; margin: 0; font-size: clamp(60px, 9.2vw, 158px); font-weight: 500; line-height: 0.86; letter-spacing: -0.095em; text-wrap: pretty; }
+.contact-typewriter { min-height: 1.72em; }
 .contact-email { display: inline-flex; gap: 13px; align-items: center; margin-top: 50px; padding-bottom: 10px; border-bottom: 1px solid var(--acid); color: var(--paper); font-size: clamp(18px, 1.45vw, 24px); transition: color 200ms ease, border-color 200ms ease; }
 .contact-email span { color: var(--acid); font-size: 26px; }
 .contact-email:hover { color: var(--acid); }
@@ -193,7 +199,6 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .contact-greeting-second-line { color: var(--acid); white-space: nowrap; }
 .contact-typed-fragment { position: relative; display: inline-block; white-space: nowrap; }
 .contact-greeting em { color: inherit; font-style: normal; }
-.typing-caret { position: absolute; left: calc(100% + 0.1em); top: 0.1em; display: block; width: 0.055em; height: 0.68em; background: var(--acid); animation: typing-blink 760ms steps(1) infinite; }
 .contact-page-intro { margin: 44px 0 0; font-size: clamp(17px, 1.45vw, 24px); line-height: 1.45; color: rgba(241,240,235,0.66); }
 .contact-page-links { max-width: 620px; margin-top: 68px; border-top: 1px solid var(--line-dark); }
 .contact-page-links a { display: grid; grid-template-columns: 95px 1fr auto; gap: 20px; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--line-dark); transition: color 180ms ease, padding 180ms ease; }
@@ -214,7 +219,6 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 
 @keyframes scan { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(100%); opacity: 1; } }
 @keyframes orbit-drift { from { transform: translate3d(0, 0, 0) rotate(-4deg); } to { transform: translate3d(-20px, 16px, 0) rotate(5deg); } }
-@keyframes typing-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } }
 
 /* Functional archive views keep the same existing tokens while adding the old site's page-level flows. */
 .functional-shell { min-height: 100vh; background: var(--paper); }
@@ -222,6 +226,7 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .functional-header { position: fixed; }
 .archive-page { min-height: 100vh; padding: 180px 0 120px; }
 .archive-page-inner > h1 { margin: 70px 0 90px; font-size: clamp(58px, 9vw, 150px); line-height: .88; letter-spacing: -.09em; font-weight: 500; }
+.archive-page-title { min-height: .95em; }
 .archive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(22px, 3vw, 54px); }
 .archive-card { min-width: 0; }
 .archive-card img { width: 100%; aspect-ratio: 1.26; object-fit: cover; filter: saturate(.58) contrast(1.04); transition: transform 500ms ease, filter 300ms ease; }
@@ -261,6 +266,8 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .archive-contact-grid span { color: var(--acid); font-size: 19px; }
 .about-archive { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(40px, 9vw, 160px); align-items: center; }
 .about-archive h2 { margin: 25px 0 22px; font-size: clamp(38px, 5vw, 82px); line-height: .94; letter-spacing: -.08em; font-weight: 500; }
+.about-archive h2 span { color: var(--fog); }
+.about-archive .typewriter-headline { min-height: 1.88em; }
 .about-archive p { max-width: 540px; color: #61686a; font-size: 16px; line-height: 1.65; }
 .about-archive-profile { position: relative; max-width: 520px; justify-self: end; color: var(--paper); background: var(--ink); }
 .about-archive-profile img { width: 100%; aspect-ratio: 1; object-fit: cover; filter: grayscale(.2) contrast(1.06); }
@@ -282,12 +289,33 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
 .music-dock-panel select { padding: 8px; border: 1px solid var(--line-dark); color: var(--paper); background: var(--ink-soft); font: 400 10px/1 var(--mono); }
 .archive-flow { position: relative; padding: clamp(118px, 11vw, 190px) 0 130px; }
 .archive-flow-inner > h2 { margin: 72px 0 58px; font-size: clamp(56px, 8vw, 138px); line-height: .88; letter-spacing: -.09em; font-weight: 500; }
+.archive-flow-typewriter { min-height: .95em; }
 .archive-flow .archive-grid { margin-top: 35px; }
 .archive-flow .archive-card h3 { margin: 12px 0 10px; font-size: clamp(23px, 1.9vw, 33px); line-height: 1; letter-spacing: -.05em; font-weight: 500; }
 .archive-flow .archive-card p { color: rgba(241,240,235,.58); }
 .archive-flow.section-light .archive-card p { color: #61686a; }
 .archive-flow.section-light .music-archive aside { background: var(--ink); }
 .track-row.is-active { color: var(--ink); background: rgba(216,255,79,.18); }
+
+/* The English mode keeps the same palette and layout, while giving display copy
+   a quieter editorial voice so it reads as an intentional language variant. */
+html[data-language='en'] .hero-typewriter,
+html[data-language='en'] .about-copy h2,
+html[data-language='en'] .work-intro h2,
+html[data-language='en'] .capability-lead h2,
+html[data-language='en'] .contact-content h2,
+html[data-language='en'] .archive-page-title,
+html[data-language='en'] .about-archive h2,
+html[data-language='en'] .archive-flow-inner > h2,
+html[data-language='en'] .archive-map h2 {
+  font-family: var(--display-en);
+  font-weight: 600;
+  letter-spacing: -0.095em;
+}
+
+html[data-language='en'] .hero-typewriter { letter-spacing: -0.105em; }
+html[data-language='en'] .archive-page-title,
+html[data-language='en'] .archive-flow-inner > h2 { letter-spacing: -0.085em; }
 
 @media (max-width: 700px) {
   .functional-header .desktop-nav, .functional-header .header-contact { display: none; }
@@ -335,12 +363,15 @@ h1 em, h2 em { color: var(--acid); font-style: normal; }
   .mobile-nav a:last-child { border-bottom: 0; }
   .mobile-nav a span { color: var(--acid); font-size: 10px; }
   .mobile-language { display: flex; justify-content: flex-end; padding-top: 14px; border-top: 1px solid var(--line-dark); }
-  .hero-inner { padding-top: 110px; padding-bottom: 22px; }
+  /* Keep the hero's crop and anchor points stable while the headline types. */
+  .hero-section { height: 100svh; min-height: 0; }
+  .hero-inner { height: 100%; min-height: 0; padding-top: 110px; padding-bottom: 22px; }
   .hero-topline { align-items: flex-start; gap: 16px; font-size: 8px; }
   .hero-topline-status { max-width: 145px; text-align: right; }
-  .hero-content { display: block; padding: 52px 0 60px; }
+  .hero-content { display: block; flex: 1 1 auto; min-height: 0; padding: 52px 0 60px; }
   .eyebrow { max-width: 245px; line-height: 1.5; }
   .hero-content h1 { font-size: clamp(54px, 16vw, 94px); letter-spacing: -0.08em; line-height: 0.88; }
+  .hero-typewriter { min-height: 2.61em; }
   .headline-indent { padding-left: 24px; }
   .hero-bottomline { align-items: flex-start; justify-content: flex-start; margin-top: 40px; }
   .round-link { flex-basis: 112px; width: 112px; height: 112px; padding: 15px; font-size: 8px; }
