@@ -52,26 +52,43 @@ export class WorkScene {
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2; floor.position.y = -4.63; floor.receiveShadow = true; this.scene.add(floor);
     this.scene.add(this.detailModel);
-    this.down = (e) => { this.startPointer = { x: e.clientX, y: e.clientY }; };
+    this.down = (e) => {
+      if (e.button === 2 && this.targetDetail) {
+        this.orbiting = true;
+        this.canvas.setPointerCapture?.(e.pointerId);
+        this.canvas.style.cursor = 'grabbing';
+        return;
+      }
+      if (e.button === 0) this.startPointer = { x: e.clientX, y: e.clientY };
+    };
     this.move = (e) => {
-      if (this.targetDetail && this.startPointer && e.buttons) {
-        this.detailModel.rotation.y += e.movementX * .006; return;
+      if (this.orbiting) {
+        this.detailModel.rotation.y += e.movementX * .006;
+        return;
       }
       const hit = this.hit(e); this.canvas.style.cursor = hit ? 'pointer' : 'default';
       this.onHover(hit ? this.selectionAt(hit) : null);
     };
     this.up = (e) => {
+      if (this.orbiting) {
+        this.orbiting = false;
+        this.canvas.releasePointerCapture?.(e.pointerId);
+        this.canvas.style.cursor = 'grab';
+        return;
+      }
       if (this.startPointer && Math.hypot(e.clientX-this.startPointer.x, e.clientY-this.startPointer.y) < 8 && !this.targetDetail) {
         const cell = this.hit(e); if (cell) this.select(cell);
       }
       this.startPointer = null;
     };
-    this.leave = () => { this.startPointer = null; this.onHover(null); };
+    this.leave = () => { this.orbiting = false; this.startPointer = null; this.onHover(null); };
+    this.contextMenu = (e) => { if (this.targetDetail) e.preventDefault(); };
     this.lost = (e) => { e.preventDefault(); this.onError?.('三维画面暂时不可用，请重新载入'); };
     this.canvas.addEventListener('pointerdown', this.down);
     this.canvas.addEventListener('pointermove', this.move);
     this.canvas.addEventListener('pointerup', this.up);
     this.canvas.addEventListener('pointerleave', this.leave);
+    this.canvas.addEventListener('contextmenu', this.contextMenu);
     this.canvas.addEventListener('webglcontextlost', this.lost);
     this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(host); this.resize();
   }
@@ -202,6 +219,7 @@ export class WorkScene {
     this.disposed=true; this.renderer.setAnimationLoop(null); this.observer.disconnect();
     this.canvas.removeEventListener('pointerdown',this.down); this.canvas.removeEventListener('pointermove',this.move);
     this.canvas.removeEventListener('pointerup',this.up); this.canvas.removeEventListener('pointerleave',this.leave);
+    this.canvas.removeEventListener('contextmenu',this.contextMenu);
     this.canvas.removeEventListener('webglcontextlost',this.lost);
     this.instances.forEach(inst=>inst.dispose()); this.geometries.forEach(g=>g.dispose()); this.materials.forEach(m=>m.dispose());
     this.labelTexture?.dispose(); this.environment.dispose(); this.light.shadow.map?.dispose(); this.renderer.dispose(); this.canvas.remove();

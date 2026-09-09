@@ -4,7 +4,7 @@ import './styles.css';
 import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.js';
 const WorkArchive = lazy(() => import('./work-archive/WorkArchive.jsx'));
 const workArchiveGroups = [
-  { id: 'games', items: gameWorks.map((work) => ({ ...work, videoSrc: work.videoUrl?.startsWith('http') ? work.videoUrl : '', bilibiliUrl: '' })) },
+  { id: 'games', items: gameWorks.map((work) => ({ ...work, videoSrc: work.videoUrl?.startsWith('http') ? work.videoUrl : '', bilibiliUrl: work.bilibiliUrl || '' })) },
   { id: 'photo', items: photoAlbums.map((album) => ({ ...album, image: album.cover, type: `${album.city} / ${album.year}` })) },
   { id: 'music', items: musicTracks.map((track, index) => ({ ...track, number: String(index + 1).padStart(2, '0'), image: '/assets/tool-contact.jpg', type: track.mood, summary: track.analysis })) },
 ];
