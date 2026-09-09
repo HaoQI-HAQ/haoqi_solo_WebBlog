@@ -23,41 +23,67 @@ npm run dev
 
 所有会被网站直接读取的素材放在 `public/media/` 下。Vite 会把 `public` 原样发布，因此代码中用 `/media/...` 引用，不要写 `public` 前缀。
 
-### 游戏视频
+### 游戏作品：一个作品一个文件夹
 
-放在 `public/media/games/`，建议使用浏览器兼容性最好的 MP4（H.264 视频 + AAC 音频）。当前三个档案可按下面命名：
-
-```text
-public/media/games/fragmented-life.mp4      # WORK-01《残片人生》
-public/media/games/nuo-mask-prisoner.mp4    # WORK-02《傩面之囚》
-public/media/games/five-second-real-man.mp4 # WORK-03《五秒真男人》
-```
-
-放入后，在 `src/content.js` 对应项目的 `videoUrl` 写入，例如：`/media/games/fragmented-life.mp4`。网站内会使用原生播放器；B 站按钮保留为外部观看入口。游戏安装包不要放进仓库，建议放到网盘、itch.io 或其他下载页后，将链接写入对应项目的 `downloadUrl`。
-
-### 摄影作品
-
-放在 `public/media/photos/`，每个相册单独一个文件夹，使用 WebP、JPG 或 AVIF：
+目录为 `public/media/games/work-编号-英文名/`。每个作品文件夹至少放宣传海报，若有网页内播放的视频，再放 MP4：
 
 ```text
-public/media/photos/guangzhou-night-walk/01.webp
-public/media/photos/guangzhou-night-walk/02.webp
-public/media/photos/shanghai-soft-grid/01.webp
+public/media/games/
+├─ work-01-fragmented-life/
+│  ├─ poster.jpg          # 《残片人生》宣传海报，推荐 16:10
+│  └─ trailer.mp4         # 可选：网页内播放的项目演示
+├─ work-02-nuo-mask-prisoner/
+│  ├─ poster.jpg
+│  └─ trailer.mp4
+├─ work-03-five-second-real-man/
+│  ├─ poster.jpg
+│  └─ trailer.mp4
+├─ work-04-redacted/
+└─ work-05-redacted/
 ```
 
-在 `src/content.js` 的 `photoAlbums` 内，为相册填写 `cover` 和 `images` 列表；每张图片使用 `/media/photos/相册名/文件名.webp`。详情页会按 `images` 的顺序提供左右切换与放大查看。
+在 `src/content.js` 对应项目填写：`image: '/media/games/work-01-fragmented-life/poster.jpg'`、`videoUrl: '/media/games/work-01-fragmented-life/trailer.mp4'`。没有海报或视频时，先保留当前纯黑预览；B 站入口独立保留。游戏安装包不要放入仓库，应放网盘、itch.io 或发布页，再把网址写入 `downloadUrl`。
 
-### 音乐
+### 摄影作品：按时间与地区建立相册文件夹
 
-放在 `public/media/music/`，建议 MP3（兼容性最好）或 OGG：
+目录为 `public/media/photos/YYYY-MM-DD-地区/`；一个相册的照片连续编号，第一张同时作为封面：
 
 ```text
-public/media/music/rain-loop-study.mp3
-public/media/music/city-night-sketch.mp3
-public/media/music/menu-pulse.mp3
+public/media/photos/
+├─ 2026-08-27-guangxi-guilin-yangshuo/
+│  └─ 01.png              # PHOTO-01《阳朔 / 2026.08.27》
+└─ 0000-00-00-region-pending/
+   ├─ 01.webp             # 后续相册示例
+   ├─ 02.webp
+   └─ 03.webp
 ```
 
-在 `src/content.js` 的 `musicTracks` 内，把对应曲目的 `src` 写为 `/media/music/文件名.mp3`。音乐档案中的黑胶界面会读取这个音源；无音源时会显示“音源待添加”。
+推荐 WebP、JPG 或 AVIF。将新相册的 `cover` 与 `images` 路径添加到 `src/content.js` 的 `photoAlbums`；详情页会按 `images` 的顺序左右切换与放大查看。没有实际图像时，档案必须保持纯黑预览与 `REDACTED` 文案。
+
+### 音乐唱片：一个专辑/档案一个文件夹
+
+目录为 `public/media/music/sound-编号-英文名/`。每张唱片至少有音频与封面：
+
+```text
+public/media/music/
+├─ sound-01-somniomancer-null-set/
+│  ├─ audio.mp3           # SOUND-01 音频
+│  └─ cover.jpg           # 专辑封面，方形优先
+├─ sound-02-redacted/
+├─ sound-03-redacted/
+├─ sound-04-redacted/
+└─ sound-05-redacted/
+```
+
+建议 MP3（兼容性最好）或 OGG。在 `src/content.js` 的 `musicTracks` 中填写 `src: '/media/music/sound-02-专辑名/audio.mp3'` 与 `image: '/media/music/sound-02-专辑名/cover.jpg'`。音乐档案中的黑胶会读取封面与音频；无素材的槽位维持黑色封面和打码描述。
+
+### 当前空槽位
+
+- 游戏：`WORK-04`、`WORK-05`
+- 摄影：`PHOTO-02` 至 `PHOTO-05`
+- 音乐：`SOUND-02` 至 `SOUND-05`
+
+它们在网页中均显示纯黑图片与 `ARCHIVE / REDACTED`、`MATERIAL LOCKED` 状态。填入真实素材与文案后再移除对应的 `pending: true`。
 
 ### 上传前检查
 
