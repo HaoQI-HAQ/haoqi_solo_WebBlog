@@ -3,6 +3,11 @@ import { createRoot } from 'react-dom/client';
 import './styles.css';
 import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.js';
 const WorkArchive = lazy(() => import('./work-archive/WorkArchive.jsx'));
+const workArchiveGroups = [
+  { id: 'games', items: gameWorks },
+  { id: 'photo', items: photoAlbums.map((album) => ({ ...album, image: album.cover, type: `${album.city} / ${album.year}` })) },
+  { id: 'music', items: musicTracks.map((track, index) => ({ ...track, number: String(index + 1).padStart(2, '0'), image: '/assets/tool-contact.jpg', type: track.mood, summary: track.analysis })) },
+];
 
 const projectItems = [
   {
@@ -332,7 +337,7 @@ function FunctionalPage({ page, language, setLanguage }) {
       <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage={currentPage} /></nav>
       <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
     </header>
-    {page === 'games' ? <Suspense fallback={<div className="archive-page section-light">Loading archive…</div>}><WorkArchive works={gameWorks} language={language} /></Suspense> : <section className="archive-page section-light">
+    {page === 'games' ? <Suspense fallback={<div className="archive-page section-light">Loading archive…</div>}><WorkArchive groups={workArchiveGroups} language={language} /></Suspense> : <section className="archive-page section-light">
       <div className="page-width archive-page-inner">
         <div className="section-marker"><span>/{page}</span><span>Archive view</span></div>
         <TypewriterHeadline as="h1" className="archive-page-title" markup={pageTitle} />

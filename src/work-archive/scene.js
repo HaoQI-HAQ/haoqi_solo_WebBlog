@@ -12,8 +12,8 @@ const spring = (value = 0) => ({ value, velocity: 0 });
 const shellNames = ['Frosted_Polymer', 'Ivory_Edges', 'Optical_Diffuser', 'Index_Inlay', 'Titanium_Fasteners'];
 
 export class WorkScene {
-  constructor(host, works, onSelect, onHover, reduced) {
-    this.host = host; this.works = works; this.onSelect = onSelect; this.onHover = onHover;
+  constructor(host, groups, onSelect, onHover, reduced) {
+    this.host = host; this.groups = groups; this.onSelect = onSelect; this.onHover = onHover;
     this.reduced = reduced; this.disposed = false; this.loaded = false;
     this.selected = { lane: 0, row: 0 }; this.pulses = []; this.time = 0;
     this.detail = spring(); this.targetDetail = 0;
@@ -28,7 +28,7 @@ export class WorkScene {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.canvas = this.renderer.domElement;
-    this.canvas.setAttribute('aria-label', '三维作品档案，点击选择；也可使用下方按钮与方向键');
+    this.canvas.setAttribute('aria-label', '三维创作档案：左右切换游戏、摄影与音乐；上下选择当前分类作品');
     this.host.appendChild(this.canvas);
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#f1f0eb');
@@ -58,7 +58,7 @@ export class WorkScene {
         this.detailModel.rotation.y += e.movementX * .006; return;
       }
       const hit = this.hit(e); this.canvas.style.cursor = hit ? 'pointer' : 'default';
-      this.onHover(hit ? this.indexAt(hit) : null);
+      this.onHover(hit ? this.selectionAt(hit) : null);
     };
     this.up = (e) => {
       if (this.startPointer && Math.hypot(e.clientX-this.startPointer.x, e.clientY-this.startPointer.y) < 8 && !this.targetDetail) {
@@ -75,7 +75,13 @@ export class WorkScene {
     this.canvas.addEventListener('webglcontextlost', this.lost);
     this.observer = new ResizeObserver(() => this.resize()); this.observer.observe(host); this.resize();
   }
-  indexAt(cell) { return mod(cell.row + cell.lane, this.works.length); }
+  groupIndexAt(cell) { return mod(cell.lane, this.groups.length); }
+  selectionAt(cell) {
+    const groupIndex = this.groupIndexAt(cell);
+    const items = this.groups[groupIndex].items;
+    const itemIndex = mod(cell.row, items.length);
+    return { groupIndex, itemIndex, group: this.groups[groupIndex], item: items[itemIndex] };
+  }
   async load() {
     const gltf = await new GLTFLoader().loadAsync('/assets/work-archive/archive-cassette.glb');
     if (this.disposed) { gltf.scene.traverse(o => { o.geometry?.dispose(); if(o.material) [o.material].flat().forEach(m=>m.dispose()); }); return; }
@@ -115,21 +121,22 @@ export class WorkScene {
   }
   updateLabel() {
     if (!this.labelCanvas) return;
-    const ctx = this.labelCanvas.getContext('2d'), work = this.works[this.indexAt(this.selected)];
+    const ctx = this.labelCanvas.getContext('2d'), selection = this.selectionAt(this.selected), work = selection.item;
     ctx.fillStyle = '#f1f0eb'; ctx.fillRect(0, 0, 1024, 384);
     ctx.fillStyle = '#0d0f10'; ctx.font = 'bold 64px monospace'; ctx.fillText('HAOQI / STUDIO', 30, 90);
     ctx.fillRect(30, 115, 964, 3); ctx.font = 'bold 120px monospace'; ctx.fillText(work.archiveCode, 30, 258);
-    ctx.font = '30px monospace'; ctx.fillText('GAME / CREATIVE ARCHIVE', 30, 342); this.labelTexture.needsUpdate = true;
+    ctx.font = '30px monospace'; ctx.fillText(`${selection.group.id.toUpperCase()} / CREATIVE ARCHIVE`, 30, 342); this.labelTexture.needsUpdate = true;
   }
   select(cell) {
     if (!this.loaded || this.targetDetail || this.detail.value > .1) return;
     if (this.selected.lane === cell.lane && this.selected.row === cell.row && this.pulses.length) return;
     this.selected = { ...cell }; this.pulses.push({ ...cell, time: this.time });
-    this.updateLabel(); this.onSelect(this.indexAt(cell), cell);
+    this.updateLabel(); this.onSelect(this.selectionAt(cell), cell);
   }
   navigate(axis, delta) { this.select({ ...this.selected, [axis]: this.selected[axis] + delta }); }
-  selectIndex(index) {
-    const row = occurrence(index - this.selected.lane, this.selected.row, this.works.length);
+  selectItemIndex(index) {
+    const items = this.groups[this.groupIndexAt(this.selected)].items;
+    const row = occurrence(index, this.selected.row, items.length);
     this.select({ lane: this.selected.lane, row });
   }
   setDetail(open) { this.targetDetail = open ? 1 : 0; }
@@ -186,7 +193,8 @@ export class WorkScene {
     this.camera.position.copy(target).addScaledVector(direction,distance); this.camera.lookAt(target);
     this.camera.fov=THREE.MathUtils.radToDeg(2*Math.atan((span-detail*2)/(2*distance))); this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene,this.camera);
-    this.host.dataset.selected=String(this.indexAt(this.selected));
+    const selected = this.selectionAt(this.selected);
+    this.host.dataset.selected=`${selected.group.id}:${selected.itemIndex}`;
     this.host.dataset.lift=selectedY.toFixed(3);
     this.host.dataset.phase=this.targetDetail ? (detail>.95?'detail':'extracting') : detail>.05?'returning':'browsing';
   }

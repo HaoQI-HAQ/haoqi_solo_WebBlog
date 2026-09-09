@@ -23,14 +23,16 @@ const assert = require('node:assert/strict');
       if (before !== await page.locator('.work-array-canvas').getAttribute('data-selected')) { pointerSelected=true; break; }
     }
     assert(pointerSelected,'Clicking a cassette must change the selected work');
+    await page.reload();
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas')?.dataset.phase==='browsing');
     await page.getByRole('button',{name:'选择 WORK-01',exact:true}).click();
-    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='0');
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='games:0');
     await page.getByRole('button',{name:'下一份档案',exact:true}).click();
-    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='1');
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='games:1');
     await page.keyboard.press('ArrowDown'); await page.keyboard.press('ArrowDown');
-    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='0');
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='games:0');
     await page.getByRole('button',{name:'向右切换档案列',exact:true}).click();
-    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='1');
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='photo:0');
     await page.waitForTimeout(1200);
     await page.screenshot({path:'logs/work-array-shift.png'});
     await page.getByRole('button',{name:/抽取档案/}).click();
@@ -41,7 +43,7 @@ const assert = require('node:assert/strict');
     assert.equal(await page.locator('video').count(),0,'Reference recording must not be presented as work footage');
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.getByRole('button',{name:'下一份档案',exact:true}).click();
-    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='2');
+    await page.waitForFunction(()=>document.querySelector('.work-array-canvas').dataset.selected==='photo:1');
     await page.getByRole('button',{name:'EN',exact:true}).click();
     await page.waitForFunction(()=>document.querySelector('.work-array-heading h1')?.textContent==='Selected work');
     assert.equal(await page.getByRole('button',{name:'Next archive',exact:true}).count(),1,'Work archive controls must switch to English');
@@ -50,6 +52,6 @@ const assert = require('node:assert/strict');
     await page.screenshot({path:'logs/work-array-mobile.png'});
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No mobile horizontal overflow');
     assert.deepEqual(errors,[]);
-    console.log('PASS: home-to-work entry, active navigation, language switching, WebGL load, pointer selection, row wrap, column switch, extraction, return, reference-video exclusion, reduced motion, mobile width, browser errors.');
+    console.log('PASS: home-to-work entry, active navigation, language switching, WebGL load, pointer selection, row selection, media-column switching, extraction, return, reference-video exclusion, reduced motion, mobile width, browser errors.');
   } finally { await browser.close(); }
 })().catch(e=>{console.error(e);process.exitCode=1;});
