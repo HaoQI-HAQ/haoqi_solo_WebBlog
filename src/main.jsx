@@ -6,7 +6,7 @@ const WorkArchive = lazy(() => import('./work-archive/WorkArchive.jsx'));
 const workArchiveGroups = [
   { id: 'games', items: gameWorks.map((work) => ({ ...work, videoSrc: work.videoUrl?.startsWith('http') ? work.videoUrl : '', bilibiliUrl: work.bilibiliUrl || '' })) },
   { id: 'photo', items: photoAlbums.map((album) => ({ ...album, image: album.cover, type: `${album.city} / ${album.year}` })) },
-  { id: 'music', items: musicTracks.map((track, index) => ({ ...track, number: String(index + 1).padStart(2, '0'), image: '/assets/tool-contact.jpg', type: track.mood, summary: track.analysis })) },
+  { id: 'music', items: musicTracks.map((track, index) => ({ ...track, number: String(index + 1).padStart(2, '0'), image: track.image || '/assets/tool-contact.jpg', type: track.mood, summary: track.analysis })) },
 ];
 
 const projectItems = [

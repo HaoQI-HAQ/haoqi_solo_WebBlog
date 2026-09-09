@@ -194,12 +194,13 @@ export const gameWorks = [
 
 export const musicTracks = [
   {
-    id: 'rain-loop',
+    id: 'somniomancer-null-set',
     archiveCode: 'SOUND-01',
-    title: 'Rain Loop Study',
-    mood: 'Ambient / Soft system',
-    analysis: '先放置曲目结构、情绪、BPM 和灵感来源；音频文件后续放入 public/audio 或 CDN。',
-    src: '',
+    title: 'Somniomancer [null set]',
+    mood: '众生行记 OST / 塞壬唱片-MSR × Crywolf',
+    analysis: '收录于《众生行记 OST》。艺人：塞壬唱片-MSR / Crywolf。',
+    src: '/media/music/somniomancer-null-set.mp3',
+    image: '/media/music/somniomancer-cover.jpg',
   },
   {
     id: 'city-night',
@@ -221,23 +222,21 @@ export const musicTracks = [
 
 export const photoAlbums = [
   {
-    id: 'guangzhou-night-walk',
+    id: 'yangshuo-2026-08-27',
     number: '01',
     archiveCode: 'PHOTO-01',
-    title: 'Guangzhou Night Texture',
-    city: '广州',
+    title: '阳朔 / 2026.08.27',
+    city: '广西 · 桂林 · 阳朔',
     year: '2026',
-    date: '2026.09',
-    frameCount: 36,
+    date: '2026.08.27',
+    frameCount: 1,
     camera: 'Camera / Pending',
-    cover: '/assets/desktop-b-contact.jpg',
-    summary: '夜色、街灯和潮湿玻璃的城市练习；当前作为摄影系统占位相册。',
+    cover: '/media/photos/yangshuo-2026-08-27.png',
+    summary: '2026 年 8 月 27 日摄于广西桂林阳朔。',
     coordinates: { x: 57, y: 73 },
-    tags: ['Street', 'Night', 'Archive placeholder'],
+    tags: ['广西', '桂林', '阳朔', '2026.08.27'],
     images: [
-      { src: '/assets/desktop-b-contact.jpg', caption: 'Night texture / placeholder 01' },
-      { src: '/assets/tool-contact.jpg', caption: 'Neon reflection / placeholder 02' },
-      { src: '/assets/desktop-a-contact.jpg', caption: 'Street frame / placeholder 03' },
+      { src: '/media/photos/yangshuo-2026-08-27.png', caption: '阳朔 / 2026.08.27' },
     ],
   },
   {
@@ -283,7 +282,7 @@ export const photoAlbums = [
 ];
 
 export const mapCities = [
-  { city: '广州', x: 57, y: 73, count: 1 },
+  { city: '阳朔', x: 57, y: 73, count: 1 },
   { city: '深圳', x: 61, y: 78, count: 1 },
   { city: '上海', x: 75, y: 55, count: 1 },
   { city: '北京', x: 62, y: 32, count: 0 },
