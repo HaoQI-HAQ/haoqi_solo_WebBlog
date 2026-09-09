@@ -154,6 +154,7 @@ export const gameWorks = [
   {
     id: 'worlds-in-motion',
     number: '01',
+    archiveCode: 'WORK-01',
     title: 'Worlds in motion',
     type: 'Game direction / narrative systems',
     summary: '玩法、叙事与节奏组织成可进入的世界。视频与下载链接预留。',
@@ -165,6 +166,7 @@ export const gameWorks = [
   {
     id: 'visual-language',
     number: '02',
+    archiveCode: 'WORK-02',
     title: 'A visual language',
     type: 'Visual identity / art direction',
     summary: '从一张海报到一套可以持续生长的视觉系统。',
@@ -176,6 +178,7 @@ export const gameWorks = [
   {
     id: 'sound-material',
     number: '03',
+    archiveCode: 'WORK-03',
     title: 'Sound as material',
     type: 'AI composition / sound studies',
     summary: '用算法和直觉寻找画面之外的情绪线索。',
@@ -189,6 +192,7 @@ export const gameWorks = [
 export const musicTracks = [
   {
     id: 'rain-loop',
+    archiveCode: 'SOUND-01',
     title: 'Rain Loop Study',
     mood: 'Ambient / Soft system',
     analysis: '先放置曲目结构、情绪、BPM 和灵感来源；音频文件后续放入 public/audio 或 CDN。',
@@ -196,6 +200,7 @@ export const musicTracks = [
   },
   {
     id: 'city-night',
+    archiveCode: 'SOUND-02',
     title: 'City Night Sketch',
     mood: 'Night walk / Synthetic texture',
     analysis: '适合用作博客侧边栏播放器的低干扰背景音乐。',
@@ -203,6 +208,7 @@ export const musicTracks = [
   },
   {
     id: 'menu-pulse',
+    archiveCode: 'SOUND-03',
     title: 'Menu Pulse',
     mood: 'Game UI / Loop',
     analysis: '可用于游戏作品页的菜单循环音乐。',
@@ -214,6 +220,7 @@ export const photoAlbums = [
   {
     id: 'guangzhou-night-walk',
     number: '01',
+    archiveCode: 'PHOTO-01',
     title: 'Guangzhou Night Texture',
     city: '广州',
     year: '2026',
@@ -233,6 +240,7 @@ export const photoAlbums = [
   {
     id: 'shenzhen-glass-weather',
     number: '02',
+    archiveCode: 'PHOTO-02',
     title: 'Shenzhen Glass Weather',
     city: '深圳',
     year: '2026',
@@ -252,6 +260,7 @@ export const photoAlbums = [
   {
     id: 'shanghai-soft-grid',
     number: '03',
+    archiveCode: 'PHOTO-03',
     title: 'Shanghai Soft Grid',
     city: '上海',
     year: '2025',

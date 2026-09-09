@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vite": "latest",
+    "@kitlangton/rolling-number": "^0.4.1",
     "react": "latest",
-    "react-dom": "latest"
-  },
-  "devDependencies": {}
+    "react-dom": "latest",
+    "three": "^0.183.0",
+    "vite": "latest"
+  }
 }

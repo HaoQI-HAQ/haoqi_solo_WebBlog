@@ -6,3 +6,5 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 logs/*.log
+logs/work-array-*.png
+logs/reference-video-*.png

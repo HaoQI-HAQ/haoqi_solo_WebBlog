@@ -1,11 +1,13 @@
-import { createElement, useEffect, useRef, useState } from 'react';
+import { createElement, lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.js';
+const WorkArchive = lazy(() => import('./work-archive/WorkArchive.jsx'));
 
 const projectItems = [
   {
     number: '01',
+    archiveCode: 'WORK-01',
     title: 'Worlds in motion',
     subtitle: 'Game direction / narrative systems',
     detail: '把玩法、叙事与节奏组织成可进入的世界。',
@@ -14,6 +16,7 @@ const projectItems = [
   },
   {
     number: '02',
+    archiveCode: 'WORK-02',
     title: 'A visual language',
     subtitle: 'Visual identity / art direction',
     detail: '从一张海报到一套可以持续生长的视觉系统。',
@@ -22,6 +25,7 @@ const projectItems = [
   },
   {
     number: '03',
+    archiveCode: 'WORK-03',
     title: 'Sound as material',
     subtitle: 'AI composition / sound studies',
     detail: '用算法和直觉，寻找画面之外的情绪线索。',
@@ -94,7 +98,21 @@ const contactText = {
 };
 
 function LanguageSwitcher({ language, setLanguage }) {
-  return <div className="language-switcher" aria-label="Language switcher">{languageOptions.map((item) => <button type="button" className={language === item.code ? 'is-active' : ''} key={item.code} onClick={() => setLanguage(item.code)}>{item.label}</button>)}</div>;
+  const [isSwitching, setIsSwitching] = useState(false);
+  const selectLanguage = (nextLanguage) => {
+    if (nextLanguage === language) return;
+    setIsSwitching(true);
+    setLanguage(nextLanguage);
+    window.setTimeout(() => setIsSwitching(false), 360);
+  };
+  return <div className={`language-switcher ${isSwitching ? 'is-switching' : ''}`} aria-label="Language switcher">{languageOptions.map((item) => <button type="button" className={language === item.code ? 'is-active' : ''} key={item.code} onClick={() => selectLanguage(item.code)}>{item.label}</button>)}</div>;
+}
+
+function SocialIcon({ service }) {
+  if (service === 'bilibili') return <svg className="contact-service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5 10 7M16 4.5 14 7M6.5 7h11A3.5 3.5 0 0 1 21 10.5v6A3.5 3.5 0 0 1 17.5 20h-11A3.5 3.5 0 0 1 3 16.5v-6A3.5 3.5 0 0 1 6.5 7Z" /><path d="M8 13h.01M16 13h.01M9 16h6" /></svg>;
+  if (service === 'github') return <svg className="contact-service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 19v-2.5c-1.7.4-3-.2-3-1.6 0-.8.5-1.3 1.1-1.6-.2-1.7.1-3 1.2-3.8A8.3 8.3 0 0 1 12 8a8.3 8.3 0 0 1 5.7 1.5c1.1.8 1.4 2.1 1.2 3.8.6.3 1.1.8 1.1 1.6 0 1.4-1.3 2-3 1.6V19" /><path d="M9 20v-3.2c0-1.1.8-1.8 3-1.8s3 .7 3 1.8V20M9 12h.01M15 12h.01" /></svg>;
+  if (service === 'x') return <svg className="contact-service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4 19 20M19 4 5 20" /></svg>;
+  return <svg className="contact-service-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5" /><circle cx="12" cy="12" r="4" /><circle cx="17.3" cy="6.8" r=".8" fill="currentColor" stroke="none" /></svg>;
 }
 
 function parseHeadlineMarkup(markup) {
@@ -187,6 +205,68 @@ function usePersistentState(key, fallback) {
   return [value, setValue];
 }
 
+function BootSequence() {
+  const [visible, setVisible] = useState(() => {
+    try { return window.localStorage.getItem('haoqi-signal-seen') !== '1'; } catch { return true; }
+  });
+  const dismiss = () => {
+    try { window.localStorage.setItem('haoqi-signal-seen', '1'); } catch { /* session-only fallback */ }
+    setVisible(false);
+  };
+  useEffect(() => {
+    if (!visible) return undefined;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const timer = window.setTimeout(dismiss, reducedMotion ? 1 : 1350);
+    const onKeyDown = (event) => { if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') dismiss(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => { window.clearTimeout(timer); window.removeEventListener('keydown', onKeyDown); };
+  }, [visible]);
+  if (!visible) return null;
+  return <div className="signal-boot" role="status" aria-label="HAOQI STUDIO signal connecting">
+    <div className="signal-boot-grid" aria-hidden="true" />
+    <div className="signal-boot-copy"><span>Signal / incoming</span><strong>HAOQI <i>/</i> STUDIO</strong><small>ARCHIVE LINK · 01 / 01</small></div>
+    <div className="signal-boot-progress" aria-hidden="true"><i /></div>
+    <button type="button" onClick={dismiss}>Skip <span>↗</span></button>
+  </div>;
+}
+
+function useArchiveExtract() {
+  const [focus, setFocus] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const openArchive = (kind, item, event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setIsClosing(false);
+    setFocus({ kind, item, origin: { x: rect.left, y: rect.top, width: rect.width, height: rect.height } });
+  };
+  const closeArchive = () => {
+    setIsClosing(true);
+    window.setTimeout(() => { setFocus(null); setIsClosing(false); }, 380);
+  };
+  return { focus, isClosing, openArchive, closeArchive };
+}
+
+function ArchiveExtract({ focus, isClosing, onClose }) {
+  useEffect(() => {
+    if (!focus) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event) => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKeyDown);
+    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', onKeyDown); };
+  }, [focus, onClose]);
+  if (!focus) return null;
+  const { item, kind, origin } = focus;
+  const image = kind === 'photo' ? item.cover : item.image;
+  const detail = kind === 'photo' ? `${item.city} / ${item.year} · ${item.frameCount} frames` : item.type;
+  return <div className={`archive-extract ${isClosing ? 'is-closing' : ''}`} role="dialog" aria-modal="true" aria-label={`${item.title} archive`} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="archive-origin-echo" style={{ '--origin-x': `${origin.x}px`, '--origin-y': `${origin.y}px`, '--origin-w': `${origin.width}px`, '--origin-h': `${origin.height}px` }} aria-hidden="true" />
+    <article className="archive-extract-panel">
+      <div className="archive-extract-bar"><span>ARCHIVE / EXTRACTED</span><span className="archive-code">{item.archiveCode}</span><button type="button" onClick={onClose}>Close <i>×</i></button></div>
+      <div className="archive-extract-body"><div className={`archive-extract-image ${kind === 'work' && item.videoSrc ? 'is-video' : ''}`}>{kind === 'work' && item.videoSrc ? <div className="work-video-deck"><span className="work-video-deck-sheet work-video-deck-sheet-a" aria-hidden="true" /><span className="work-video-deck-sheet work-video-deck-sheet-b" aria-hidden="true" /><div className="work-video-frame"><video controls playsInline preload="metadata" poster={image} aria-label={`${item.title} video preview`}><source src={item.videoSrc} type="video/mp4" />Your browser does not support this video.</video><div className="work-video-hud" aria-hidden="true"><span>{item.archiveCode} / VIDEO READOUT</span><span>{item.videoLabel || 'Archive preview'}</span></div></div></div> : <><img src={image} alt={item.title} /><span className="archive-extract-scan" aria-hidden="true" /></>}</div><div className="archive-extract-copy"><small>{detail}</small><h2>{item.title}</h2><p>{item.summary || item.detail}</p><div className="archive-extract-meta"><span>{kind === 'photo' ? 'PHOTO GROUP' : 'WORK FILE'}</span><span>{kind === 'work' && item.videoSrc ? 'VIDEO / READY' : 'RETURN / CARD POSITION'}</span></div></div></div>
+    </article>
+  </div>;
+}
+
 function Lightbox({ album, index, onChange, onClose }) {
   const image = album.images[index];
   useEffect(() => {
@@ -223,11 +303,11 @@ function MusicTools({ language }) {
 function FunctionalPage({ page, language, setLanguage }) {
   const [city, setCity] = useState('all');
   const [year, setYear] = useState('all');
-  const [activeAlbum, setActiveAlbum] = useState(null);
-  const [imageIndex, setImageIndex] = useState(0);
+  const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', musicTracks[0].id);
+  const { focus, isClosing, openArchive, closeArchive } = useArchiveExtract();
   const t = languageText[language] || mixedText;
   const albums = photoAlbums.filter((album) => (city === 'all' || album.city === city) && (year === 'all' || album.year === year));
-  const openAlbum = (album) => { setActiveAlbum(album); setImageIndex(0); };
+  const activeMusicTrack = musicTracks.find((track) => track.id === activeTrack) || musicTracks[0];
   const pageTitle = page === 'games' ? t.pageGames : page === 'photo' ? t.pagePhoto : page === 'music' ? t.pageMusic : page === 'about' ? t.pageAbout : t.pageContact;
   return <div className="site-shell functional-shell">
     <header className="site-header is-scrolled functional-header">
@@ -235,38 +315,35 @@ function FunctionalPage({ page, language, setLanguage }) {
       <nav className="desktop-nav" aria-label="主导航"><a href="/">Home</a><a href="/work.html">Work</a><a href="/photography.html">Photography</a><a href="/music.html">Music</a><a href="/contact.html">Contact</a><a href="/about.html">About</a></nav>
       <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
     </header>
-    <section className="archive-page section-light">
+    {page === 'games' ? <Suspense fallback={<div className="archive-page section-light">Loading archive…</div>}><WorkArchive works={gameWorks} language={language} /></Suspense> : <section className="archive-page section-light">
       <div className="page-width archive-page-inner">
         <div className="section-marker"><span>/{page}</span><span>Archive view</span></div>
         <TypewriterHeadline as="h1" className="archive-page-title" markup={pageTitle} />
         {page === 'about' && <div className="about-archive"><div><p className="archive-intro">{t.heroKicker}</p><TypewriterHeadline as="h2" markup={t.aboutTitle} /><p>{t.aboutLarge}</p></div><div className="about-archive-profile"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span>HAOQI / PRACTICE / 2026</span></div></div>}
-        {page === 'games' && <div className="archive-grid">{gameWorks.map((work) => <article className="archive-card" key={work.id}><a href={work.videoUrl} target={work.videoUrl.startsWith('http') ? '_blank' : undefined} rel="noreferrer"><img src={work.image} alt={work.title} /></a><small>{work.number} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p><a href={work.downloadUrl}>下载 / 跳转 ↗</a></article>)}</div>}
+        {page === 'games' && <div className="archive-grid">{gameWorks.map((work) => <article className="archive-card" key={work.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('work', work, event)}><img src={work.image} alt={work.title} /><span>{work.archiveCode} / extract ↗</span></button><small className="archive-code">{work.archiveCode} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p><a href={work.downloadUrl}>下载 / 跳转 ↗</a></article>)}</div>}
         {page === 'photo' && <>
           <p className="archive-intro">{t.photoIntro}</p>
           <div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}<span>{t.year}</span>{['all', ...new Set(photoAlbums.map((album) => album.year))].map((value) => <button type="button" className={year === value ? 'is-active' : ''} onClick={() => setYear(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div>
-          <div className="archive-grid">{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={() => openAlbum(album)}><img src={album.cover} alt={album.title} /><span>{album.number} / {album.frameCount} frames ↗</span></button><small>{album.city} / {album.year} · {album.date}</small><h2>{album.title}</h2><p>{album.summary}</p><button type="button" onClick={() => openAlbum(album)}>查看相册 ↗</button></article>)}</div>
+          <div className="archive-grid" key={`${city}-${year}`}>{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('photo', album, event)}><img src={album.cover} alt={album.title} /><span>{album.archiveCode} / {album.frameCount} frames ↗</span></button><small className="archive-code">{album.archiveCode} / {album.city} / {album.year} · {album.date}</small><h2>{album.title}</h2><p>{album.summary}</p></article>)}</div>
           <div className="archive-map"><div><small>Map inside photography</small><TypewriterHeadline as="h2" className="map-typewriter" markup={t.mapTitle} /><p>{t.mapNote}</p></div><div className="archive-map-shape">{mapCities.map((item) => <button type="button" key={item.city} style={{ left: `${item.x}%`, top: `${item.y}%` }} className={item.count ? 'has-work' : ''}>{item.city}</button>)}</div></div>
         </>}
-        {page === 'music' && <div className="music-archive"><div><p className="archive-intro">{t.musicTitle}</p>{musicTracks.map((track) => <button type="button" className="track-row" key={track.id}><span>{track.title}</span><small>{track.mood}</small></button>)}</div><aside><small>{t.nowPlaying}</small><h2>{musicTracks[0].title}</h2><p>{musicTracks[0].analysis}</p><span>{t.audioPending}</span></aside></div>}
+        {page === 'music' && <div className="music-archive"><div><p className="archive-intro">{t.musicTitle}</p>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small><b className="archive-code">{track.archiveCode}</b> / {track.mood}</small></button>)}</div><aside key={activeTrack}><small>{t.nowPlaying} / <b className="archive-code">{activeMusicTrack.archiveCode}</b></small><h2>{activeMusicTrack.title}</h2><p>{activeMusicTrack.analysis}</p><span>{t.audioPending}</span></aside></div>}
         {page === 'contact' && <div className="archive-contact-grid">{socials.map((item) => <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" key={item.label}><small>{item.label}</small><strong>{item.value}</strong><span>↗</span></a>)}</div>}
       </div>
-    </section>
-    <MusicTools language={language} />
-    {activeAlbum && <Lightbox album={activeAlbum} index={imageIndex} onChange={setImageIndex} onClose={() => setActiveAlbum(null)} />}
+    </section>}
+    {page !== 'games' && <MusicTools language={language} />}
+    <ArchiveExtract focus={focus} isClosing={isClosing} onClose={closeArchive} />
   </div>;
 }
 
-function HomeArchiveFlow({ language }) {
+function HomeArchiveFlow({ language, onOpenArchive }) {
   const [city, setCity] = useState('all');
-  const [activeAlbum, setActiveAlbum] = useState(null);
-  const [imageIndex, setImageIndex] = useState(0);
   const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', musicTracks[0].id);
   const t = languageText[language] || mixedText;
   const albums = photoAlbums.filter((album) => city === 'all' || album.city === city);
   return <>
-    <section id="photo" className="archive-flow section-dark"><div className="page-width archive-flow-inner"><div className="section-marker section-marker-dark"><span>04</span><span>Photography archive</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.photoTitle} /><div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div><div className="archive-grid">{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={() => { setActiveAlbum(album); setImageIndex(0); }}><img src={album.cover} alt={album.title} /><span>{album.number} / {album.frameCount} frames ↗</span></button><small>{album.city} / {album.year} · {album.date}</small><h3>{album.title}</h3><p>{album.summary}</p></article>)}</div></div></section>
-    <section id="music" className="archive-flow section-light"><div className="page-width archive-flow-inner"><div className="section-marker"><span>05</span><span>Sound studies</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.musicTitle} /><div className="music-archive"><div>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small>{track.mood}</small></button>)}</div><aside><small>{t.nowPlaying}</small><h3>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).title}</h3><p>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).analysis}</p><span>{t.audioPending}</span></aside></div></div></section>
-    {activeAlbum && <Lightbox album={activeAlbum} index={imageIndex} onChange={setImageIndex} onClose={() => setActiveAlbum(null)} />}
+    <section id="photo" className="archive-flow section-dark"><div className="page-width archive-flow-inner"><div className="section-marker section-marker-dark"><span>04</span><span>Photography archive</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.photoTitle} /><div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div><div className="archive-grid" key={city}>{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={(event) => onOpenArchive('photo', album, event)}><img src={album.cover} alt={album.title} /><span>{album.archiveCode} / {album.frameCount} frames ↗</span></button><small className="archive-code">{album.archiveCode} / {album.city} / {album.year} · {album.date}</small><h3>{album.title}</h3><p>{album.summary}</p></article>)}</div></div></section>
+    <section id="music" className="archive-flow section-light"><div className="page-width archive-flow-inner"><div className="section-marker"><span>05</span><span>Sound studies</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.musicTitle} /><div className="music-archive"><div>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small><b className="archive-code">{track.archiveCode}</b> / {track.mood}</small></button>)}</div><aside key={activeTrack}><small>{t.nowPlaying} / <b className="archive-code">{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).archiveCode}</b></small><h3>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).title}</h3><p>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).analysis}</p><span>{t.audioPending}</span></aside></div></div></section>
   </>;
 }
 
@@ -350,11 +427,11 @@ function ContactPage({ language, setLanguage }) {
             <p className="contact-page-intro">{ct.intro}<br />{ct.message}</p>
             <div className="contact-page-links">
               <a href="mailto:1370228191@qq.com"><span>{ct.email}</span><strong>1370228191@qq.com</strong><i aria-hidden="true">↗</i></a>
-              <a href="https://space.bilibili.com/65369165?spm_id_from=333.1387.0.0" target="_blank" rel="noreferrer"><span>{ct.bilibili}</span><strong>{t.nav[4] === 'Контакты' ? 'Моя страница Bilibili' : language === 'en' ? 'My Bilibili page' : language === 'ja' ? 'Bilibili ページ' : language === 'zh' ? '我的 B 站首页' : '我的 B 站首页'}</strong><i aria-hidden="true">↗</i></a>
-              <a href="https://github.com/HaoQI-HAQ" target="_blank" rel="noreferrer"><span><b className="contact-service-mark" aria-hidden="true">GH</b> GitHub</span><strong>HaoQI-HAQ</strong><i aria-hidden="true">↗</i></a>
+              <a href="https://space.bilibili.com/65369165?spm_id_from=333.1387.0.0" target="_blank" rel="noreferrer"><span><SocialIcon service="bilibili" />{ct.bilibili}</span><strong>{t.nav[4] === 'Контакты' ? 'Моя страница Bilibili' : language === 'en' ? 'My Bilibili page' : language === 'ja' ? 'Bilibili ページ' : language === 'zh' ? '我的 B 站首页' : '我的 B 站首页'}</strong><i aria-hidden="true">↗</i></a>
+              <a href="https://github.com/HaoQI-HAQ" target="_blank" rel="noreferrer"><span><SocialIcon service="github" />GitHub</span><strong>HaoQI-HAQ</strong><i aria-hidden="true">↗</i></a>
               <div className="contact-social-pair">
-                <a href="https://x.com/HAOQIHAQ" target="_blank" rel="noreferrer"><span>X / Twitter</span><strong>@HAOQIHAQ</strong><i aria-hidden="true">↗</i></a>
-                <a href="https://www.instagram.com/qitongwei0001/" target="_blank" rel="noreferrer"><span>Instagram</span><strong>@qitongwei0001</strong><i aria-hidden="true">↗</i></a>
+                <a href="https://x.com/HAOQIHAQ" target="_blank" rel="noreferrer"><span><SocialIcon service="x" />X / Twitter</span><strong>@HAOQIHAQ</strong><i aria-hidden="true">↗</i></a>
+                <a href="https://www.instagram.com/qitongwei0001/" target="_blank" rel="noreferrer"><span><SocialIcon service="instagram" />Instagram</span><strong>@qitongwei0001</strong><i aria-hidden="true">↗</i></a>
               </div>
             </div>
           </div>
@@ -371,6 +448,7 @@ function App({ language, setLanguage }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
   const cursorRef = useRef(null);
+  const { focus, isClosing, openArchive, closeArchive } = useArchiveExtract();
   const t = languageText[language] || mixedText;
 
   useEffect(() => {
@@ -438,6 +516,7 @@ function App({ language, setLanguage }) {
 
   return (
     <div className="site-shell">
+      <BootSequence />
       <div ref={cursorRef} className="custom-cursor" aria-hidden="true" />
       <header className={`site-header ${menuOpen ? 'menu-is-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
         <a className="brand-lockup" href="#top" onClick={closeMenu} aria-label="回到首页">
@@ -558,13 +637,13 @@ function App({ language, setLanguage }) {
             <div className="project-grid">
               {projectItems.map((project) => (
                 <article className={`project-card ${project.tone}`} key={project.number} data-reveal>
-                  <a className="project-image-wrap" href="#contact" aria-label={`联系了解项目 ${project.title}`}>
+                  <button className="project-image-wrap" type="button" onClick={(event) => openArchive('work', project, event)} aria-label={`打开项目档案 ${project.title}`}>
                     <img src={project.image} alt={project.title} />
                     <div className="project-image-overlay" />
                     <span className="project-open" aria-hidden="true">↗</span>
-                  </a>
+                  </button>
                   <div className="project-meta">
-                    <span className="project-number">{project.number}</span>
+                    <span className="project-number archive-code">{project.archiveCode}</span>
                     <div>
                       <h3>{project.title}</h3>
                       <p>{project.subtitle}</p>
@@ -601,7 +680,7 @@ function App({ language, setLanguage }) {
           </div>
           </section>
 
-          <HomeArchiveFlow language={language} />
+          <HomeArchiveFlow language={language} onOpenArchive={openArchive} />
 
           <section id="contact" className="contact-section section-dark">
           <div className="contact-orbit contact-orbit-a" aria-hidden="true" />
@@ -620,6 +699,7 @@ function App({ language, setLanguage }) {
           </div>
         </section>
       </main>
+      <ArchiveExtract focus={focus} isClosing={isClosing} onClose={closeArchive} />
     </div>
   );
 }
