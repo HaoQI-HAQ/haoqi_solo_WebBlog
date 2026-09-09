@@ -6,19 +6,19 @@ import './work-archive.css';
 
 const workText = {
   mixed: {
-    ariaLabel: '作品档案', brand: 'HAOQI / 创作档案', heading: '游戏作品', discipline: '游戏策划 · 视觉系统 · 声音', loading: '正在载入档案', listView: '档案 / 列表视图', connected: '档案 / 已连接', loadingMessage: '正在载入三维档案', fallback: '三维画面暂时不可用，仍可浏览作品档案。', selectedFile: '当前选择', access: '抽取档案', selectionHint: '点击文件夹选择 · 抽取后查看详情', detail: '详情', return: '归位 / 返回档案', footagePending: '作品影像待添加', inspect: '右键拖动模型查看', select: '选择', previous: '上一份档案', next: '下一份档案', selectFile: '选择', previousLane: '向左切换档案列', nextLane: '向右切换档案列', browse: '切换档案列', move: '切列', open: '抽取', independent: '独立实践 / 2026', motionReduced: '动态 / 简化', motionFull: '动态 / 完整', archiveSelect: '档案 / 选择', announce: '当前档案',
+    ariaLabel: '作品档案', brand: 'HAOQI / 创作档案', heading: '游戏作品', discipline: '游戏策划 · 视觉系统 · 声音', loading: '正在载入档案', listView: '档案 / 列表视图', connected: '档案 / 已连接', loadingMessage: '正在载入三维档案', fallback: '三维画面暂时不可用，仍可浏览作品档案。', selectedFile: '当前选择', access: '抽取档案', selectionHint: '点击文件夹选择 · 抽取后查看详情', detail: '详情', return: '归位 / 返回档案', footagePending: '作品影像待添加', inspect: '左键长按拖动模型查看', select: '选择', previous: '上一份档案', next: '下一份档案', selectFile: '选择', previousLane: '向左切换档案列', nextLane: '向右切换档案列', browse: '切换档案列', move: '切列', open: '抽取', independent: '独立实践 / 2026', motionReduced: '动态 / 简化', motionFull: '动态 / 完整', archiveSelect: '档案 / 选择', announce: '当前档案',
   },
   zh: {
-    ariaLabel: '作品档案', brand: 'HAOQI / 创作档案', heading: '游戏作品', discipline: '游戏策划 · 视觉系统 · 声音', loading: '正在载入档案', listView: '档案 / 列表视图', connected: '档案 / 已连接', loadingMessage: '正在载入三维档案', fallback: '三维画面暂时不可用，仍可浏览作品档案。', selectedFile: '当前选择', access: '抽取档案', selectionHint: '点击文件夹选择 · 抽取后查看详情', detail: '详情', return: '归位 / 返回档案', footagePending: '作品影像待添加', inspect: '右键拖动模型查看', select: '选择', previous: '上一份档案', next: '下一份档案', selectFile: '选择', previousLane: '向左切换档案列', nextLane: '向右切换档案列', browse: '切换档案列', move: '切列', open: '抽取', independent: '独立实践 / 2026', motionReduced: '动态 / 简化', motionFull: '动态 / 完整', archiveSelect: '档案 / 选择', announce: '当前档案',
+    ariaLabel: '作品档案', brand: 'HAOQI / 创作档案', heading: '游戏作品', discipline: '游戏策划 · 视觉系统 · 声音', loading: '正在载入档案', listView: '档案 / 列表视图', connected: '档案 / 已连接', loadingMessage: '正在载入三维档案', fallback: '三维画面暂时不可用，仍可浏览作品档案。', selectedFile: '当前选择', access: '抽取档案', selectionHint: '点击文件夹选择 · 抽取后查看详情', detail: '详情', return: '归位 / 返回档案', footagePending: '作品影像待添加', inspect: '左键长按拖动模型查看', select: '选择', previous: '上一份档案', next: '下一份档案', selectFile: '选择', previousLane: '向左切换档案列', nextLane: '向右切换档案列', browse: '切换档案列', move: '切列', open: '抽取', independent: '独立实践 / 2026', motionReduced: '动态 / 简化', motionFull: '动态 / 完整', archiveSelect: '档案 / 选择', announce: '当前档案',
   },
   ja: {
-    ariaLabel: '作品アーカイブ', brand: 'HAOQI / クリエイティブアーカイブ', heading: 'ゲーム作品', discipline: 'ゲームデザイン · ビジュアルシステム · サウンド', loading: 'アーカイブを読み込み中', listView: 'アーカイブ / リスト表示', connected: 'アーカイブ / 接続済み', loadingMessage: '3Dアーカイブを読み込み中', fallback: '3D表示は利用できませんが、作品アーカイブは閲覧できます。', selectedFile: '選択中のファイル', access: 'ファイルを抽出', selectionHint: 'フォルダをクリックして選択 · 抽出して詳細を表示', detail: '詳細', return: 'アーカイブに戻る', footagePending: '作品映像は準備中', inspect: '右クリックでモデルをドラッグ', select: '選択', previous: '前のアーカイブ', next: '次のアーカイブ', selectFile: '選択', previousLane: '左のアーカイブ列へ', nextLane: '右のアーカイブ列へ', browse: 'アーカイブ列を切替', move: '移動', open: '開く', independent: '個人制作 / 2026', motionReduced: 'モーション / 軽減', motionFull: 'モーション / フル', archiveSelect: 'アーカイブ / 選択', announce: '選択中のアーカイブ',
+    ariaLabel: '作品アーカイブ', brand: 'HAOQI / クリエイティブアーカイブ', heading: 'ゲーム作品', discipline: 'ゲームデザイン · ビジュアルシステム · サウンド', loading: 'アーカイブを読み込み中', listView: 'アーカイブ / リスト表示', connected: 'アーカイブ / 接続済み', loadingMessage: '3Dアーカイブを読み込み中', fallback: '3D表示は利用できませんが、作品アーカイブは閲覧できます。', selectedFile: '選択中のファイル', access: 'ファイルを抽出', selectionHint: 'フォルダをクリックして選択 · 抽出して詳細を表示', detail: '詳細', return: 'アーカイブに戻る', footagePending: '作品映像は準備中', inspect: '左クリック長押しでモデルをドラッグ', select: '選択', previous: '前のアーカイブ', next: '次のアーカイブ', selectFile: '選択', previousLane: '左のアーカイブ列へ', nextLane: '右のアーカイブ列へ', browse: 'アーカイブ列を切替', move: '移動', open: '開く', independent: '個人制作 / 2026', motionReduced: 'モーション / 軽減', motionFull: 'モーション / フル', archiveSelect: 'アーカイブ / 選択', announce: '選択中のアーカイブ',
   },
   en: {
-    ariaLabel: 'Work archive', brand: 'HAOQI / CREATIVE ARCHIVE', heading: 'Selected work', discipline: 'GAME DESIGN · VISUAL SYSTEMS · SOUND', loading: 'LOADING ARCHIVE', listView: 'ARCHIVE / LIST VIEW', connected: 'ARCHIVE / CONNECTED', loadingMessage: 'Loading 3D archive', fallback: 'The 3D view is unavailable; the work archive can still be browsed.', selectedFile: 'SELECTED FILE', access: 'ACCESS FILE', selectionHint: 'Click a folder to select · Extract to view details', detail: 'DETAIL', return: 'RETURN TO ARCHIVE', footagePending: 'Work footage to be added', inspect: 'RIGHT-DRAG MODEL TO INSPECT', select: 'SELECT', previous: 'Previous archive', next: 'Next archive', selectFile: 'Select', previousLane: 'Move to previous archive lane', nextLane: 'Move to next archive lane', browse: 'BROWSE ARCHIVE', move: 'SHIFT', open: 'OPEN', independent: 'INDEPENDENT PRACTICE / 2026', motionReduced: 'MOTION / REDUCED', motionFull: 'MOTION / FULL', archiveSelect: 'ARCHIVE / SELECT', announce: 'CURRENT ARCHIVE',
+    ariaLabel: 'Work archive', brand: 'HAOQI / CREATIVE ARCHIVE', heading: 'Selected work', discipline: 'GAME DESIGN · VISUAL SYSTEMS · SOUND', loading: 'LOADING ARCHIVE', listView: 'ARCHIVE / LIST VIEW', connected: 'ARCHIVE / CONNECTED', loadingMessage: 'Loading 3D archive', fallback: 'The 3D view is unavailable; the work archive can still be browsed.', selectedFile: 'SELECTED FILE', access: 'ACCESS FILE', selectionHint: 'Click a folder to select · Extract to view details', detail: 'DETAIL', return: 'RETURN TO ARCHIVE', footagePending: 'Work footage to be added', inspect: 'HOLD LEFT-DRAG TO INSPECT MODEL', select: 'SELECT', previous: 'Previous archive', next: 'Next archive', selectFile: 'Select', previousLane: 'Move to previous archive lane', nextLane: 'Move to next archive lane', browse: 'BROWSE ARCHIVE', move: 'SHIFT', open: 'OPEN', independent: 'INDEPENDENT PRACTICE / 2026', motionReduced: 'MOTION / REDUCED', motionFull: 'MOTION / FULL', archiveSelect: 'ARCHIVE / SELECT', announce: 'CURRENT ARCHIVE',
   },
   ru: {
-    ariaLabel: 'Архив работ', brand: 'HAOQI / ТВОРЧЕСКИЙ АРХИВ', heading: 'Игровые работы', discipline: 'ГЕЙМ-ДИЗАЙН · ВИЗУАЛЬНЫЕ СИСТЕМЫ · ЗВУК', loading: 'ЗАГРУЗКА АРХИВА', listView: 'АРХИВ / СПИСОК', connected: 'АРХИВ / ПОДКЛЮЧЕН', loadingMessage: 'Загрузка 3D-архива', fallback: '3D-вид временно недоступен, но архив работ можно просмотреть.', selectedFile: 'ВЫБРАННЫЙ ФАЙЛ', access: 'ИЗВЛЕЧЬ ФАЙЛ', selectionHint: 'Выберите папку · Извлеките файл для просмотра', detail: 'ПОДРОБНОСТИ', return: 'ВЕРНУТЬ В АРХИВ', footagePending: 'Видео работы будет добавлено', inspect: 'УДЕРЖИВАЙТЕ ПРАВУЮ КНОПКУ И ПЕРЕТАСКИВАЙТЕ МОДЕЛЬ', select: 'ВЫБРАТЬ', previous: 'Предыдущий архив', next: 'Следующий архив', selectFile: 'Выбрать', previousLane: 'Перейти к левой колонке архива', nextLane: 'Перейти к правой колонке архива', browse: 'ЛИСТАТЬ АРХИВ', move: 'СМЕНА', open: 'ОТКРЫТЬ', independent: 'НЕЗАВИСИМАЯ ПРАКТИКА / 2026', motionReduced: 'ДВИЖЕНИЕ / МЕНЬШЕ', motionFull: 'ДВИЖЕНИЕ / ПОЛНОЕ', archiveSelect: 'АРХИВ / ВЫБОР', announce: 'ТЕКУЩИЙ АРХИВ',
+    ariaLabel: 'Архив работ', brand: 'HAOQI / ТВОРЧЕСКИЙ АРХИВ', heading: 'Игровые работы', discipline: 'ГЕЙМ-ДИЗАЙН · ВИЗУАЛЬНЫЕ СИСТЕМЫ · ЗВУК', loading: 'ЗАГРУЗКА АРХИВА', listView: 'АРХИВ / СПИСОК', connected: 'АРХИВ / ПОДКЛЮЧЕН', loadingMessage: 'Загрузка 3D-архива', fallback: '3D-вид временно недоступен, но архив работ можно просмотреть.', selectedFile: 'ВЫБРАННЫЙ ФАЙЛ', access: 'ИЗВЛЕЧЬ ФАЙЛ', selectionHint: 'Выберите папку · Извлеките файл для просмотра', detail: 'ПОДРОБНОСТИ', return: 'ВЕРНУТЬ В АРХИВ', footagePending: 'Видео работы будет добавлено', inspect: 'УДЕРЖИВАЙТЕ ЛЕВУЮ КНОПКУ И ПЕРЕТАСКИВАЙТЕ МОДЕЛЬ', select: 'ВЫБРАТЬ', previous: 'Предыдущий архив', next: 'Следующий архив', selectFile: 'Выбрать', previousLane: 'Перейти к левой колонке архива', nextLane: 'Перейти к правой колонке архива', browse: 'ЛИСТАТЬ АРХИВ', move: 'СМЕНА', open: 'ОТКРЫТЬ', independent: 'НЕЗАВИСИМАЯ ПРАКТИКА / 2026', motionReduced: 'ДВИЖЕНИЕ / МЕНЬШЕ', motionFull: 'ДВИЖЕНИЕ / ПОЛНОЕ', archiveSelect: 'АРХИВ / ВЫБОР', announce: 'ТЕКУЩИЙ АРХИВ',
   },
 };
 
@@ -39,7 +39,7 @@ const detailCopy = {
 };
 
 export default function WorkArchive({ groups, language }) {
-  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), audio = useRef(null);
+  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), closeDetailRef = useRef(null), audio = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [recordPlaying, setRecordPlaying] = useState(false);
@@ -51,7 +51,7 @@ export default function WorkArchive({ groups, language }) {
   useEffect(() => {
     let scene;
     try {
-      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), reduced);
+      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), () => closeDetailRef.current?.(), reduced);
       engine.current = scene; scene.onError = () => setStatus('error');
       scene.load().then(() => { if (!scene.disposed) setStatus('ready'); }).catch(() => { if (!scene.disposed) setStatus('error'); });
     } catch { setStatus('error'); }
@@ -69,6 +69,7 @@ export default function WorkArchive({ groups, language }) {
   };
   openDetailRef.current = openDetail;
   const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
+  closeDetailRef.current = returnToArray;
   useEffect(() => { setGalleryIndex(0); setLightbox(false); setRecordPlaying(false); }, [work.id]);
   useEffect(() => () => { audio.current?.pause(); }, [work.id, detail]);
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function WorkArchive({ groups, language }) {
   return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} data-reduced={reduced} aria-label={t.ariaLabel} tabIndex={-1}>
     <div className="work-array-canvas" ref={host} aria-hidden={detail || status === 'error'} />
     <div className="work-array-atmosphere" aria-hidden="true" />
-    {detail && <button type="button" className="work-array-dismiss" aria-label={detailT.blankReturn} onClick={returnToArray}><span>{detailT.blankReturn}</span></button>}
+    {detail && <span className="work-array-dismiss" aria-hidden="true">{detailT.blankReturn}</span>}
     <div className="work-array-heading"><p>{t.brand}</p><h1>{media.title}</h1><span>{media.discipline}</span></div>
     <div className="work-array-state"><i />{status === 'loading' ? t.loading : status === 'error' ? t.listView : t.connected}</div>
     {status === 'loading' && <div className="work-array-loading" role="status"><span>{t.loadingMessage}</span><i /></div>}

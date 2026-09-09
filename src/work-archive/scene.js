@@ -12,8 +12,8 @@ const spring = (value = 0) => ({ value, velocity: 0 });
 const shellNames = ['Frosted_Polymer', 'Ivory_Edges', 'Optical_Diffuser', 'Index_Inlay', 'Titanium_Fasteners'];
 
 export class WorkScene {
-  constructor(host, groups, onSelect, onHover, onActivate, reduced) {
-    this.host = host; this.groups = groups; this.onSelect = onSelect; this.onHover = onHover; this.onActivate = onActivate;
+  constructor(host, groups, onSelect, onHover, onActivate, onBlank, reduced) {
+    this.host = host; this.groups = groups; this.onSelect = onSelect; this.onHover = onHover; this.onActivate = onActivate; this.onBlank = onBlank;
     this.reduced = reduced; this.disposed = false; this.loaded = false;
     this.selected = { lane: 0, row: 0 }; this.pulses = []; this.time = 0;
     this.detail = spring(); this.targetDetail = 0;
@@ -53,27 +53,37 @@ export class WorkScene {
     floor.rotation.x = -Math.PI / 2; floor.position.y = -4.63; floor.receiveShadow = true; this.scene.add(floor);
     this.scene.add(this.detailModel);
     this.down = (e) => {
-      if (e.button === 2 && this.targetDetail) {
-        this.orbiting = true;
+      if (e.button === 0 && this.targetDetail) {
+        this.inspecting = Boolean(this.hitDetail(e));
+        this.detailBlankPointer = !this.inspecting;
+        this.startPointer = { x: e.clientX, y: e.clientY };
         this.canvas.setPointerCapture?.(e.pointerId);
-        this.canvas.style.cursor = 'grabbing';
+        this.canvas.style.cursor = this.inspecting ? 'grab' : 'default';
         return;
       }
       if (e.button === 0) this.startPointer = { x: e.clientX, y: e.clientY };
     };
     this.move = (e) => {
-      if (this.orbiting) {
-        this.detailModel.rotation.y += e.movementX * .006;
+      if (this.inspecting) {
+        const distance = Math.hypot(e.clientX - this.startPointer.x, e.clientY - this.startPointer.y);
+        if (distance > 4) this.orbiting = true;
+        if (this.orbiting) {
+          this.detailModel.rotation.y += e.movementX * .006;
+          this.canvas.style.cursor = 'grabbing';
+        }
         return;
       }
       const hit = this.hit(e); this.canvas.style.cursor = hit ? 'pointer' : 'default';
       this.onHover(hit ? this.selectionAt(hit) : null);
     };
     this.up = (e) => {
-      if (this.orbiting) {
-        this.orbiting = false;
+      if (this.targetDetail) {
+        const blank = this.detailBlankPointer;
+        this.inspecting = false; this.detailBlankPointer = false; this.orbiting = false;
         this.canvas.releasePointerCapture?.(e.pointerId);
-        this.canvas.style.cursor = 'grab';
+        this.canvas.style.cursor = 'default';
+        this.startPointer = null;
+        if (blank) this.onBlank?.();
         return;
       }
       if (this.startPointer && Math.hypot(e.clientX-this.startPointer.x, e.clientY-this.startPointer.y) < 8 && !this.targetDetail) {
@@ -81,7 +91,7 @@ export class WorkScene {
       }
       this.startPointer = null;
     };
-    this.leave = () => { this.orbiting = false; this.startPointer = null; this.onHover(null); };
+    this.leave = () => { this.inspecting = false; this.detailBlankPointer = false; this.orbiting = false; this.startPointer = null; this.onHover(null); };
     this.contextMenu = (e) => { if (this.targetDetail) e.preventDefault(); };
     this.lost = (e) => { e.preventDefault(); this.onError?.('三维画面暂时不可用，请重新载入'); };
     this.canvas.addEventListener('pointerdown', this.down);
@@ -165,6 +175,13 @@ export class WorkScene {
     this.ray.setFromCamera(this.pointer, this.camera);
     const hit = this.ray.intersectObjects([this.hitSurface, this.detailModel].filter(Boolean), true)[0];
     return hit ? hit.instanceId === undefined ? this.selected : this.cells[hit.instanceId] : null;
+  }
+  hitDetail(e) {
+    if (!this.loaded || !this.targetDetail) return null;
+    const bounds = this.canvas.getBoundingClientRect();
+    this.pointer.set((e.clientX-bounds.left)/bounds.width*2-1, -(e.clientY-bounds.top)/bounds.height*2+1);
+    this.ray.setFromCamera(this.pointer, this.camera);
+    return this.ray.intersectObject(this.detailModel, true)[0] || null;
   }
   resize() {
     const w = Math.max(1, this.host.clientWidth), h = Math.max(1, this.host.clientHeight);
