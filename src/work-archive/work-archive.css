@@ -46,14 +46,18 @@
 .work-array-dismiss { position: absolute; z-index: 2; inset: 0; border: 0; background: transparent; cursor: pointer; }
 .work-array-dismiss span { position: absolute; left: 4%; bottom: 74px; color: #626a66; font: 400 8px/1.5 var(--mono); letter-spacing: .07em; opacity: .55; transition: opacity 180ms ease; }
 .work-array-dismiss:hover span { opacity: 1; color: var(--ink); }
-.work-array-detail { position: absolute; z-index: 3; right: 4%; top: 25%; width: 37%; max-height: 62%; overflow: auto; padding: 24px; background: rgba(241,240,235,.96); border-top: 1px solid var(--ink); animation: work-detail-enter 650ms 350ms both; }
-.work-array-return { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 0 24px; border: 0; background: none; font: 400 10px/1.5 var(--mono); }
+.work-array-detail { position: absolute; z-index: 3; right: 4%; top: 23%; width: 40%; max-height: 67%; overflow: auto; padding: 22px 0 18px; background: linear-gradient(90deg,transparent,rgba(241,240,235,.28) 18%,rgba(241,240,235,.72) 100%); border-top: 1px solid var(--ink); animation: work-detail-enter 650ms 350ms both; }
+.work-array-return { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 0 18px 22px; border: 0; background: none; font: 400 10px/1.5 var(--mono); }
 .work-array-return kbd { font: inherit; padding: 3px; border: 1px solid var(--line-light); color: #777d75; }
-.work-array-detail>small,.work-array-pending,.work-array-detail-footer { font: 400 9px/1.5 var(--mono); color: #777d75; }
-.work-array-detail h2 { margin: 18px 0; font-size: clamp(28px,3vw,48px); line-height: .98; letter-spacing: -.055em; font-weight: 500; }
-.work-array-detail>p { font-size: 13px; line-height: 1.7; }
+.work-array-detail>small,.work-array-pending,.work-array-detail-footer { display: block; padding: 0 18px; font: 400 9px/1.5 var(--mono); color: #777d75; }
+.work-detail-index { display: flex; justify-content: space-between; padding: 0 18px 22px; color: #626a66; font: 400 8px/1 var(--mono); letter-spacing: .08em; }
+.work-array-detail h2 { margin: 18px 18px 22px; font-size: clamp(28px,3vw,48px); line-height: .98; letter-spacing: -.055em; font-weight: 500; text-wrap: pretty; }
+.work-detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 26px; margin: 0 18px; padding: 18px 0; border-top: 1px solid rgba(13,15,16,.68); }
+.work-detail-meta div { display: grid; gap: 5px; min-width: 0; }.work-detail-meta small { color: #777d75; font: 400 8px/1.4 var(--mono); letter-spacing: .06em; }.work-detail-meta span { overflow: hidden; font: 400 10px/1.4 var(--mono); text-overflow: ellipsis; white-space: nowrap; }.work-detail-meta i { display: inline-block; width: 5px; height: 5px; margin-right: 5px; background: var(--acid); vertical-align: middle; }
+.work-detail-tabs { display: flex; gap: clamp(14px,2vw,32px); margin: 0 18px 18px; padding: 12px 0; border-bottom: 1px solid var(--line-light); font: 400 8px/1 var(--mono); color: #777d75; }.work-detail-tabs .is-active { position: relative; color: var(--ink); }.work-detail-tabs .is-active::after { content: ''; position: absolute; left: 0; right: 0; bottom: -13px; height: 2px; background: var(--ink); }
+.work-detail-game,.work-detail-photo,.work-detail-music { margin-left: 18px; margin-right: 18px; }
 .work-array-detail>img,.work-array-detail>video { width: 100%; max-height: 180px; object-fit: cover; margin: 20px 0 10px; }
-.work-array-detail-footer { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--line-light); font-size: 8px; }
+.work-array-detail-footer { display: flex; justify-content: space-between; margin: 25px 18px 0; padding: 15px 0 0; border-top: 1px solid var(--line-light); font-size: 8px; }
 .work-detail-game>small,.work-detail-gallery-heading,.work-detail-description>small,.work-detail-track>small { display: block; margin: 20px 0 9px; color: #626a66; font: 400 8px/1.4 var(--mono); letter-spacing: .08em; }
 .work-detail-game video { width: 100%; max-height: 210px; margin: 0; background: var(--ink); }
 .work-detail-video-pending { position: relative; height: 180px; overflow: hidden; background: var(--ink); }

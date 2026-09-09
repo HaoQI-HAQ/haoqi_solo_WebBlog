@@ -108,7 +108,10 @@ export default function WorkArchive({ groups, language }) {
     </section>
     {detail && <section className="work-array-detail" aria-label={`${work.archiveCode} ${t.detail}`}>
       <button type="button" className="work-array-return" ref={close} onClick={returnToArray}>← {t.return} <kbd>ESC</kbd></button>
-      <small>{work.archiveCode} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p>
+      <div className="work-detail-index"><span>FILE {work.archiveCode}</span><span>REFERENCE AREA</span></div>
+      <small>{work.archiveCode} / {work.type}</small><h2>{work.title}</h2>
+      <div className="work-detail-meta"><div><small>ARCHIVE TYPE / 类型</small><span>{media.title}</span></div><div><small>COLLECTION / 编号</small><span>{work.archiveCode}</span></div><div><small>FORMAT / 格式</small><span>{work.type}</span></div><div><small>STATUS / 状态</small><span><i /> ARCHIVED / 可读取</span></div></div>
+      <div className="work-detail-tabs"><span className="is-active">01 概述</span><span>02 素材</span><span>03 注记</span></div>
       {group.id === 'games' && <div className="work-detail-game">
         <small>{detailT.video}</small>
         {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : <div className="work-detail-video-pending"><img src={work.image} alt={work.title} /><span>{detailT.videoPending}</span></div>}
