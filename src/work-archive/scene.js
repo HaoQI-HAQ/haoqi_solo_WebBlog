@@ -12,8 +12,8 @@ const spring = (value = 0) => ({ value, velocity: 0 });
 const shellNames = ['Frosted_Polymer', 'Ivory_Edges', 'Optical_Diffuser', 'Index_Inlay', 'Titanium_Fasteners'];
 
 export class WorkScene {
-  constructor(host, groups, onSelect, onHover, reduced) {
-    this.host = host; this.groups = groups; this.onSelect = onSelect; this.onHover = onHover;
+  constructor(host, groups, onSelect, onHover, onActivate, reduced) {
+    this.host = host; this.groups = groups; this.onSelect = onSelect; this.onHover = onHover; this.onActivate = onActivate;
     this.reduced = reduced; this.disposed = false; this.loaded = false;
     this.selected = { lane: 0, row: 0 }; this.pulses = []; this.time = 0;
     this.detail = spring(); this.targetDetail = 0;
@@ -129,7 +129,7 @@ export class WorkScene {
   }
   select(cell) {
     if (!this.loaded || this.targetDetail || this.detail.value > .1) return;
-    if (this.selected.lane === cell.lane && this.selected.row === cell.row && this.pulses.length) return;
+    if (this.selected.lane === cell.lane && this.selected.row === cell.row) { this.onActivate?.(this.selectionAt(cell)); return; }
     this.selected = { ...cell }; this.pulses.push({ ...cell, time: this.time });
     this.updateLabel(); this.onSelect(this.selectionAt(cell), cell);
   }

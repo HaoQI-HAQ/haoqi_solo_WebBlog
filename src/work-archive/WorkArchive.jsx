@@ -39,7 +39,7 @@ const detailCopy = {
 };
 
 export default function WorkArchive({ groups, language }) {
-  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null);
+  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [recordPlaying, setRecordPlaying] = useState(false);
@@ -51,7 +51,7 @@ export default function WorkArchive({ groups, language }) {
   useEffect(() => {
     let scene;
     try {
-      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, reduced);
+      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), reduced);
       engine.current = scene; scene.onError = () => setStatus('error');
       scene.load().then(() => { if (!scene.disposed) setStatus('ready'); }).catch(() => { if (!scene.disposed) setStatus('error'); });
     } catch { setStatus('error'); }
@@ -67,6 +67,7 @@ export default function WorkArchive({ groups, language }) {
     if (status !== 'ready') return;
     engine.current.setDetail(true); setDetail(true); setHovered(null);
   };
+  openDetailRef.current = openDetail;
   const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
   useEffect(() => { setGalleryIndex(0); setLightbox(false); setRecordPlaying(false); }, [work.id]);
   useEffect(() => {
