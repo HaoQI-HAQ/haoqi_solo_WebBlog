@@ -30,13 +30,24 @@ const archiveMedia = {
   ru: { games: { title: 'Игровые работы', discipline: 'ГЕЙМ-ДИЗАЙН · ВИЗУАЛЬНЫЕ СИСТЕМЫ · ЗВУК' }, photo: { title: 'Фотографии', discipline: 'ГОРОДСКИЕ КАДРЫ · ИССЛЕДОВАНИЕ СВЕТА · МАРШРУТЫ' }, music: { title: 'Музыкальные записи', discipline: 'AI-КОМПОЗИЦИЯ · ИССЛЕДОВАНИЕ ЗВУКА · ЭМОЦИОНАЛЬНАЯ СТРУКТУРА' } },
 };
 
+const detailCopy = {
+  mixed: { blankReturn: '点击空白处归位', video: '项目演示', videoPending: '项目视频待添加', download: '游戏下载', bilibili: 'B站视频', linkPending: '链接待补充', description: '作品背景', gallery: '图片合集', enlarge: '点击放大查看', previousImage: '上一张图片', nextImage: '下一张图片', record: '黑胶唱片', track: '曲目', playRecord: '播放唱片', pauseRecord: '暂停唱片', noAudio: '音源待添加' },
+  zh: { blankReturn: '点击空白处归位', video: '项目演示', videoPending: '项目视频待添加', download: '游戏下载', bilibili: 'B站视频', linkPending: '链接待补充', description: '作品背景', gallery: '图片合集', enlarge: '点击放大查看', previousImage: '上一张图片', nextImage: '下一张图片', record: '黑胶唱片', track: '曲目', playRecord: '播放唱片', pauseRecord: '暂停唱片', noAudio: '音源待添加' },
+  ja: { blankReturn: '余白をクリックして戻る', video: 'プロジェクト映像', videoPending: '映像は準備中', download: 'ゲームをダウンロード', bilibili: 'Bilibili 動画', linkPending: 'リンク準備中', description: '作品背景', gallery: '画像セット', enlarge: 'クリックで拡大', previousImage: '前の画像', nextImage: '次の画像', record: 'レコード', track: 'トラック', playRecord: 'レコードを再生', pauseRecord: 'レコードを一時停止', noAudio: '音源は準備中' },
+  en: { blankReturn: 'CLICK EMPTY SPACE TO RETURN', video: 'PROJECT PLAYBACK', videoPending: 'PROJECT VIDEO PENDING', download: 'DOWNLOAD GAME', bilibili: 'BILIBILI VIDEO', linkPending: 'LINK PENDING', description: 'PROJECT CONTEXT', gallery: 'IMAGE SET', enlarge: 'CLICK TO ENLARGE', previousImage: 'PREVIOUS IMAGE', nextImage: 'NEXT IMAGE', record: 'VINYL RECORD', track: 'TRACK', playRecord: 'PLAY RECORD', pauseRecord: 'PAUSE RECORD', noAudio: 'AUDIO PENDING' },
+  ru: { blankReturn: 'НАЖМИТЕ НА ПУСТОЕ МЕСТО, ЧТОБЫ ВЕРНУТЬСЯ', video: 'ДЕМОНСТРАЦИЯ ПРОЕКТА', videoPending: 'ВИДЕО ПРОЕКТА ГОТОВИТСЯ', download: 'СКАЧАТЬ ИГРУ', bilibili: 'ВИДЕО BILIBILI', linkPending: 'ССЫЛКА ГОТОВИТСЯ', description: 'КОНТЕКСТ РАБОТЫ', gallery: 'НАБОР ИЗОБРАЖЕНИЙ', enlarge: 'НАЖМИТЕ ДЛЯ УВЕЛИЧЕНИЯ', previousImage: 'ПРЕДЫДУЩЕЕ ИЗОБРАЖЕНИЕ', nextImage: 'СЛЕДУЮЩЕЕ ИЗОБРАЖЕНИЕ', record: 'ВИНИЛОВАЯ ПЛАСТИНКА', track: 'ТРЕК', playRecord: 'ВОСПРОИЗВЕСТИ', pauseRecord: 'ПАУЗА', noAudio: 'АУДИО ГОТОВИТСЯ' },
+};
+
 export default function WorkArchive({ groups, language }) {
   const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [recordPlaying, setRecordPlaying] = useState(false);
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const t = workText[language] || workText.mixed;
   const group = groups[column], works = group.items, work = works[selected], media = (archiveMedia[language] || archiveMedia.mixed)[group.id];
+  const detailT = detailCopy[language] || detailCopy.mixed;
+  const photoFrames = work.images?.length ? work.images : [{ src: work.image, caption: work.title }];
   useEffect(() => {
     let scene;
     try {
@@ -56,18 +67,23 @@ export default function WorkArchive({ groups, language }) {
     if (status !== 'ready') return;
     engine.current.setDetail(true); setDetail(true); setHovered(null);
   };
-  const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); access.current?.focus({ preventScroll: true }); };
+  const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
+  useEffect(() => { setGalleryIndex(0); setLightbox(false); setRecordPlaying(false); }, [work.id]);
   useEffect(() => {
     if (detail) close.current?.focus({ preventScroll: true });
     const keyboard = e => {
       if (e.target.closest('input,select,textarea,video') || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (detail) { if (e.key === 'Escape') { e.preventDefault(); returnToArray(); } return; }
+      if (detail) {
+        if (e.key === 'Escape') { e.preventDefault(); returnToArray(); }
+        if (group.id === 'photo' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); setGalleryIndex(index => (index + (e.key === 'ArrowRight' ? 1 : -1) + photoFrames.length) % photoFrames.length); }
+        return;
+      }
       const step = { ArrowUp: ['row',-1], ArrowDown: ['row',1], ArrowLeft: ['lane',-1], ArrowRight: ['lane',1] }[e.key];
       if (step && status === 'ready') { e.preventDefault(); engine.current?.navigate(...step); }
       if (e.key === 'Enter' && !e.target.closest('a,button')) { e.preventDefault(); openDetail(); }
     };
     window.addEventListener('keydown',keyboard); return () => window.removeEventListener('keydown',keyboard);
-  }, [detail,status]);
+  }, [detail,status,group.id,work.id,photoFrames.length]);
   const choose = index => {
     if (status === 'ready') engine.current.selectItemIndex(index);
     else setSelected(index);
@@ -77,6 +93,7 @@ export default function WorkArchive({ groups, language }) {
   return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} data-reduced={reduced} aria-label={t.ariaLabel} tabIndex={-1}>
     <div className="work-array-canvas" ref={host} aria-hidden={detail || status === 'error'} />
     <div className="work-array-atmosphere" aria-hidden="true" />
+    {detail && <button type="button" className="work-array-dismiss" aria-label={detailT.blankReturn} onClick={returnToArray}><span>{detailT.blankReturn}</span></button>}
     <div className="work-array-heading"><p>{t.brand}</p><h1>{media.title}</h1><span>{media.discipline}</span></div>
     <div className="work-array-state"><i />{status === 'loading' ? t.loading : status === 'error' ? t.listView : t.connected}</div>
     {status === 'loading' && <div className="work-array-loading" role="status"><span>{t.loadingMessage}</span><i /></div>}
@@ -92,9 +109,24 @@ export default function WorkArchive({ groups, language }) {
     {detail && <section className="work-array-detail" aria-label={`${work.archiveCode} ${t.detail}`}>
       <button type="button" className="work-array-return" ref={close} onClick={returnToArray}>← {t.return} <kbd>ESC</kbd></button>
       <small>{work.archiveCode} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p>
-      {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : <><img src={work.image} alt={work.title} /><span className="work-array-pending">{t.footagePending}</span></>}
+      {group.id === 'games' && <div className="work-detail-game">
+        <small>{detailT.video}</small>
+        {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : <div className="work-detail-video-pending"><img src={work.image} alt={work.title} /><span>{detailT.videoPending}</span></div>}
+        <div className="work-detail-actions"><a href={work.downloadUrl?.startsWith('http') ? work.downloadUrl : undefined} className={!work.downloadUrl?.startsWith('http') ? 'is-pending' : undefined}>{detailT.download} <span>↗</span><small>{!work.downloadUrl?.startsWith('http') && detailT.linkPending}</small></a><a href={work.bilibiliUrl?.startsWith('http') ? work.bilibiliUrl : undefined} className={!work.bilibiliUrl?.startsWith('http') ? 'is-pending' : undefined}>{detailT.bilibili} <span>↗</span><small>{!work.bilibiliUrl?.startsWith('http') && detailT.linkPending}</small></a></div>
+        <div className="work-detail-description"><small>{detailT.description}</small><p>{work.summary}</p></div>
+      </div>}
+      {group.id === 'photo' && <div className="work-detail-photo">
+        <div className="work-detail-gallery-heading"><small>{detailT.gallery}</small><span>{String(galleryIndex + 1).padStart(2, '0')} / {String(photoFrames.length).padStart(2, '0')}</span></div>
+        <button type="button" className="work-detail-photo-frame" onClick={() => setLightbox(true)} aria-label={detailT.enlarge}><img src={photoFrames[galleryIndex].src} alt={photoFrames[galleryIndex].caption || work.title} /><span>{detailT.enlarge} ↗</span></button>
+        <div className="work-detail-photo-nav"><button type="button" onClick={() => setGalleryIndex(index => (index - 1 + photoFrames.length) % photoFrames.length)} aria-label={detailT.previousImage}>←</button><span>{photoFrames[galleryIndex].caption || work.title}</span><button type="button" onClick={() => setGalleryIndex(index => (index + 1) % photoFrames.length)} aria-label={detailT.nextImage}>→</button></div>
+      </div>}
+      {group.id === 'music' && <div className="work-detail-music">
+        <button type="button" className={`work-record ${recordPlaying ? 'is-playing' : ''}`} onClick={() => setRecordPlaying(value => !value)} aria-label={recordPlaying ? detailT.pauseRecord : detailT.playRecord}><span><i>{work.archiveCode}</i></span></button>
+        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{work.title}</strong><span>{work.type}</span><button type="button" onClick={() => setRecordPlaying(value => !value)}>{recordPlaying ? detailT.pauseRecord : detailT.playRecord} <b>{recordPlaying ? 'Ⅱ' : '▶'}</b></button><em>{work.src ? '' : detailT.noAudio}</em></div>
+      </div>}
       <div className="work-array-detail-footer"><span>HAOQI / STUDIO</span><span>{t.inspect}</span></div>
     </section>}
+    {lightbox && <div className="work-photo-lightbox" role="dialog" aria-modal="true" aria-label={detailT.enlarge} onClick={() => setLightbox(false)}><button type="button" aria-label={t.return} onClick={() => setLightbox(false)}>×</button><img src={photoFrames[galleryIndex].src} alt={photoFrames[galleryIndex].caption || work.title} /></div>}
     <div className="work-array-hover" aria-live="off">{hovered !== null && !detail ? `${(archiveMedia[language] || archiveMedia.mixed)[hovered.group.id].title} / ${hovered.item.archiveCode} / ${hovered.item.title}` : '\u00a0'}</div>
     <footer className="work-array-controls" hidden={detail}>
       <div className="work-array-counter"><small>{t.archiveSelect}</small><div><RollingNumber {...roll} value={selected+1} format={{ minimumIntegerDigits: 2 }} /><span>/ {String(works.length).padStart(2,'0')}</span></div></div>
