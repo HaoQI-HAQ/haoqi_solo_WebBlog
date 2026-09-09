@@ -48,8 +48,11 @@ img { display: block; max-width: 100%; }
 .brand-orbit::after { inset: 8px; background: var(--acid); border: 0; }
 .brand-slash { color: var(--acid); margin: 0 3px; }
 .desktop-nav { display: flex; align-items: center; gap: clamp(20px, 2.4vw, 38px); font: 400 10px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; }
-.desktop-nav a, .header-contact, .mobile-nav a, .contact-footer-links a, .about-links a, .work-footer a { transition: color 180ms ease; }
+.desktop-nav a { position: relative; padding: 7px 0; }
+.desktop-nav a, .header-contact, .mobile-nav a, .contact-footer-links a, .about-links a, .work-footer a { transition: color 180ms ease, text-shadow 180ms ease; }
 .desktop-nav a:hover, .header-contact:hover, .contact-footer-links a:hover, .about-links a:hover, .work-footer a:hover { color: var(--acid); }
+.desktop-nav a.is-active { color: var(--acid); text-shadow: 0 0 10px rgba(216, 255, 79, 0.74); }
+.desktop-nav a.is-active::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: var(--acid); box-shadow: 0 0 9px rgba(216, 255, 79, 0.9); transform: translate(-50%, 3px); }
 .header-contact { justify-self: end; font: 400 11px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.04em; }
 .header-contact span { color: var(--acid); font-size: 16px; margin-left: 7px; }
 .header-actions { display: inline-flex; align-items: center; justify-self: end; gap: 12px; min-width: 0; }
@@ -437,6 +440,7 @@ html[data-language='en'] .archive-flow-inner > h2 { letter-spacing: -0.085em; }
   .mobile-nav { position: absolute; top: calc(100% + 1px); left: -1px; right: -1px; display: flex; flex-direction: column; gap: 0; padding: 18px 15px 20px; border: 1px solid rgba(255,255,255,0.2); border-top: 0; background: rgba(13,15,16,0.95); backdrop-filter: blur(18px); opacity: 0; pointer-events: none; transform: translateY(-8px); transition: opacity 200ms ease, transform 200ms ease; }
   .menu-is-open .mobile-nav { opacity: 1; pointer-events: auto; transform: translateY(0); }
   .mobile-nav a { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--line-dark); font: 400 14px/1 var(--mono); }
+  .mobile-nav a.is-active { color: var(--acid); text-shadow: 0 0 10px rgba(216, 255, 79, 0.74); }
   .mobile-nav a:last-child { border-bottom: 0; }
   .mobile-nav a span { color: var(--acid); font-size: 10px; }
   .mobile-language { display: flex; justify-content: flex-end; padding-top: 14px; border-top: 1px solid var(--line-dark); }

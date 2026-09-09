@@ -64,6 +64,14 @@ const contactGreetings = [
 ];
 
 const languageOptions = [{ code: 'mixed', label: '混' }, ...languages];
+const primaryNavigation = [
+  { id: 'home', href: '/', labelIndex: 0, number: '01' },
+  { id: 'work', href: '/work.html', labelIndex: 1, number: '02' },
+  { id: 'photo', href: '/photography.html', labelIndex: 2, number: '03' },
+  { id: 'music', href: '/music.html', labelIndex: 3, number: '04' },
+  { id: 'contact', href: '/contact.html', labelIndex: 4, number: '05' },
+  { id: 'about', href: '/about.html', labelIndex: 5, number: '06' },
+];
 const mixedText = {
   nav: ['Home', 'Work', 'Photography', 'Music', 'Contact', 'About'],
   heroKicker: 'Game design · Visual direction · AI composition',
@@ -106,6 +114,14 @@ function LanguageSwitcher({ language, setLanguage }) {
     window.setTimeout(() => setIsSwitching(false), 360);
   };
   return <div className={`language-switcher ${isSwitching ? 'is-switching' : ''}`} aria-label="Language switcher">{languageOptions.map((item) => <button type="button" className={language === item.code ? 'is-active' : ''} key={item.code} onClick={() => selectLanguage(item.code)}>{item.label}</button>)}</div>;
+}
+
+function NavigationItems({ language, currentPage, onNavigate, mobile = false }) {
+  const t = languageText[language] || mixedText;
+  return primaryNavigation.map((item) => {
+    const active = item.id === currentPage;
+    return <a key={item.id} href={item.href} className={active ? 'is-active' : undefined} aria-current={active ? 'page' : undefined} onClick={onNavigate}>{t.nav[item.labelIndex]} {mobile && <span>{item.number}</span>}</a>;
+  });
 }
 
 function SocialIcon({ service }) {
@@ -309,10 +325,11 @@ function FunctionalPage({ page, language, setLanguage }) {
   const albums = photoAlbums.filter((album) => (city === 'all' || album.city === city) && (year === 'all' || album.year === year));
   const activeMusicTrack = musicTracks.find((track) => track.id === activeTrack) || musicTracks[0];
   const pageTitle = page === 'games' ? t.pageGames : page === 'photo' ? t.pagePhoto : page === 'music' ? t.pageMusic : page === 'about' ? t.pageAbout : t.pageContact;
+  const currentPage = page === 'games' ? 'work' : page;
   return <div className="site-shell functional-shell">
     <header className="site-header is-scrolled functional-header">
       <a className="brand-lockup" href="/" aria-label="回到首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
-      <nav className="desktop-nav" aria-label="主导航"><a href="/">Home</a><a href="/work.html">Work</a><a href="/photography.html">Photography</a><a href="/music.html">Music</a><a href="/contact.html">Contact</a><a href="/about.html">About</a></nav>
+      <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage={currentPage} /></nav>
       <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
     </header>
     {page === 'games' ? <Suspense fallback={<div className="archive-page section-light">Loading archive…</div>}><WorkArchive works={gameWorks} language={language} /></Suspense> : <section className="archive-page section-light">
@@ -523,14 +540,7 @@ function App({ language, setLanguage }) {
           <span className="brand-orbit" aria-hidden="true" />
           <span>HAOQI<span className="brand-slash">/</span>STUDIO</span>
         </a>
-      <nav className="desktop-nav" aria-label="主导航">
-          <a href="/">{t.nav[0]}</a>
-          <a href="/work.html">{t.nav[1]}</a>
-          <a href="/photography.html">{t.nav[2]}</a>
-          <a href="/music.html">{t.nav[3]}</a>
-          <a href="/contact.html">{t.nav[4]}</a>
-          <a href="/about.html">{t.nav[5]}</a>
-        </nav>
+      <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage="home" /></nav>
         <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
         <button
           className="menu-toggle"
@@ -543,12 +553,7 @@ function App({ language, setLanguage }) {
           <span className="menu-icon" aria-hidden="true"><i /><i /></span>
         </button>
         <nav id="mobile-nav" className="mobile-nav" aria-label="移动端导航">
-          <a href="/" onClick={closeMenu}>{t.nav[0]} <span>01</span></a>
-          <a href="/work.html" onClick={closeMenu}>{t.nav[1]} <span>02</span></a>
-          <a href="/photography.html" onClick={closeMenu}>{t.nav[2]} <span>03</span></a>
-          <a href="/music.html" onClick={closeMenu}>{t.nav[3]} <span>04</span></a>
-          <a href="/contact.html" onClick={closeMenu}>{t.nav[4]} <span>05</span></a>
-          <a href="/about.html" onClick={closeMenu}>{t.nav[5]} <span>06</span></a>
+          <NavigationItems language={language} currentPage="home" onNavigate={closeMenu} mobile />
           <div className="mobile-language"><span>/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
         </nav>
       </header>
@@ -578,7 +583,7 @@ function App({ language, setLanguage }) {
               <p className="eyebrow">{t.heroKicker}</p>
               <TypewriterHeadline as="h1" className="hero-typewriter" markup={t.heroTitle} stripPunctuation />
               <div className="hero-bottomline">
-                <a className="round-link" href="#work" aria-label="查看精选项目">
+                <a className="round-link" href="/work.html" aria-label="进入游戏作品档案">
                   <span>{t.explore}</span>
                   <span className="round-link-arrow" aria-hidden="true">↓</span>
                 </a>
