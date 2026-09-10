@@ -310,14 +310,93 @@ function Lightbox({ album, index, onChange, onClose }) {
   </div>;
 }
 
+function CustomCursor() {
+  const cursorRef = useRef(null);
+
+  useEffect(() => {
+    const cursor = cursorRef.current;
+    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return undefined;
+
+    const handlePointerMove = (event) => {
+      cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+    };
+    const handlePointerDown = () => cursor.classList.add('is-pressed');
+    const handlePointerUp = () => cursor.classList.remove('is-pressed');
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, []);
+
+  return <div ref={cursorRef} className="custom-cursor" aria-hidden="true" />;
+}
+
 function MusicTools({ language }) {
-  const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', musicTracks[0].id);
+  const playableTracks = musicTracks.filter((track) => track.src);
+  const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', playableTracks[0]?.id || musicTracks[0].id);
   const [open, setOpen] = useState(false);
-  const current = musicTracks.find((track) => track.id === activeTrack) || musicTracks[0];
+  const [isPlaying, setIsPlaying] = usePersistentState('haoqi-player-playing', false);
+  const [progress, setProgress] = useState(0);
+  const audioRef = useRef(null);
+  const current = playableTracks.find((track) => track.id === activeTrack) || playableTracks[0] || musicTracks[0];
   const t = languageText[language] || mixedText;
-  return <aside className={`music-dock ${open ? 'is-open' : ''}`}>
-    <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open}><span className="music-signal">•••</span> {t.nowPlaying}</button>
-    <div className="music-dock-panel"><small>{t.nowPlaying}</small><strong>{current.title}</strong><select value={current.id} onChange={(event) => setActiveTrack(event.target.value)} aria-label={t.nowPlaying}>{musicTracks.map((track) => <option value={track.id} key={track.id}>{track.title}</option>)}</select><span>{current.src ? 'Audio ready' : t.audioPending}</span></div>
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !current?.src) return undefined;
+    const restore = () => {
+      const saved = Number(window.localStorage.getItem(`haoqi-track-time-${current.id}`) || 0);
+      if (Number.isFinite(saved) && saved > 0 && saved < audio.duration) audio.currentTime = saved;
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
+      if (isPlaying) audio.play().catch(() => setIsPlaying(false));
+    };
+    const persist = () => {
+      window.localStorage.setItem(`haoqi-track-time-${current.id}`, String(audio.currentTime));
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
+    };
+    const advance = () => {
+      const index = playableTracks.findIndex((track) => track.id === current.id);
+      setActiveTrack(playableTracks[(index + 1) % playableTracks.length].id);
+    };
+    audio.addEventListener('loadedmetadata', restore, { once: true });
+    audio.addEventListener('timeupdate', persist);
+    audio.addEventListener('ended', advance);
+    return () => { audio.removeEventListener('loadedmetadata', restore); audio.removeEventListener('timeupdate', persist); audio.removeEventListener('ended', advance); };
+  }, [current?.id, current?.src, isPlaying, playableTracks.length, setActiveTrack, setIsPlaying]);
+
+  const togglePlayback = () => {
+    const audio = audioRef.current;
+    if (!audio || !current?.src) return;
+    if (audio.paused) audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    else { audio.pause(); setIsPlaying(false); }
+  };
+  const changeTrack = (direction) => {
+    if (!playableTracks.length) return;
+    const index = playableTracks.findIndex((track) => track.id === current.id);
+    setActiveTrack(playableTracks[(index + direction + playableTracks.length) % playableTracks.length].id);
+  };
+  const seek = (event) => {
+    const audio = audioRef.current;
+    if (!audio?.duration) return;
+    const next = Number(event.target.value);
+    audio.currentTime = audio.duration * next;
+    setProgress(next);
+  };
+
+  return <aside className={`music-dock ${open ? 'is-open' : ''} ${isPlaying ? 'is-playing' : ''}`}>
+    <audio ref={audioRef} src={current?.src || undefined} preload="metadata" loop={playableTracks.length === 1} />
+    <button className="music-dock-toggle" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? '隐藏音乐播放器' : '打开音乐播放器'}><span className="music-dock-handle" aria-hidden="true"><i /><i /><i /></span><span>{t.nowPlaying}</span><b aria-hidden="true">{open ? '−' : '+'}</b></button>
+    <div className="music-dock-panel">
+      <div className="music-record-wrap" aria-hidden="true"><div className="music-tonearm"><span /></div><div className="music-record"><img src={current?.image || '/assets/tool-contact.jpg'} alt="" /></div></div>
+      <div className="music-track-meta"><small>{current?.archiveCode || 'SOUND-01'} / {isPlaying ? 'PLAYING' : 'PAUSED'}</small><strong>{current?.title || 'Audio pending'}</strong><span>{current?.mood || t.audioPending}</span></div>
+      <input className="music-progress" type="range" min="0" max="1" step="0.001" value={progress} onChange={seek} aria-label="播放进度" />
+      <div className="music-controls"><button type="button" onClick={() => changeTrack(-1)} disabled={playableTracks.length < 2} aria-label="上一首">‹‹</button><button className="music-play" type="button" onClick={togglePlayback} disabled={!current?.src} aria-label={isPlaying ? '暂停' : '播放'}>{isPlaying ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => changeTrack(1)} disabled={playableTracks.length < 2} aria-label="下一首">››</button></div>
+    </div>
   </aside>;
 }
 
@@ -353,7 +432,6 @@ function FunctionalPage({ page, language, setLanguage }) {
         {page === 'contact' && <div className="archive-contact-grid">{socials.map((item) => <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" key={item.label}><small>{item.label}</small><strong>{item.value}</strong><span>↗</span></a>)}</div>}
       </div>
     </section>}
-    {page !== 'games' && <MusicTools language={language} />}
     <ArchiveExtract focus={focus} isClosing={isClosing} onClose={closeArchive} />
   </div>;
 }
@@ -469,7 +547,6 @@ function App({ language, setLanguage }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
-  const cursorRef = useRef(null);
   const { focus, isClosing, openArchive, closeArchive } = useArchiveExtract();
   const t = languageText[language] || mixedText;
 
@@ -514,32 +591,11 @@ function App({ language, setLanguage }) {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const cursor = cursorRef.current;
-    if (!cursor || window.matchMedia('(pointer: coarse)').matches) return undefined;
-
-    const handlePointerMove = (event) => {
-      cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-    };
-    const handlePointerDown = () => cursor.classList.add('is-pressed');
-    const handlePointerUp = () => cursor.classList.remove('is-pressed');
-
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('pointerup', handlePointerUp);
-    return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('pointerup', handlePointerUp);
-    };
-  }, []);
-
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <div className="site-shell">
       <BootSequence />
-      <div ref={cursorRef} className="custom-cursor" aria-hidden="true" />
       <header className={`site-header ${menuOpen ? 'menu-is-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
         <a className="brand-lockup" href="#top" onClick={closeMenu} aria-label="回到首页">
           <span className="brand-orbit" aria-hidden="true" />
@@ -714,18 +770,33 @@ function App({ language, setLanguage }) {
   );
 }
 
-const route = window.location.pathname.split('/').pop() || 'index.html';
 const pageByRoute = { 'about.html': 'about', 'work.html': 'games', 'photography.html': 'photo', 'music.html': 'music' };
 
 function SiteRouter() {
   const [language, setLanguage] = usePersistentState('haoqi-language', 'mixed');
+  const [route, setRoute] = useState(() => window.location.pathname.split('/').pop() || 'index.html');
   useEffect(() => {
     document.documentElement.lang = language === 'mixed' ? 'zh-CN' : language;
     document.documentElement.dataset.language = language;
   }, [language]);
-  if (route === 'contact.html') return <ContactPage language={language} setLanguage={setLanguage} />;
-  if (pageByRoute[route]) return <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} />;
-  return <App language={language} setLanguage={setLanguage} />;
+  useEffect(() => {
+    const onPopState = () => setRoute(window.location.pathname.split('/').pop() || 'index.html');
+    const onLinkClick = (event) => {
+      const link = event.target.closest('a[href]');
+      if (!link || link.target || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const destination = new URL(link.href, window.location.href);
+      if (destination.origin !== window.location.origin || destination.hash || !['/', '/about.html', '/work.html', '/photography.html', '/music.html', '/contact.html'].includes(destination.pathname)) return;
+      event.preventDefault();
+      window.history.pushState({}, '', destination.pathname);
+      setRoute(destination.pathname.split('/').pop() || 'index.html');
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('popstate', onPopState);
+    document.addEventListener('click', onLinkClick);
+    return () => { window.removeEventListener('popstate', onPopState); document.removeEventListener('click', onLinkClick); };
+  }, []);
+  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <App language={language} setLanguage={setLanguage} />;
+  return <><CustomCursor />{page}<MusicTools language={language} /></>;
 }
 
 createRoot(document.getElementById('root')).render(<SiteRouter />);
