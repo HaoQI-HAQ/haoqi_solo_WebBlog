@@ -39,10 +39,10 @@ const detailCopy = {
 };
 
 export default function WorkArchive({ groups, language }) {
-  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), closeDetailRef = useRef(null), audio = useRef(null);
+  const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), closeDetailRef = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
-  const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [recordPlaying, setRecordPlaying] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [selectedTrackId, setSelectedTrackId] = useState('');
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const t = workText[language] || workText.mixed;
   const group = groups[column], works = group.items, work = works[selected], media = (archiveMedia[language] || archiveMedia.mixed)[group.id];
@@ -70,8 +70,7 @@ export default function WorkArchive({ groups, language }) {
   openDetailRef.current = openDetail;
   const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
   closeDetailRef.current = returnToArray;
-  useEffect(() => { setGalleryIndex(0); setLightbox(false); setRecordPlaying(false); }, [work.id]);
-  useEffect(() => () => { audio.current?.pause(); }, [work.id, detail]);
+  useEffect(() => { setGalleryIndex(0); setLightbox(false); setSelectedTrackId(work.tracks?.[0]?.id || ''); }, [work.id]);
   useEffect(() => {
     if (detail) close.current?.focus({ preventScroll: true });
     const keyboard = e => {
@@ -92,10 +91,10 @@ export default function WorkArchive({ groups, language }) {
     else setSelected(index);
   };
   const navigate = (axis, delta) => engine.current?.navigate(axis, delta);
-  const toggleRecord = () => {
-    if (!work.src || !audio.current) return;
-    if (audio.current.paused) audio.current.play().then(() => setRecordPlaying(true)).catch(() => setRecordPlaying(false));
-    else { audio.current.pause(); setRecordPlaying(false); }
+  const albumTracks = work.tracks || [];
+  const playAlbumTrack = (track) => {
+    setSelectedTrackId(track.id);
+    window.dispatchEvent(new CustomEvent('haoqi-play-track', { detail: { trackId: track.id } }));
   };
   const roll = { duration: 460, animated: !reduced, motionBlur: true };
   return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} data-reduced={reduced} aria-label={t.ariaLabel} tabIndex={-1}>
@@ -132,8 +131,8 @@ export default function WorkArchive({ groups, language }) {
         <div className="work-detail-photo-nav"><button type="button" onClick={() => setGalleryIndex(index => (index - 1 + photoFrames.length) % photoFrames.length)} aria-label={detailT.previousImage}>←</button><span>{photoFrames[galleryIndex].caption || work.title}</span><button type="button" onClick={() => setGalleryIndex(index => (index + 1) % photoFrames.length)} aria-label={detailT.nextImage}>→</button></div>
       </div>}
       {group.id === 'music' && <div className="work-detail-music">
-        <button type="button" className={`work-record ${recordPlaying ? 'is-playing' : ''}`} onClick={toggleRecord} aria-label={recordPlaying ? detailT.pauseRecord : detailT.playRecord}><span>{work.image && <img src={work.image} alt="" />}<i>{work.archiveCode}</i></span></button>
-        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{work.title}</strong><span>{work.type}</span><button type="button" onClick={toggleRecord}>{recordPlaying ? detailT.pauseRecord : detailT.playRecord} <b>{recordPlaying ? 'Ⅱ' : '▶'}</b></button><em>{work.src ? '' : detailT.noAudio}</em><audio ref={audio} src={work.src || undefined} onEnded={() => setRecordPlaying(false)} /></div>
+        <div className="work-album-cover"><img src={work.image} alt={`${work.title} cover`} /><span>{work.archiveCode} / ALBUM</span></div>
+        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{work.title}</strong><span>{work.mood || work.type}</span><div className="work-album-tracks" aria-label={`${work.title} ${detailT.track}`}>{albumTracks.length ? albumTracks.map((track, index) => <button type="button" className={selectedTrackId === track.id ? 'is-active' : ''} onClick={() => playAlbumTrack(track)} key={track.id}><b>{String(index + 1).padStart(2, '0')}</b><span>{track.title}</span><em>{track.artist}</em><i aria-hidden="true">▶</i></button>) : <em>{detailT.noAudio}</em>}</div></div>
       </div>}
       <div className="work-array-detail-footer"><span>HAOQI / STUDIO</span><span>{t.inspect}</span></div>
     </section>}

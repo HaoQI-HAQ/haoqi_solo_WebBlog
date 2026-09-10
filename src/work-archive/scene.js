@@ -143,6 +143,26 @@ export class WorkScene {
     const labelGeo = new THREE.PlaneGeometry(1.25, .47), labelMat = new THREE.MeshBasicMaterial({ map: this.labelTexture });
     this.geometries.add(labelGeo); this.materials.add(labelMat);
     const label = new THREE.Mesh(labelGeo, labelMat); label.position.set(-1.3, 3.04, .265); this.detailModel.add(label);
+    const albumCoverBackGeo = new THREE.PlaneGeometry(4.64, 3.3), albumCoverBackMat = new THREE.MeshBasicMaterial({ color: '#f1f0eb' });
+    this.geometries.add(albumCoverBackGeo); this.materials.add(albumCoverBackMat); this.albumCoverBackMaterial = albumCoverBackMat;
+    this.albumCoverBack = new THREE.Mesh(albumCoverBackGeo, albumCoverBackMat);
+    this.albumCoverBack.position.set(0, 1.85, -.14); this.albumCoverBack.rotation.y = Math.PI;
+    this.albumCoverBack.visible = false; this.detailModel.add(this.albumCoverBack);
+    // Geometry coordinates are baked from the cassette: the main hub is (-.425, 1.8).
+    this.albumVinyl = new THREE.Group(); this.albumVinyl.position.set(-.425, 1.8, .22);
+    this.albumVinyl.visible = false; this.detailModel.add(this.albumVinyl);
+    const addRing = (inner, outer, color, z) => {
+      const geometry = new THREE.RingGeometry(inner, outer, 128);
+      const material = new THREE.MeshBasicMaterial({ color });
+      this.geometries.add(geometry); this.materials.add(material);
+      const ring = new THREE.Mesh(geometry, material); ring.position.z = z; this.albumVinyl.add(ring);
+    };
+    addRing(.025, .515, '#121514', 0);
+    for (let i = 0; i < 15; i++) addRing(.365 + i * .01, .367 + i * .01, i % 3 ? '#272c29' : '#394038', .001);
+    addRing(.345, .351, '#d8ff4f', .002);
+    const albumCoverFrontGeo = new THREE.RingGeometry(.025, .338, 128), albumCoverFrontMat = new THREE.MeshBasicMaterial();
+    this.geometries.add(albumCoverFrontGeo); this.materials.add(albumCoverFrontMat); this.albumCoverFrontMaterial = albumCoverFrontMat;
+    this.albumCoverFront = new THREE.Mesh(albumCoverFrontGeo, albumCoverFrontMat); this.albumCoverFront.position.z = .003; this.albumVinyl.add(this.albumCoverFront);
     this.updateLabel(); this.loaded = true; this.select(this.selected);
     this.last = performance.now(); this.renderer.setAnimationLoop(now => this.frame(now));
   }
@@ -153,6 +173,45 @@ export class WorkScene {
     ctx.fillStyle = '#0d0f10'; ctx.font = 'bold 64px monospace'; ctx.fillText('HAOQI / STUDIO', 30, 90);
     ctx.fillRect(30, 115, 964, 3); ctx.font = 'bold 120px monospace'; ctx.fillText(work.archiveCode, 30, 258);
     ctx.font = '30px monospace'; ctx.fillText(`${selection.group.id.toUpperCase()} / CREATIVE ARCHIVE`, 30, 342); this.labelTexture.needsUpdate = true;
+    this.updateAlbumCover(selection.group.id, work);
+  }
+  updateAlbumCover(groupId, work) {
+    if (!this.albumCoverBack || !this.albumCoverFront) return;
+    const source = groupId === 'music' && work.image && !work.pending ? work.image : '';
+    this.albumCoverBack.visible = Boolean(source && source === this.albumCoverLoadedSource);
+    this.albumVinyl.visible = this.albumCoverBack.visible;
+    if (source === this.albumCoverSource) return;
+    this.albumCoverSource = source;
+    if (!source) return;
+    new THREE.TextureLoader().load(source, (texture) => {
+      if (this.disposed || source !== this.albumCoverSource) { texture.dispose(); return; }
+      texture.colorSpace = THREE.SRGBColorSpace;
+      this.albumCoverTexture?.dispose(); this.albumCoverTexture = texture;
+      // A fitted sleeve insert, facing outwards on the rear rather than mirrored through the case.
+      const sleeve = document.createElement('canvas'); sleeve.width = 1406; sleeve.height = 1000;
+      const ctx = sleeve.getContext('2d');
+      ctx.fillStyle = '#151916'; ctx.fillRect(0, 0, sleeve.width, sleeve.height);
+      const image = texture.image, size = 904;
+      const scale = Math.min(size / image.width, size / image.height);
+      ctx.drawImage(image, 32 + (size - image.width * scale) / 2, 48 + (size - image.height * scale) / 2, image.width * scale, image.height * scale);
+      ctx.fillStyle = '#d8ff4f'; ctx.fillRect(976, 48, 2, 904);
+      ctx.font = '24px monospace'; ctx.fillText('HAOQI / STUDIO', 1010, 83);
+      ctx.fillStyle = '#f1f0eb'; ctx.font = 'bold 38px sans-serif'; ctx.fillText(work.title || work.archiveCode, 1010, 164, 358);
+      ctx.font = '22px monospace'; ctx.fillText(work.archiveCode, 1010, 211);
+      ctx.fillStyle = '#a4aca2'; ctx.font = '18px monospace';
+      ctx.fillText('ORIGINAL SOUNDTRACK', 1010, 257);
+      (work.tracks || []).slice(0, 12).forEach((track, i) => {
+        ctx.fillText(`${String(i + 1).padStart(2, '0')} / ${track.title}`, 1010, 330 + i * 42, 355);
+      });
+      ctx.fillStyle = '#d8ff4f'; ctx.fillText('SIDE B / ARCHIVE EDITION', 1010, 914, 355);
+      this.albumSleeveTexture?.dispose(); this.albumSleeveTexture = new THREE.CanvasTexture(sleeve);
+      this.albumSleeveTexture.colorSpace = THREE.SRGBColorSpace;
+      this.albumCoverBackMaterial.map = this.albumSleeveTexture; this.albumCoverBackMaterial.needsUpdate = true;
+      this.albumCoverFrontMaterial.map = texture; this.albumCoverFrontMaterial.needsUpdate = true;
+      this.albumCoverLoadedSource = source; this.albumCoverBack.visible = true; this.albumVinyl.visible = true;
+    }, undefined, () => {
+      if (source === this.albumCoverSource) this.albumCoverSource = '';
+    });
   }
   select(cell) {
     if (!this.loaded || this.targetDetail || this.detail.value > .1) return;
@@ -239,6 +298,6 @@ export class WorkScene {
     this.canvas.removeEventListener('contextmenu',this.contextMenu);
     this.canvas.removeEventListener('webglcontextlost',this.lost);
     this.instances.forEach(inst=>inst.dispose()); this.geometries.forEach(g=>g.dispose()); this.materials.forEach(m=>m.dispose());
-    this.labelTexture?.dispose(); this.environment.dispose(); this.light.shadow.map?.dispose(); this.renderer.dispose(); this.canvas.remove();
+    this.labelTexture?.dispose(); this.albumCoverTexture?.dispose(); this.albumSleeveTexture?.dispose(); this.environment.dispose(); this.light.shadow.map?.dispose(); this.renderer.dispose(); this.canvas.remove();
   }
 }

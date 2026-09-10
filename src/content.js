@@ -202,13 +202,20 @@ export const gameWorks = [
 
 export const musicTracks = [
   {
-    id: 'somniomancer-null-set',
+    id: 'sound-01-ost',
     archiveCode: 'SOUND-01',
-    title: 'Somniomancer [null set]',
-    mood: '众生行记 OST / 塞壬唱片-MSR × Crywolf',
-    analysis: '收录于《众生行记 OST》。艺人：塞壬唱片-MSR / Crywolf。',
-    src: '/media/music/sound-01-somniomancer-null-set/audio.mp3',
+    title: '众生行记 OST',
+    mood: '塞壬唱片-MSR / Original Soundtrack',
+    analysis: '《众生行记 OST》完整曲目档案。选择曲目后将在全站播放器中持续播放。',
     image: '/media/music/sound-01-somniomancer-null-set/cover.jpg',
+    tracks: [
+      { id: 'sound-01-underneath-sanctuary', title: 'Underneath the Sanctuary', artist: '塞壬唱片-MSR, Adam Gubman', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Adam Gubman - Underneath the Sanctuary.mp3' },
+      { id: 'sound-01-touch-law', title: 'Touch of the Law', artist: '塞壬唱片-MSR, Alec Justice, Echos', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Alec Justice,Echos - Touch of the Law.mp3' },
+      { id: 'sound-01-the-birth', title: 'The Birth', artist: '塞壬唱片-MSR, BaoUner', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,BaoUner - The Birth.mp3' },
+      { id: 'sound-01-the-pilgrimage', title: 'The Pilgrimage', artist: '塞壬唱片-MSR, BaoUner', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,BaoUner - The Pilgrimage.mp3' },
+      { id: 'sound-01-somniomancer', title: 'Somniomancer [null set]', artist: '塞壬唱片-MSR, Crywolf', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Crywolf - Somniomancer [null set].mp3' },
+      { id: 'sound-01-faith-enlightenment', title: 'Faith Enlightenment', artist: '塞壬唱片-MSR, Erik Castro, Robert Wolf', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Erik Castro,Robert Wolf - Faith Enlightenment.mp3' },
+    ],
   },
   {
     id: 'sound-02-redacted',
@@ -216,9 +223,9 @@ export const musicTracks = [
     title: 'ARCHIVE / REDACTED',
     mood: 'SOUND / MATERIAL LOCKED',
     analysis: '████████ ████████ ████████',
-    src: '',
     image: '/media/placeholders/archive-black.svg',
     pending: true,
+    tracks: [],
   },
   {
     id: 'sound-03-redacted',
@@ -226,15 +233,15 @@ export const musicTracks = [
     title: 'ARCHIVE / REDACTED',
     mood: 'SOUND / MATERIAL LOCKED',
     analysis: '████████ ████████ ████████',
-    src: '',
     image: '/media/placeholders/archive-black.svg',
     pending: true,
+    tracks: [],
   },
   {
-    id: 'sound-04-redacted', archiveCode: 'SOUND-04', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', src: '', image: '/media/placeholders/archive-black.svg', pending: true,
+    id: 'sound-04-redacted', archiveCode: 'SOUND-04', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
   },
   {
-    id: 'sound-05-redacted', archiveCode: 'SOUND-05', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', src: '', image: '/media/placeholders/archive-black.svg', pending: true,
+    id: 'sound-05-redacted', archiveCode: 'SOUND-05', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
   },
 ];
 

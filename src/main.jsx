@@ -337,7 +337,14 @@ function CustomCursor() {
 }
 
 function MusicTools({ language }) {
-  const playableTracks = musicTracks.filter((track) => track.src);
+  const playableTracks = musicTracks.flatMap((album) => (album.tracks || []).filter((track) => track.src).map((track) => ({
+    ...track,
+    albumId: album.id,
+    albumCode: album.archiveCode,
+    albumTitle: album.title,
+    albumMood: album.mood,
+    image: album.image,
+  })));
   const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', playableTracks[0]?.id || musicTracks[0].id);
   const [open, setOpen] = useState(false);
   const [isPlaying, setIsPlaying] = usePersistentState('haoqi-player-playing', false);
@@ -380,6 +387,22 @@ function MusicTools({ language }) {
     const index = playableTracks.findIndex((track) => track.id === current.id);
     setActiveTrack(playableTracks[(index + direction + playableTracks.length) % playableTracks.length].id);
   };
+  const playRequestedTrack = (trackId) => {
+    const next = playableTracks.find((track) => track.id === trackId);
+    if (!next) return;
+    if (next.id === current?.id && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      return;
+    }
+    setActiveTrack(next.id);
+    setIsPlaying(true);
+  };
+  useEffect(() => {
+    const handleTrackRequest = (event) => playRequestedTrack(event.detail?.trackId);
+    window.addEventListener('haoqi-play-track', handleTrackRequest);
+    return () => window.removeEventListener('haoqi-play-track', handleTrackRequest);
+  }, [current?.id, playableTracks.length]);
   const seek = (event) => {
     const audio = audioRef.current;
     if (!audio?.duration) return;
@@ -393,7 +416,7 @@ function MusicTools({ language }) {
     <button className="music-dock-toggle" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? '隐藏音乐播放器' : '打开音乐播放器'}><span className="music-dock-handle" aria-hidden="true"><i /><i /><i /></span><span>{t.nowPlaying}</span><b aria-hidden="true">{open ? '−' : '+'}</b></button>
     <div className="music-dock-panel">
       <div className="music-record-wrap" aria-hidden="true"><div className="music-tonearm"><span /></div><div className="music-record"><img src={current?.image || '/assets/tool-contact.jpg'} alt="" /></div></div>
-      <div className="music-track-meta"><small>{current?.archiveCode || 'SOUND-01'} / {isPlaying ? 'PLAYING' : 'PAUSED'}</small><strong>{current?.title || 'Audio pending'}</strong><span>{current?.mood || t.audioPending}</span></div>
+      <div className="music-track-meta"><small>{current?.albumCode || 'SOUND-01'} / {isPlaying ? 'PLAYING' : 'PAUSED'}</small><strong>{current?.title || 'Audio pending'}</strong><span>{current?.artist || current?.albumMood || t.audioPending}</span></div>
       <input className="music-progress" type="range" min="0" max="1" step="0.001" value={progress} onChange={seek} aria-label="播放进度" />
       <div className="music-controls"><button type="button" onClick={() => changeTrack(-1)} disabled={playableTracks.length < 2} aria-label="上一首">‹‹</button><button className="music-play" type="button" onClick={togglePlayback} disabled={!current?.src} aria-label={isPlaying ? '暂停' : '播放'}>{isPlaying ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => changeTrack(1)} disabled={playableTracks.length < 2} aria-label="下一首">››</button></div>
     </div>
