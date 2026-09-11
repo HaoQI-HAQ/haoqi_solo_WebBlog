@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { RollingNumber, RollingText } from '@kitlangton/rolling-number/react';
 import '@kitlangton/rolling-number/styles.css';
 import { WorkScene } from './scene.js';
+import { readAudioMetadata } from './audioMetadata.js';
 import './work-archive.css';
 
 const workText = {
@@ -43,6 +44,7 @@ export default function WorkArchive({ groups, language }) {
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [selectedTrackId, setSelectedTrackId] = useState('');
+  const [audioMetadata, setAudioMetadata] = useState({});
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const t = workText[language] || workText.mixed;
   const group = groups[column], works = group.items, work = works[selected], media = (archiveMedia[language] || archiveMedia.mixed)[group.id];
@@ -72,6 +74,14 @@ export default function WorkArchive({ groups, language }) {
   closeDetailRef.current = returnToArray;
   useEffect(() => { setGalleryIndex(0); setLightbox(false); setSelectedTrackId(work.tracks?.[0]?.id || ''); }, [work.id]);
   useEffect(() => {
+    let active = true;
+    if (!detail || group.id !== 'music' || !work.tracks?.length) { setAudioMetadata({}); return () => { active = false; }; }
+    Promise.all(work.tracks.map(async track => [track.id, await readAudioMetadata(track.src)])).then(entries => {
+      if (active) setAudioMetadata(Object.fromEntries(entries));
+    });
+    return () => { active = false; };
+  }, [detail, group.id, work.id]);
+  useEffect(() => {
     if (detail) close.current?.focus({ preventScroll: true });
     const keyboard = e => {
       if (e.target.closest('input,select,textarea,video') || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -92,6 +102,8 @@ export default function WorkArchive({ groups, language }) {
   };
   const navigate = (axis, delta) => engine.current?.navigate(axis, delta);
   const albumTracks = work.tracks || [];
+  const albumMetadata = audioMetadata[albumTracks[0]?.id] || {};
+  const albumTitle = albumMetadata.album || work.title;
   const playAlbumTrack = (track) => {
     setSelectedTrackId(track.id);
     window.dispatchEvent(new CustomEvent('haoqi-play-track', { detail: { trackId: track.id } }));
@@ -131,8 +143,8 @@ export default function WorkArchive({ groups, language }) {
         <div className="work-detail-photo-nav"><button type="button" onClick={() => setGalleryIndex(index => (index - 1 + photoFrames.length) % photoFrames.length)} aria-label={detailT.previousImage}>←</button><span>{photoFrames[galleryIndex].caption || work.title}</span><button type="button" onClick={() => setGalleryIndex(index => (index + 1) % photoFrames.length)} aria-label={detailT.nextImage}>→</button></div>
       </div>}
       {group.id === 'music' && <div className="work-detail-music">
-        <div className="work-album-cover"><img src={work.image} alt={`${work.title} cover`} /><span>{work.archiveCode} / ALBUM</span></div>
-        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{work.title}</strong><span>{work.mood || work.type}</span><div className="work-album-tracks" aria-label={`${work.title} ${detailT.track}`}>{albumTracks.length ? albumTracks.map((track, index) => <button type="button" className={selectedTrackId === track.id ? 'is-active' : ''} onClick={() => playAlbumTrack(track)} key={track.id}><b>{String(index + 1).padStart(2, '0')}</b><span>{track.title}</span><em>{track.artist}</em><i aria-hidden="true">▶</i></button>) : <em>{detailT.noAudio}</em>}</div></div>
+        <div className="work-album-cover"><img src={albumMetadata.cover || work.image} alt={`${albumTitle} cover`} /><span>{work.archiveCode} / ALBUM</span></div>
+        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{albumTitle}</strong><span>{work.mood || work.type}</span><div className="work-album-tracks" aria-label={`${albumTitle} ${detailT.track}`}>{albumTracks.length ? albumTracks.map((track, index) => { const metadata = audioMetadata[track.id] || {}; return <button type="button" className={selectedTrackId === track.id ? 'is-active' : ''} onClick={() => playAlbumTrack(track)} key={track.id}><b>{String(index + 1).padStart(2, '0')}</b><span>{metadata.title || track.title}</span><em>{metadata.artist || track.artist}</em><i aria-hidden="true">▶</i></button>; }) : <em>{detailT.noAudio}</em>}</div></div>
       </div>}
       <div className="work-array-detail-footer"><span>HAOQI / STUDIO</span><span>{t.inspect}</span></div>
     </section>}

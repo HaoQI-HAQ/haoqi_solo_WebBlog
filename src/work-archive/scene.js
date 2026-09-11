@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { baselineSelectionWave, columnStrength, damp, returnStep } from './motion.ts';
+import { readAudioMetadata } from './audioMetadata.js';
 
 // RhineLabUI's cassette geometry, spacing and signed wave/critical damping.
 // The React adapter, navigation and rendering below belong to HAOQI's archive.
@@ -177,13 +178,15 @@ export class WorkScene {
   }
   updateAlbumCover(groupId, work) {
     if (!this.albumCoverBack || !this.albumCoverFront) return;
-    const source = groupId === 'music' && work.image && !work.pending ? work.image : '';
+    const source = groupId === 'music' && work.tracks?.[0]?.src && !work.pending ? work.tracks[0].src : '';
     this.albumCoverBack.visible = Boolean(source && source === this.albumCoverLoadedSource);
     this.albumVinyl.visible = this.albumCoverBack.visible;
     if (source === this.albumCoverSource) return;
     this.albumCoverSource = source;
     if (!source) return;
-    new THREE.TextureLoader().load(source, (texture) => {
+    readAudioMetadata(source).then(metadata => {
+      if (this.disposed || source !== this.albumCoverSource) return;
+      new THREE.TextureLoader().load(metadata.cover || work.image, (texture) => {
       if (this.disposed || source !== this.albumCoverSource) { texture.dispose(); return; }
       texture.colorSpace = THREE.SRGBColorSpace;
       this.albumCoverTexture?.dispose(); this.albumCoverTexture = texture;
@@ -196,7 +199,7 @@ export class WorkScene {
       ctx.drawImage(image, 32 + (size - image.width * scale) / 2, 48 + (size - image.height * scale) / 2, image.width * scale, image.height * scale);
       ctx.fillStyle = '#d8ff4f'; ctx.fillRect(976, 48, 2, 904);
       ctx.font = '24px monospace'; ctx.fillText('HAOQI / STUDIO', 1010, 83);
-      ctx.fillStyle = '#f1f0eb'; ctx.font = 'bold 38px sans-serif'; ctx.fillText(work.title || work.archiveCode, 1010, 164, 358);
+      ctx.fillStyle = '#f1f0eb'; ctx.font = 'bold 38px sans-serif'; ctx.fillText(metadata.album || work.title || work.archiveCode, 1010, 164, 358);
       ctx.font = '22px monospace'; ctx.fillText(work.archiveCode, 1010, 211);
       ctx.fillStyle = '#a4aca2'; ctx.font = '18px monospace';
       ctx.fillText('ORIGINAL SOUNDTRACK', 1010, 257);
@@ -209,8 +212,9 @@ export class WorkScene {
       this.albumCoverBackMaterial.map = this.albumSleeveTexture; this.albumCoverBackMaterial.needsUpdate = true;
       this.albumCoverFrontMaterial.map = texture; this.albumCoverFrontMaterial.needsUpdate = true;
       this.albumCoverLoadedSource = source; this.albumCoverBack.visible = true; this.albumVinyl.visible = true;
-    }, undefined, () => {
-      if (source === this.albumCoverSource) this.albumCoverSource = '';
+      }, undefined, () => {
+        if (source === this.albumCoverSource) this.albumCoverSource = '';
+      });
     });
   }
   select(cell) {
