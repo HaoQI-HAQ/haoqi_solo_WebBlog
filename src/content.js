@@ -199,35 +199,43 @@ export const gameWorks = [
     summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true,
   },
   ...Array.from({ length: 6 }, (_, index) => {
-    const number = index + 6;
-    return { id: `work-${String(number).padStart(2, '0')}-redacted`, number: String(number).padStart(2, '0'), archiveCode: `WORK-${String(number).padStart(2, '0')}`, title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED', summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true };
+    const number = index + 6, code = String(number).padStart(2, '0');
+    return { id: `work-${code}-redacted`, number: code, archiveCode: `WORK-${code}`, title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED', summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true };
   }),
 ];
 
 const archiveCover = (title, code) => {
-  const safeTitle = title.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
-  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect width="800" height="800" fill="#151916"/><circle cx="400" cy="400" r="304" fill="none" stroke="#d8ff4f" stroke-width="3"/><circle cx="400" cy="400" r="238" fill="none" stroke="#3b423d" stroke-width="38"/><circle cx="400" cy="400" r="128" fill="#eef0e7"/><circle cx="400" cy="400" r="18" fill="#151916"/><path d="M80 110h640M80 690h640" stroke="#d8ff4f" stroke-width="3"/><text x="80" y="70" fill="#d8ff4f" font-family="monospace" font-size="24">HAOQI / STUDIO</text><text x="80" y="745" fill="#eef0e7" font-family="monospace" font-size="23">${code} / ARCHIVE EDITION</text><text x="400" y="375" fill="#151916" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="30">${safeTitle}</text></svg>`)}`;
+  const safe = title.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect width="800" height="800" fill="#151916"/><circle cx="400" cy="400" r="304" fill="none" stroke="#d8ff4f" stroke-width="3"/><circle cx="400" cy="400" r="238" fill="none" stroke="#3b423d" stroke-width="38"/><circle cx="400" cy="400" r="128" fill="#eef0e7"/><circle cx="400" cy="400" r="18" fill="#151916"/><path d="M80 110h640M80 690h640" stroke="#d8ff4f" stroke-width="3"/><text x="80" y="70" fill="#d8ff4f" font-family="monospace" font-size="24">HAOQI / STUDIO</text><text x="80" y="745" fill="#eef0e7" font-family="monospace" font-size="23">${code} / ARCHIVE EDITION</text><text x="400" y="375" fill="#151916" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="30">${safe}</text></svg>`)}`;
 };
 const importedAlbum = ({ id, code, folder, title, tracks }) => ({
   id, archiveCode: code, title, mood: 'LOCAL COLLECTION / LRC ARCHIVED',
-  analysis: `《${title}》本地专辑档案。歌词 LRC 已随曲目关联，可在后续播放器界面继续扩展显示。`,
-  image: archiveCover(title, code),
+  analysis: `《${title}》本地专辑档案。歌词 LRC 已随曲目关联。`, image: archiveCover(title, code),
   tracks: tracks.map(([artist, track], index) => {
     const file = `${artist} - ${track}`;
     return { id: `${id}-${String(index + 1).padStart(2, '0')}`, title: track, artist, src: `${folder}/${file}.mp3`, lrc: id === 'sound-04-no-title' && track === 'Echo' ? '' : `${folder}/${file}.lrc` };
   }),
 });
-const emptyMusicSlots = Array.from({ length: 6 }, (_, index) => {
-  const number = index + 6;
-  return { id: `sound-${String(number).padStart(2, '0')}-redacted`, archiveCode: `SOUND-${String(number).padStart(2, '0')}`, title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [] };
+const importedAlbumFiles = ({ id, code, folder, title, files, hasLyrics = true }) => ({
+  id, archiveCode: code, title, mood: 'ID3 / APIC ARCHIVED',
+  analysis: '专辑、曲目、艺术家与封面将从 MP3 内嵌详细信息读取。', image: archiveCover(title, code),
+  tracks: files.map((file, index) => ({
+    id: `${id}-${String(index + 1).padStart(2, '0')}`,
+    title: 'READING MP3 METADATA', artist: 'ID3 ARCHIVE',
+    src: `${folder}/${file}`, lrc: hasLyrics ? `${folder}/${file.replace(/\.mp3$/i, '.lrc')}` : '',
+  })),
 });
+const emptyMusicSlots = ['11'].map(code => ({
+  id: `sound-${code}-redacted`, archiveCode: `SOUND-${code}`, title: 'ARCHIVE / REDACTED',
+  mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████',
+  image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
+}));
 
 export const musicTracks = [
   {
     id: 'sound-01-ost',
     archiveCode: 'SOUND-01',
-    title: '众生行记 OST',
-    mood: '塞壬唱片-MSR / Original Soundtrack',
+    title: '众生行记 OST', mood: '塞壬唱片-MSR / Original Soundtrack',
     analysis: '《众生行记 OST》完整曲目档案。选择曲目后将在全站播放器中持续播放。',
     image: '/media/music/sound-01-somniomancer-null-set/cover.jpg',
     tracks: [
@@ -239,18 +247,15 @@ export const musicTracks = [
       { id: 'sound-01-faith-enlightenment', title: 'Faith Enlightenment', artist: '塞壬唱片-MSR, Erik Castro, Robert Wolf', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Erik Castro,Robert Wolf - Faith Enlightenment.mp3' },
     ],
   },
-  importedAlbum({ id: 'sound-02-zelda', code: 'SOUND-02', title: 'ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', folder: '/media/music/sound-02-redacted/ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', tracks: [
-    ['片岡真央', '襲歩 (夜)'], ['片岡真央', '襲歩 (昼)'], ['片岡真央', '戦闘 (祠)'], ['片岡真央', '戦闘 (フィールド)'], ['片岡真央', 'イワロック戦'], ['片岡真央', 'ガーディアン戦'], ['片岡真央', 'フィールド (昼)'], ['片岡真央', 'メインテーマ'], ['若井淑', 'カカリコ村 (夜)'], ['若井淑', 'カカリコ村 (昼)'], ['若井淑', 'ヒノックス戦'], ['岩田恭明', '祠'], ['岩田恭明', '馬宿'], ['岩田恭明', '時の神殿'], ['岩田恭明', 'カッシーワのテーマ'], ['岩田恭明', 'ゲルドの街 (夜)'], ['岩田恭明', 'ゲルドの街 (昼)'], ['岩田恭明', 'ゴロンシティー (夜)'], ['岩田恭明', 'ゴロンシティー (昼)'], ['岩田恭明', 'ゾーラの (夜)'], ['岩田恭明', 'ゾーラの (昼)'], ['岩田恭明', 'リトの村 (夜)'], ['岩田恭明', 'リトの村 (昼)'], ['竹岡智行', 'メインテーマ コンサートバージョン'],
-  ] }),
-  importedAlbum({ id: 'sound-03-huaishu-li', code: 'SOUND-03', title: '怀黍离OST', folder: '/media/music/sound-03-redacted/怀黍离OST', tracks: [
-    ['塞壬唱片-MSR,颜沐宸Ace', '击壤歌'], ['塞壬唱片-MSR,KH', '锦绣山河'], ['塞壬唱片-MSR,Kirara Magic', '赴大荒'], ['塞壬唱片-MSR,Salty Salt,Elvin Shen', '祥风时雨'],
-  ] }),
-  importedAlbum({ id: 'sound-04-no-title', code: 'SOUND-04', title: 'No title-', folder: '/media/music/sound-04-redacted/No title-', tracks: [
-    ['Reol', '-BWW SCREAM-'], ['Reol', '-Ending-'], ['Reol', '-Interlude-'], ['Reol', '-Opening-'], ['Reol', 'Echo'], ['Reol', 'アシンメトリー'], ['Reol', 'ギガンティックO.T.N -Big Death Edition-'], ['Reol', 'ヒビカセ'], ['Reol,Giga', 'drop pop candy'], ['Reol,Giga', 'No title'], ['Reol,nqrse', 'オオエドランヴ'],
-  ] }),
-  importedAlbum({ id: 'sound-05-panty-stocking', code: 'SOUND-05', title: 'Panty & Stocking with Garterbelt The Original Soundtrack', folder: '/media/music/sound-05-redacted/Panty & Stocking with Garterbelt The Original Soundtrack', tracks: [
-    ['Aimee b,☆Taku Takahashi', 'Fallen Angel'], ['Hoshina Anniversary', 'Theme for Panty & Stocking'], ['Mariya Ise,TCY FORCE', 'CHOCOLAT'], ['TeddyLoid', 'Theme for Scanty & Knee Socks'],
-  ] }),
+  importedAlbum({ id: 'sound-02-zelda', code: 'SOUND-02', title: 'ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', folder: '/media/music/sound-02-redacted/ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', tracks: [['片岡真央', '襲歩 (夜)'], ['片岡真央', '襲歩 (昼)'], ['片岡真央', '戦闘 (祠)'], ['片岡真央', '戦闘 (フィールド)'], ['片岡真央', 'イワロック戦'], ['片岡真央', 'ガーディアン戦'], ['片岡真央', 'フィールド (昼)'], ['片岡真央', 'メインテーマ'], ['若井淑', 'カカリコ村 (夜)'], ['若井淑', 'カカリコ村 (昼)'], ['若井淑', 'ヒノックス戦'], ['岩田恭明', '祠'], ['岩田恭明', '馬宿'], ['岩田恭明', '時の神殿'], ['岩田恭明', 'カッシーワのテーマ'], ['岩田恭明', 'ゲルドの街 (夜)'], ['岩田恭明', 'ゲルドの街 (昼)'], ['岩田恭明', 'ゴロンシティー (夜)'], ['岩田恭明', 'ゴロンシティー (昼)'], ['岩田恭明', 'ゾーラの (夜)'], ['岩田恭明', 'ゾーラの (昼)'], ['岩田恭明', 'リトの村 (夜)'], ['岩田恭明', 'リトの村 (昼)'], ['竹岡智行', 'メインテーマ コンサートバージョン']] }),
+  importedAlbum({ id: 'sound-03-huaishu-li', code: 'SOUND-03', title: '怀黍离OST', folder: '/media/music/sound-03-redacted/怀黍离OST', tracks: [['塞壬唱片-MSR,颜沐宸Ace', '击壤歌'], ['塞壬唱片-MSR,KH', '锦绣山河'], ['塞壬唱片-MSR,Kirara Magic', '赴大荒'], ['塞壬唱片-MSR,Salty Salt,Elvin Shen', '祥风时雨']] }),
+  importedAlbum({ id: 'sound-04-no-title', code: 'SOUND-04', title: 'No title-', folder: '/media/music/sound-04-redacted/No title-', tracks: [['Reol', '-BWW SCREAM-'], ['Reol', '-Ending-'], ['Reol', '-Interlude-'], ['Reol', '-Opening-'], ['Reol', 'Echo'], ['Reol', 'アシンメトリー'], ['Reol', 'ギガンティックO.T.N -Big Death Edition-'], ['Reol', 'ヒビカセ'], ['Reol,Giga', 'drop pop candy'], ['Reol,Giga', 'No title'], ['Reol,nqrse', 'オオエドランヴ']] }),
+  importedAlbumFiles({ id: 'sound-05-panty-stocking', code: 'SOUND-05', title: 'PANTY & STOCKING WITH GARTERBELT OST', folder: '/media/music/sound-05-redacted', files: ["Panty & Stocking with Garterbelt The Original Soundtrack/Aimee b,☆Taku Takahashi - Fallen Angel.mp3", "Panty & Stocking with Garterbelt The Original Soundtrack/Fly Away - TeddyLoid.mp3", "Panty & Stocking with Garterbelt The Original Soundtrack/Hoshina Anniversary - Theme for Panty & Stocking.mp3", "Panty & Stocking with Garterbelt The Original Soundtrack/Mariya Ise,TCY FORCE - CHOCOLAT.mp3", "Panty & Stocking with Garterbelt The Original Soundtrack/TeddyLoid - Theme for Scanty & Knee Socks.mp3"] }),
+  importedAlbumFiles({ id: 'sound-06-luv-sic', code: 'SOUND-06', title: 'LUV(SIC) HEXALOGY', folder: '/media/music/sound-06-redacted', files: ["Luv(sic) Hexalogy/Luv (sic.) pt 3 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 Ta-ku Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 Ta-ku Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic)  12 Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (Sic) - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) 12 Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) Grand Finale - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) Grand Finale Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 2 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 4 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 4 LASTorder Remix  Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2  Acoustica - Haruka Nakamura,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2  Acoustica Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2 - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt4  LASTorder Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt4 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5  Jumpster Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 Jumpster Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt6  Uyama Hiroto Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv(sic) pt6 Uyama Hiroto Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Perfect Circle - Nujabes.mp3", "Luv(sic) Hexalogy/Perfect Circle Instrumentals - Nujabes.mp3"] }),
+  importedAlbumFiles({ id: 'sound-07-gokusai-shiki', code: 'SOUND-07', title: '極彩色', folder: '/media/music/sound-07-redacted', hasLyrics: false, files: ["極彩色/Reol - -nil-.mp3", "極彩色/Reol - -orderly-.mp3", "極彩色/Reol - 生命線.mp3", "極彩色/Reol - 水底游歩道.mp3", "極彩色/Reol - Behind The Night.mp3", "極彩色/Reol - ROXY.mp3", "極彩色/Reol - ハルシアン.mp3", "極彩色/Reol - ロジックエージェント.mp3", "極彩色/Reol,monacafactory - Syrup.mp3"] }),
+  importedAlbumFiles({ id: 'sound-08-modal-soul', code: 'SOUND-08', title: 'MODAL SOUL', folder: '/media/music/sound-08-redacted', files: ["modal soul/Eclipse (feat. Substantial) - Nujabes,Substantial.mp3", "modal soul/Feather (feat.Cise Starr & Akin from CYNE) - Nujabes,Cise Starr,Akin Yai.mp3", "modal soul/Flowers - Nujabes.mp3", "modal soul/Horizon - Nujabes.mp3", "modal soul/Light on the Land - Nujabes.mp3", "modal soul/Luv(sic.) Part 3 (feat. Shing02) - Nujabes,Shing02.mp3", "modal soul/Modal Soul (feat.Uyama Hiroto) - Nujabes,Uyama Hiroto.mp3", "modal soul/Music is mine - Nujabes.mp3", "modal soul/Ordinary Joe (feat. Terry Callier) - Nujabes,Terry Callier.mp3", "modal soul/Reflection Eternal - Nujabes.mp3", "modal soul/Sea of Cloud - Nujabes.mp3", "modal soul/Thank you (feat.Apani B) - Nujabes,Apani B Fly MC.mp3", "modal soul/The Sign (feat. Pase Rock) - Nujabes,Pase Rock.mp3", "modal soul/World's End Rhapsody - Nujabes.mp3"] }),
+  importedAlbumFiles({ id: 'sound-09-bad-mode', code: 'SOUND-09', title: 'BADモード', folder: '/media/music/sound-09-redacted', files: ["BADモード/君に夢中 - 宇多田ヒカル.mp3", "BADモード/気分じゃないの (Not In The Mood) - 宇多田ヒカル.mp3", "BADモード/誰にも言わない - 宇多田ヒカル.mp3", "BADモード/BADモード - 宇多田ヒカル.mp3", "BADモード/Beautiful World (Da Capo Version) - 宇多田ヒカル.mp3", "BADモード/Face My Fears (A.G. Cook Remix) - 宇多田ヒカル.mp3", "BADモード/Find Love - 宇多田ヒカル.mp3", "BADモード/One Last Kiss - 宇多田ヒカル.mp3", "BADモード/PINK BLOOD - 宇多田ヒカル.mp3", "BADモード/Somewhere Near Marseilles ーマルセイユ辺りー - 宇多田ヒカル.mp3", "BADモード/Time - 宇多田ヒカル.mp3", "BADモード/キレイな人 (Find Love) - 宇多田ヒカル.mp3"] }),
+  importedAlbumFiles({ id: 'sound-10-this-is-the-one', code: 'SOUND-10', title: 'THIS IS THE ONE', folder: '/media/music/sound-10-redacted', files: ["This Is The One/Apple And Cinnamon - 宇多田ヒカル.mp3", "This Is The One/Automatic Part II - 宇多田ヒカル.mp3", "This Is The One/Come Back To Me - 宇多田ヒカル.mp3", "This Is The One/Dirty Desire - 宇多田ヒカル.mp3", "This Is The One/Me Muero - 宇多田ヒカル.mp3", "This Is The One/Merry Christmas Mr. Lawrence - FYI - 宇多田ヒカル.mp3", "This Is The One/On And On - 宇多田ヒカル.mp3", "This Is The One/Poppin' - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Ending) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Opening) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Simple And Clean - 宇多田ヒカル.mp3", "This Is The One/Taking My Money Back - 宇多田ヒカル.mp3", "This Is The One/This One (Crying Like A Child) - 宇多田ヒカル.mp3"] }),
   ...emptyMusicSlots,
 ];
 
@@ -285,6 +290,7 @@ export const photoAlbums = [
     camera: 'MATERIAL LOCKED',
     cover: '/media/placeholders/archive-black.svg',
     summary: '████████ ████████ ████████',
+    pending: true,
     coordinates: { x: 61, y: 78 },
     tags: ['MATERIAL LOCKED'],
     images: [
@@ -303,6 +309,7 @@ export const photoAlbums = [
     camera: 'MATERIAL LOCKED',
     cover: '/media/placeholders/archive-black.svg',
     summary: '████████ ████████ ████████',
+    pending: true,
     coordinates: { x: 75, y: 55 },
     tags: ['MATERIAL LOCKED'],
     images: [
@@ -316,9 +323,8 @@ export const photoAlbums = [
     id: 'photo-05-redacted', number: '05', archiveCode: 'PHOTO-05', title: 'ARCHIVE / REDACTED', city: '待接入', year: '----', date: '----.--.--', frameCount: 0, camera: 'MATERIAL LOCKED', cover: '/media/placeholders/archive-black.svg', summary: '████████ ████████ ████████', coordinates: { x: 62, y: 32 }, tags: ['MATERIAL LOCKED'], images: [{ src: '/media/placeholders/archive-black.svg', caption: 'ARCHIVE / REDACTED' }], pending: true,
   },
   ...Array.from({ length: 6 }, (_, index) => {
-    const number = index + 6;
-    const archiveCode = `PHOTO-${String(number).padStart(2, '0')}`;
-    return { id: `photo-${String(number).padStart(2, '0')}-redacted`, number: String(number).padStart(2, '0'), archiveCode, title: 'ARCHIVE / REDACTED', city: '待接入', year: '----', date: '----.--.--', frameCount: 0, camera: 'MATERIAL LOCKED', cover: '/media/placeholders/archive-black.svg', summary: '████████ ████████ ████████', coordinates: { x: 62, y: 32 }, tags: ['MATERIAL LOCKED'], images: [{ src: '/media/placeholders/archive-black.svg', caption: 'ARCHIVE / REDACTED' }], pending: true };
+    const number = index + 6, code = String(number).padStart(2, '0');
+    return { id: `photo-${code}-redacted`, number: code, archiveCode: `PHOTO-${code}`, title: 'ARCHIVE / REDACTED', city: '待接入', year: '----', date: '----.--.--', frameCount: 0, camera: 'MATERIAL LOCKED', cover: '/media/placeholders/archive-black.svg', summary: '████████ ████████ ████████', coordinates: { x: 62, y: 32 }, tags: ['MATERIAL LOCKED'], images: [{ src: '/media/placeholders/archive-black.svg', caption: 'ARCHIVE / REDACTED' }], pending: true };
   }),
 ];
 

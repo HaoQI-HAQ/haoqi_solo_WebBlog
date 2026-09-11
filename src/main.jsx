@@ -345,9 +345,10 @@ function MusicTools({ language }) {
     albumMood: album.mood,
     image: album.image,
   })));
-  const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', playableTracks[0]?.id || musicTracks[0].id);
+  // The dock starts as a quiet, animated site element. Playback only begins after an explicit user action.
+  const [activeTrack, setActiveTrack] = useState(playableTracks[0]?.id || musicTracks[0].id);
   const [open, setOpen] = useState(false);
-  const [isPlaying, setIsPlaying] = usePersistentState('haoqi-player-playing', false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef(null);
   const current = playableTracks.find((track) => track.id === activeTrack) || playableTracks[0] || musicTracks[0];
@@ -356,24 +357,21 @@ function MusicTools({ language }) {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio || !current?.src) return undefined;
-    const restore = () => {
-      const saved = Number(window.localStorage.getItem(`haoqi-track-time-${current.id}`) || 0);
-      if (Number.isFinite(saved) && saved > 0 && saved < audio.duration) audio.currentTime = saved;
+    const prepare = () => {
       setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
       if (isPlaying) audio.play().catch(() => setIsPlaying(false));
     };
     const persist = () => {
-      window.localStorage.setItem(`haoqi-track-time-${current.id}`, String(audio.currentTime));
       setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
     };
     const advance = () => {
       const index = playableTracks.findIndex((track) => track.id === current.id);
       setActiveTrack(playableTracks[(index + 1) % playableTracks.length].id);
     };
-    audio.addEventListener('loadedmetadata', restore, { once: true });
+    audio.addEventListener('loadedmetadata', prepare, { once: true });
     audio.addEventListener('timeupdate', persist);
     audio.addEventListener('ended', advance);
-    return () => { audio.removeEventListener('loadedmetadata', restore); audio.removeEventListener('timeupdate', persist); audio.removeEventListener('ended', advance); };
+    return () => { audio.removeEventListener('loadedmetadata', prepare); audio.removeEventListener('timeupdate', persist); audio.removeEventListener('ended', advance); };
   }, [current?.id, current?.src, isPlaying, playableTracks.length, setActiveTrack, setIsPlaying]);
 
   const togglePlayback = () => {
@@ -818,7 +816,8 @@ function SiteRouter() {
     document.addEventListener('click', onLinkClick);
     return () => { window.removeEventListener('popstate', onPopState); document.removeEventListener('click', onLinkClick); };
   }, []);
-  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <App language={language} setLanguage={setLanguage} />;
+  // The root route is the live archive. The previous static landing composition is no longer the default experience.
+  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <FunctionalPage page="games" language={language} setLanguage={setLanguage} />;
   return <><CustomCursor />{page}<MusicTools language={language} /></>;
 }
 

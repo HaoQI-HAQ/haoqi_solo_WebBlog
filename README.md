@@ -60,30 +60,50 @@ public/media/photos/
 
 推荐 WebP、JPG 或 AVIF。将新相册的 `cover` 与 `images` 路径添加到 `src/content.js` 的 `photoAlbums`；详情页会按 `images` 的顺序左右切换与放大查看。没有实际图像时，档案必须保持纯黑预览与 `REDACTED` 文案。
 
-### 音乐唱片：一个专辑/档案一个文件夹
+### 音乐唱片：一个档案一个文件夹
 
 目录为 `public/media/music/sound-编号-英文名/`。每张唱片至少有音频与封面：
 
 ```text
 public/media/music/
 ├─ sound-01-somniomancer-null-set/
-│  ├─ audio.mp3           # SOUND-01 音频
-│  └─ cover.jpg           # 专辑封面，方形优先
+│  ├─ 塞壬唱片-MSR,Adam Gubman - Underneath the Sanctuary.mp3
+│  └─ cover.jpg
 ├─ sound-02-redacted/
+│  └─ 专辑文件夹/          # 将该专辑的 MP3、LRC 放在这里
 ├─ sound-03-redacted/
 ├─ sound-04-redacted/
-└─ sound-05-redacted/
+├─ sound-05-redacted/
+├─ sound-06-redacted/     # 新增空槽，保留 .gitkeep
+└─ sound-11-redacted/
 ```
 
-建议 MP3（兼容性最好）或 OGG。在 `src/content.js` 的 `musicTracks` 中填写 `src: '/media/music/sound-02-专辑名/audio.mp3'` 与 `image: '/media/music/sound-02-专辑名/cover.jpg'`。音乐档案中的黑胶会读取封面与音频；无素材的槽位维持黑色封面和打码描述。
+建议使用 MP3（兼容性最好）与同名 LRC。网站会从 MP3 的 ID3 标签读取专辑名、曲名、艺术家及 APIC 内嵌封面，黑胶模型也使用该封面。新专辑应放进对应 `sound-编号-redacted/` 下的独立专辑文件夹，再在 `src/content.js` 中将每首 MP3、LRC 路径写入该专辑的 `tracks`。无素材的槽位维持黑色封面和打码描述。
 
 ### 当前空槽位
 
-- 游戏：`WORK-04`、`WORK-05`
-- 摄影：`PHOTO-02` 至 `PHOTO-05`
-- 音乐：`SOUND-02` 至 `SOUND-05`
+- 游戏：`WORK-04` 至 `WORK-11`；新增目录为 `work-06-redacted/` 至 `work-11-redacted/`
+- 摄影：`PHOTO-02` 至 `PHOTO-11`；新增目录为 `0000-00-00-region-pending-photo-06/` 至 `...-11/`
+- 音乐：`SOUND-06` 至 `SOUND-11`；新增目录为 `sound-06-redacted/` 至 `sound-11-redacted/`
 
 它们在网页中均显示纯黑图片与 `ARCHIVE / REDACTED`、`MATERIAL LOCKED` 状态。填入真实素材与文案后再移除对应的 `pending: true`。
+
+### 新增空槽位的必做规则
+
+以后每新增一个 `WORK`、`PHOTO` 或 `SOUND` 空槽位，必须在同一次修改中完成以下两件事：
+
+1. 在 `src/content.js` 新增该档案，并使用纯黑占位图、`ARCHIVE / REDACTED` 与 `pending: true`。
+2. 在对应的 `public/media/` 分类目录创建该档案专属文件夹，即使暂时为空也保留 `.gitkeep`。
+
+文件夹命名规则如下：
+
+```text
+游戏：public/media/games/work-06-redacted/（填入素材后可按项目名重命名，并同步更新路径）
+摄影：public/media/photos/YYYY-MM-DD-地区名-photo-06/
+音乐：public/media/music/sound-06-redacted/专辑文件夹/
+```
+
+摄影在未知拍摄时间或地区时，先使用 `0000-00-00-region-pending-photo-编号/`；获取真实信息后再重命名为日期与地区。不要让多个摄影档案共用同一个文件夹。
 
 ### 上传前检查
 
