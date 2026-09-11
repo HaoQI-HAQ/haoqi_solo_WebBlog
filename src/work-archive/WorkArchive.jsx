@@ -45,7 +45,6 @@ export default function WorkArchive({ groups, language }) {
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [selectedTrackId, setSelectedTrackId] = useState('');
   const [audioMetadata, setAudioMetadata] = useState({});
-  const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const t = workText[language] || workText.mixed;
   const group = groups[column], works = group.items, work = works[selected], media = (archiveMedia[language] || archiveMedia.mixed)[group.id];
   const detailT = detailCopy[language] || detailCopy.mixed;
@@ -53,18 +52,12 @@ export default function WorkArchive({ groups, language }) {
   useEffect(() => {
     let scene;
     try {
-      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), () => closeDetailRef.current?.(), reduced);
+      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), () => closeDetailRef.current?.(), false);
       engine.current = scene; scene.onError = () => setStatus('error');
       scene.load().then(() => { if (!scene.disposed) setStatus('ready'); }).catch(() => { if (!scene.disposed) setStatus('error'); });
     } catch { setStatus('error'); }
     return () => { scene?.dispose(); engine.current = null; };
   }, [groups]);
-  useEffect(() => {
-    const media = matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => setReduced(media.matches); media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
-  }, []);
-  useEffect(() => { engine.current?.setReduced(reduced); }, [reduced]);
   const openDetail = () => {
     if (status !== 'ready') return;
     engine.current.setDetail(true); setDetail(true); setHovered(null);
@@ -108,8 +101,8 @@ export default function WorkArchive({ groups, language }) {
     setSelectedTrackId(track.id);
     window.dispatchEvent(new CustomEvent('haoqi-play-track', { detail: { trackId: track.id } }));
   };
-  const roll = { duration: 460, animated: !reduced, motionBlur: true };
-  return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} data-reduced={reduced} aria-label={t.ariaLabel} tabIndex={-1}>
+  const roll = { duration: 460, animated: true, motionBlur: true };
+  return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} aria-label={t.ariaLabel} tabIndex={-1}>
     <div className="work-array-canvas" ref={host} aria-hidden={detail || status === 'error'} />
     <div className="work-array-atmosphere" aria-hidden="true" />
     {detail && <span className="work-array-dismiss" aria-hidden="true">{detailT.blankReturn}</span>}
@@ -156,7 +149,7 @@ export default function WorkArchive({ groups, language }) {
       <div className="work-array-lanes"><button aria-label={t.previousLane} disabled={status!=='ready'} onClick={()=>navigate('lane',-1)}>←</button><span>{media.title} <b>{String(column + 1).padStart(2, '0')} / {String(groups.length).padStart(2, '0')}</b></span><button aria-label={t.nextLane} disabled={status!=='ready'} onClick={()=>navigate('lane',1)}>→</button></div>
       <div className="work-array-instructions">↑ ↓ {t.select} <span>/</span> ← → {t.move} {media.title} <span>/</span> ENTER {t.open}</div>
     </footer>
-    <div className="work-array-bottom"><span>{t.independent}</span><button type="button" aria-pressed={reduced} onClick={()=>setReduced(v=>!v)}>{reduced ? t.motionReduced : t.motionFull}</button></div>
+    <div className="work-array-bottom"><span>{t.independent}</span></div>
     <p className="work-array-announcement" aria-live="polite">{t.announce}: {work.archiveCode} {work.title}</p>
   </main>;
 }
