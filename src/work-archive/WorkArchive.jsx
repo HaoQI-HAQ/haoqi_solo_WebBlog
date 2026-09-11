@@ -39,6 +39,11 @@ const detailCopy = {
   ru: { blankReturn: 'НАЖМИТЕ НА ПУСТОЕ МЕСТО, ЧТОБЫ ВЕРНУТЬСЯ', video: 'ДЕМОНСТРАЦИЯ ПРОЕКТА', videoPending: 'ВИДЕО ПРОЕКТА ГОТОВИТСЯ', download: 'СКАЧАТЬ ИГРУ', bilibili: 'ВИДЕО BILIBILI', linkPending: 'ССЫЛКА ГОТОВИТСЯ', description: 'КОНТЕКСТ РАБОТЫ', gallery: 'НАБОР ИЗОБРАЖЕНИЙ', enlarge: 'НАЖМИТЕ ДЛЯ УВЕЛИЧЕНИЯ', previousImage: 'ПРЕДЫДУЩЕЕ ИЗОБРАЖЕНИЕ', nextImage: 'СЛЕДУЮЩЕЕ ИЗОБРАЖЕНИЕ', record: 'ВИНИЛОВАЯ ПЛАСТИНКА', track: 'ТРЕК', playRecord: 'ВОСПРОИЗВЕСТИ', pauseRecord: 'ПАУЗА', noAudio: 'АУДИО ГОТОВИТСЯ' },
 };
 
+function bilibiliEmbedSource(url) {
+  const bvid = url?.match(/bilibili\.com\/video\/(BV[\w-]+)/i)?.[1];
+  return bvid ? `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0` : '';
+}
+
 export default function WorkArchive({ groups, language }) {
   const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), closeDetailRef = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
@@ -97,6 +102,7 @@ export default function WorkArchive({ groups, language }) {
   const albumTracks = work.tracks || [];
   const albumMetadata = audioMetadata[albumTracks[0]?.id] || {};
   const albumTitle = albumMetadata.album || work.title;
+  const bilibiliEmbed = group.id === 'games' ? bilibiliEmbedSource(work.bilibiliUrl) : '';
   const playAlbumTrack = (track) => {
     setSelectedTrackId(track.id);
     window.dispatchEvent(new CustomEvent('haoqi-play-track', { detail: { trackId: track.id } }));
@@ -126,7 +132,7 @@ export default function WorkArchive({ groups, language }) {
       <div className="work-detail-tabs"><span className="is-active">01 概述</span><span>02 素材</span><span>03 注记</span></div>
       {group.id === 'games' && <div className="work-detail-game">
         <small>{detailT.video}</small>
-        {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : <div className="work-detail-video-pending"><img src={work.image} alt={work.title} /><span>{detailT.videoPending}</span></div>}
+        {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : bilibiliEmbed ? <div className="work-detail-bilibili-frame"><iframe key={work.id} src={bilibiliEmbed} title={`${work.title} · ${detailT.bilibili}`} allow="autoplay; fullscreen" allowFullScreen /> <span>{work.archiveCode} / BILIBILI STREAM</span></div> : <div className="work-detail-video-pending"><img src={work.image} alt={work.title} /><span>{detailT.videoPending}</span></div>}
         <div className="work-detail-actions"><a href={work.downloadUrl?.startsWith('http') ? work.downloadUrl : undefined} target={work.downloadUrl?.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className={`work-detail-download ${!work.downloadUrl?.startsWith('http') ? 'is-pending' : ''}`}>{detailT.download} <span>↗</span><small>{!work.downloadUrl?.startsWith('http') && detailT.linkPending}</small></a><a href={work.bilibiliUrl?.startsWith('http') ? work.bilibiliUrl : undefined} target={work.bilibiliUrl?.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className={`work-detail-bilibili ${!work.bilibiliUrl?.startsWith('http') ? 'is-pending' : ''}`}>{detailT.bilibili} <span>↗</span><small>{!work.bilibiliUrl?.startsWith('http') && detailT.linkPending}</small></a></div>
         <div className="work-detail-description"><small>{detailT.description}</small><p>{work.summary}</p></div>
       </div>}

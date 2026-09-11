@@ -57,6 +57,10 @@
 .work-array-detail-footer { display: flex; justify-content: space-between; margin: 25px 18px 0; padding: 15px 0 0; border-top: 1px solid var(--line-light); font-size: 8px; }
 .work-detail-game>small,.work-detail-gallery-heading,.work-detail-description>small,.work-detail-track>small { display: block; margin: 20px 0 9px; color: #626a66; font: 400 8px/1.4 var(--mono); letter-spacing: .08em; }
 .work-detail-game video { width: 100%; max-height: 210px; margin: 0; background: var(--ink); }
+.work-detail-bilibili-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid rgba(117,134,60,.72); background: var(--ink); box-shadow: inset 0 0 0 7px rgba(13,15,16,.18); }
+.work-detail-bilibili-frame::before { content: ''; position: absolute; z-index: 1; inset: 7px; border: 1px solid rgba(241,240,235,.2); pointer-events: none; }
+.work-detail-bilibili-frame iframe { display: block; width: 100%; height: 100%; border: 0; background: var(--ink); }
+.work-detail-bilibili-frame>span { position: absolute; z-index: 2; right: 8px; bottom: 8px; padding: 5px 7px; color: var(--acid); background: rgba(13,15,16,.8); font: 400 7px/1 var(--mono); letter-spacing: .07em; pointer-events: none; }
 .work-detail-video-pending { position: relative; height: 180px; overflow: hidden; background: var(--ink); }
 .work-detail-video-pending img { width: 100%; height: 100%; object-fit: cover; opacity: .45; }
 .work-detail-video-pending span { position: absolute; left: 14px; bottom: 12px; color: var(--paper); font: 400 9px/1 var(--mono); }
@@ -109,6 +113,7 @@
   .work-array-detail>img { max-height: 100px; }
   .work-array-dismiss span { left: 20px; bottom: 25px; }
   .work-detail-game video,.work-detail-video-pending { max-height: 142px; height: 142px; }
+  .work-detail-bilibili-frame { min-height: 142px; }
   .work-detail-photo-frame img { height: 145px; }
   .work-detail-music { grid-template-columns: 105px 1fr; gap: 14px; }
   .work-album-tracks { grid-template-columns: 1fr; }

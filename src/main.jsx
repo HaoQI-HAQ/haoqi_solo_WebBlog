@@ -816,8 +816,7 @@ function SiteRouter() {
     document.addEventListener('click', onLinkClick);
     return () => { window.removeEventListener('popstate', onPopState); document.removeEventListener('click', onLinkClick); };
   }, []);
-  // The root route is the live archive. The previous static landing composition is no longer the default experience.
-  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <FunctionalPage page="games" language={language} setLanguage={setLanguage} />;
+  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <App language={language} setLanguage={setLanguage} />;
   return <><CustomCursor />{page}<MusicTools language={language} /></>;
 }
 
