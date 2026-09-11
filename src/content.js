@@ -198,7 +198,29 @@ export const gameWorks = [
     id: 'work-05-redacted', number: '05', archiveCode: 'WORK-05', title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED',
     summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true,
   },
+  ...Array.from({ length: 6 }, (_, index) => {
+    const number = index + 6;
+    return { id: `work-${String(number).padStart(2, '0')}-redacted`, number: String(number).padStart(2, '0'), archiveCode: `WORK-${String(number).padStart(2, '0')}`, title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED', summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true };
+  }),
 ];
+
+const archiveCover = (title, code) => {
+  const safeTitle = title.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[char]));
+  return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><rect width="800" height="800" fill="#151916"/><circle cx="400" cy="400" r="304" fill="none" stroke="#d8ff4f" stroke-width="3"/><circle cx="400" cy="400" r="238" fill="none" stroke="#3b423d" stroke-width="38"/><circle cx="400" cy="400" r="128" fill="#eef0e7"/><circle cx="400" cy="400" r="18" fill="#151916"/><path d="M80 110h640M80 690h640" stroke="#d8ff4f" stroke-width="3"/><text x="80" y="70" fill="#d8ff4f" font-family="monospace" font-size="24">HAOQI / STUDIO</text><text x="80" y="745" fill="#eef0e7" font-family="monospace" font-size="23">${code} / ARCHIVE EDITION</text><text x="400" y="375" fill="#151916" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="30">${safeTitle}</text></svg>`)}`;
+};
+const importedAlbum = ({ id, code, folder, title, tracks }) => ({
+  id, archiveCode: code, title, mood: 'LOCAL COLLECTION / LRC ARCHIVED',
+  analysis: `《${title}》本地专辑档案。歌词 LRC 已随曲目关联，可在后续播放器界面继续扩展显示。`,
+  image: archiveCover(title, code),
+  tracks: tracks.map(([artist, track], index) => {
+    const file = `${artist} - ${track}`;
+    return { id: `${id}-${String(index + 1).padStart(2, '0')}`, title: track, artist, src: `${folder}/${file}.mp3`, lrc: id === 'sound-04-no-title' && track === 'Echo' ? '' : `${folder}/${file}.lrc` };
+  }),
+});
+const emptyMusicSlots = Array.from({ length: 6 }, (_, index) => {
+  const number = index + 6;
+  return { id: `sound-${String(number).padStart(2, '0')}-redacted`, archiveCode: `SOUND-${String(number).padStart(2, '0')}`, title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [] };
+});
 
 export const musicTracks = [
   {
@@ -217,32 +239,19 @@ export const musicTracks = [
       { id: 'sound-01-faith-enlightenment', title: 'Faith Enlightenment', artist: '塞壬唱片-MSR, Erik Castro, Robert Wolf', src: '/media/music/sound-01-somniomancer-null-set/塞壬唱片-MSR,Erik Castro,Robert Wolf - Faith Enlightenment.mp3' },
     ],
   },
-  {
-    id: 'sound-02-redacted',
-    archiveCode: 'SOUND-02',
-    title: 'ARCHIVE / REDACTED',
-    mood: 'SOUND / MATERIAL LOCKED',
-    analysis: '████████ ████████ ████████',
-    image: '/media/placeholders/archive-black.svg',
-    pending: true,
-    tracks: [],
-  },
-  {
-    id: 'sound-03-redacted',
-    archiveCode: 'SOUND-03',
-    title: 'ARCHIVE / REDACTED',
-    mood: 'SOUND / MATERIAL LOCKED',
-    analysis: '████████ ████████ ████████',
-    image: '/media/placeholders/archive-black.svg',
-    pending: true,
-    tracks: [],
-  },
-  {
-    id: 'sound-04-redacted', archiveCode: 'SOUND-04', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
-  },
-  {
-    id: 'sound-05-redacted', archiveCode: 'SOUND-05', title: 'ARCHIVE / REDACTED', mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
-  },
+  importedAlbum({ id: 'sound-02-zelda', code: 'SOUND-02', title: 'ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', folder: '/media/music/sound-02-redacted/ゼルダの伝説 ブレス オブ ザ ワイルド SOUND SELECTION', tracks: [
+    ['片岡真央', '襲歩 (夜)'], ['片岡真央', '襲歩 (昼)'], ['片岡真央', '戦闘 (祠)'], ['片岡真央', '戦闘 (フィールド)'], ['片岡真央', 'イワロック戦'], ['片岡真央', 'ガーディアン戦'], ['片岡真央', 'フィールド (昼)'], ['片岡真央', 'メインテーマ'], ['若井淑', 'カカリコ村 (夜)'], ['若井淑', 'カカリコ村 (昼)'], ['若井淑', 'ヒノックス戦'], ['岩田恭明', '祠'], ['岩田恭明', '馬宿'], ['岩田恭明', '時の神殿'], ['岩田恭明', 'カッシーワのテーマ'], ['岩田恭明', 'ゲルドの街 (夜)'], ['岩田恭明', 'ゲルドの街 (昼)'], ['岩田恭明', 'ゴロンシティー (夜)'], ['岩田恭明', 'ゴロンシティー (昼)'], ['岩田恭明', 'ゾーラの (夜)'], ['岩田恭明', 'ゾーラの (昼)'], ['岩田恭明', 'リトの村 (夜)'], ['岩田恭明', 'リトの村 (昼)'], ['竹岡智行', 'メインテーマ コンサートバージョン'],
+  ] }),
+  importedAlbum({ id: 'sound-03-huaishu-li', code: 'SOUND-03', title: '怀黍离OST', folder: '/media/music/sound-03-redacted/怀黍离OST', tracks: [
+    ['塞壬唱片-MSR,颜沐宸Ace', '击壤歌'], ['塞壬唱片-MSR,KH', '锦绣山河'], ['塞壬唱片-MSR,Kirara Magic', '赴大荒'], ['塞壬唱片-MSR,Salty Salt,Elvin Shen', '祥风时雨'],
+  ] }),
+  importedAlbum({ id: 'sound-04-no-title', code: 'SOUND-04', title: 'No title-', folder: '/media/music/sound-04-redacted/No title-', tracks: [
+    ['Reol', '-BWW SCREAM-'], ['Reol', '-Ending-'], ['Reol', '-Interlude-'], ['Reol', '-Opening-'], ['Reol', 'Echo'], ['Reol', 'アシンメトリー'], ['Reol', 'ギガンティックO.T.N -Big Death Edition-'], ['Reol', 'ヒビカセ'], ['Reol,Giga', 'drop pop candy'], ['Reol,Giga', 'No title'], ['Reol,nqrse', 'オオエドランヴ'],
+  ] }),
+  importedAlbum({ id: 'sound-05-panty-stocking', code: 'SOUND-05', title: 'Panty & Stocking with Garterbelt The Original Soundtrack', folder: '/media/music/sound-05-redacted/Panty & Stocking with Garterbelt The Original Soundtrack', tracks: [
+    ['Aimee b,☆Taku Takahashi', 'Fallen Angel'], ['Hoshina Anniversary', 'Theme for Panty & Stocking'], ['Mariya Ise,TCY FORCE', 'CHOCOLAT'], ['TeddyLoid', 'Theme for Scanty & Knee Socks'],
+  ] }),
+  ...emptyMusicSlots,
 ];
 
 export const photoAlbums = [
@@ -306,6 +315,11 @@ export const photoAlbums = [
   {
     id: 'photo-05-redacted', number: '05', archiveCode: 'PHOTO-05', title: 'ARCHIVE / REDACTED', city: '待接入', year: '----', date: '----.--.--', frameCount: 0, camera: 'MATERIAL LOCKED', cover: '/media/placeholders/archive-black.svg', summary: '████████ ████████ ████████', coordinates: { x: 62, y: 32 }, tags: ['MATERIAL LOCKED'], images: [{ src: '/media/placeholders/archive-black.svg', caption: 'ARCHIVE / REDACTED' }], pending: true,
   },
+  ...Array.from({ length: 6 }, (_, index) => {
+    const number = index + 6;
+    const archiveCode = `PHOTO-${String(number).padStart(2, '0')}`;
+    return { id: `photo-${String(number).padStart(2, '0')}-redacted`, number: String(number).padStart(2, '0'), archiveCode, title: 'ARCHIVE / REDACTED', city: '待接入', year: '----', date: '----.--.--', frameCount: 0, camera: 'MATERIAL LOCKED', cover: '/media/placeholders/archive-black.svg', summary: '████████ ████████ ████████', coordinates: { x: 62, y: 32 }, tags: ['MATERIAL LOCKED'], images: [{ src: '/media/placeholders/archive-black.svg', caption: 'ARCHIVE / REDACTED' }], pending: true };
+  }),
 ];
 
 export const mapCities = [
