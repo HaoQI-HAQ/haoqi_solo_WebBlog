@@ -31,7 +31,8 @@
 .work-array-navigator,.work-array-lanes { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .work-array-controls button { border: 0; background: transparent; min-width: 44px; min-height: 44px; padding: 5px; font-size: 23px; }
 .work-array-controls button:hover { background: rgba(216,255,79,.55); }
-.work-array-ticks { display: flex; gap: 6px; align-items: center; }
+.work-array-navigator { min-width: 0; }
+.work-array-ticks { display: flex; gap: 6px; align-items: center; min-width: 0; overflow-x: auto; padding-bottom: 22px; margin-bottom: -22px; }
 .work-array-ticks button { position: relative; display: grid; place-items: center; }
 .work-array-ticks i { height: 12px; width: 1px; background: #969d9e; transition: height 400ms cubic-bezier(.22,1,.36,1),background 250ms; }
 .work-array-ticks .is-selected i { height: 35px; width: 3px; background: var(--ink); box-shadow: 5px 0 0 var(--acid); }

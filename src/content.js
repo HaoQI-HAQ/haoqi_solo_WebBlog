@@ -225,7 +225,7 @@ const importedAlbumFiles = ({ id, code, folder, title, files, hasLyrics = true }
     src: `${folder}/${file}`, lrc: hasLyrics ? `${folder}/${file.replace(/\.mp3$/i, '.lrc')}` : '',
   })),
 });
-const emptyMusicSlots = ['11'].map(code => ({
+const emptyMusicSlots = Array.from({ length: 10 }, (_, index) => String(index + 12).padStart(2, '0')).map(code => ({
   id: `sound-${code}-redacted`, archiveCode: `SOUND-${code}`, title: 'ARCHIVE / REDACTED',
   mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████',
   image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
@@ -256,6 +256,21 @@ export const musicTracks = [
   importedAlbumFiles({ id: 'sound-08-modal-soul', code: 'SOUND-08', title: 'MODAL SOUL', folder: '/media/music/sound-08-redacted', files: ["modal soul/Eclipse (feat. Substantial) - Nujabes,Substantial.mp3", "modal soul/Feather (feat.Cise Starr & Akin from CYNE) - Nujabes,Cise Starr,Akin Yai.mp3", "modal soul/Flowers - Nujabes.mp3", "modal soul/Horizon - Nujabes.mp3", "modal soul/Light on the Land - Nujabes.mp3", "modal soul/Luv(sic.) Part 3 (feat. Shing02) - Nujabes,Shing02.mp3", "modal soul/Modal Soul (feat.Uyama Hiroto) - Nujabes,Uyama Hiroto.mp3", "modal soul/Music is mine - Nujabes.mp3", "modal soul/Ordinary Joe (feat. Terry Callier) - Nujabes,Terry Callier.mp3", "modal soul/Reflection Eternal - Nujabes.mp3", "modal soul/Sea of Cloud - Nujabes.mp3", "modal soul/Thank you (feat.Apani B) - Nujabes,Apani B Fly MC.mp3", "modal soul/The Sign (feat. Pase Rock) - Nujabes,Pase Rock.mp3", "modal soul/World's End Rhapsody - Nujabes.mp3"] }),
   importedAlbumFiles({ id: 'sound-09-bad-mode', code: 'SOUND-09', title: 'BADモード', folder: '/media/music/sound-09-redacted', files: ["BADモード/君に夢中 - 宇多田ヒカル.mp3", "BADモード/気分じゃないの (Not In The Mood) - 宇多田ヒカル.mp3", "BADモード/誰にも言わない - 宇多田ヒカル.mp3", "BADモード/BADモード - 宇多田ヒカル.mp3", "BADモード/Beautiful World (Da Capo Version) - 宇多田ヒカル.mp3", "BADモード/Face My Fears (A.G. Cook Remix) - 宇多田ヒカル.mp3", "BADモード/Find Love - 宇多田ヒカル.mp3", "BADモード/One Last Kiss - 宇多田ヒカル.mp3", "BADモード/PINK BLOOD - 宇多田ヒカル.mp3", "BADモード/Somewhere Near Marseilles ーマルセイユ辺りー - 宇多田ヒカル.mp3", "BADモード/Time - 宇多田ヒカル.mp3", "BADモード/キレイな人 (Find Love) - 宇多田ヒカル.mp3"] }),
   importedAlbumFiles({ id: 'sound-10-this-is-the-one', code: 'SOUND-10', title: 'THIS IS THE ONE', folder: '/media/music/sound-10-redacted', files: ["This Is The One/Apple And Cinnamon - 宇多田ヒカル.mp3", "This Is The One/Automatic Part II - 宇多田ヒカル.mp3", "This Is The One/Come Back To Me - 宇多田ヒカル.mp3", "This Is The One/Dirty Desire - 宇多田ヒカル.mp3", "This Is The One/Me Muero - 宇多田ヒカル.mp3", "This Is The One/Merry Christmas Mr. Lawrence - FYI - 宇多田ヒカル.mp3", "This Is The One/On And On - 宇多田ヒカル.mp3", "This Is The One/Poppin' - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Ending) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Opening) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Simple And Clean - 宇多田ヒカル.mp3", "This Is The One/Taking My Money Back - 宇多田ヒカル.mp3", "This Is The One/This One (Crying Like A Child) - 宇多田ヒカル.mp3"] }),
+  importedAlbumFiles({
+    id: 'sound-11-mtv-unplugged', code: 'SOUND-11', title: 'MTV UNplugged',
+    folder: '/media/music/sound-11-redacted/MTV UNplugged',
+    files: [
+      '抱きしめて - BENI.mp3',
+      '好きだから。 - BENI.mp3',
+      '桜坂 - BENI.mp3',
+      '運命の人 - BENI.mp3',
+      'KIRA☆KIRA☆ - BENI.mp3',
+      'Kiss Kiss Kiss - BENI.mp3',
+      'MEMORY - BENI.mp3',
+      'stardust - BENI.mp3',
+      'もう二度と・・・恋焦がれてサインずっと二人で (medley) - BENI.mp3',
+    ],
+  }),
   ...emptyMusicSlots,
 ];
 

@@ -74,8 +74,12 @@ public/media/music/
 ├─ sound-03-redacted/
 ├─ sound-04-redacted/
 ├─ sound-05-redacted/
-├─ sound-06-redacted/     # 新增空槽，保留 .gitkeep
-└─ sound-11-redacted/
+├─ sound-06-redacted/     # SOUND-06 至 SOUND-10 已接入专辑
+├─ sound-11-redacted/
+│  └─ MTV UNplugged/      # BENI：9 首 MP3 与 9 份同名 LRC
+├─ sound-12-redacted/     # 新增空槽，保留 .gitkeep
+├─ ...                   # SOUND-13 至 SOUND-20 独立文件夹
+└─ sound-21-redacted/     # 第 10 个新增空槽
 ```
 
 建议使用 MP3（兼容性最好）与同名 LRC。网站会从 MP3 的 ID3 标签读取专辑名、曲名、艺术家及 APIC 内嵌封面，黑胶模型也使用该封面。新专辑应放进对应 `sound-编号-redacted/` 下的独立专辑文件夹，再在 `src/content.js` 中将每首 MP3、LRC 路径写入该专辑的 `tracks`。无素材的槽位维持黑色封面和打码描述。
@@ -84,7 +88,7 @@ public/media/music/
 
 - 游戏：`WORK-04` 至 `WORK-11`；新增目录为 `work-06-redacted/` 至 `work-11-redacted/`
 - 摄影：`PHOTO-02` 至 `PHOTO-11`；新增目录为 `0000-00-00-region-pending-photo-06/` 至 `...-11/`
-- 音乐：`SOUND-06` 至 `SOUND-11`；新增目录为 `sound-06-redacted/` 至 `sound-11-redacted/`
+- 音乐：共 21 个档案，其中 `SOUND-01` 至 `SOUND-11` 已接入专辑；`SOUND-12` 至 `SOUND-21` 为 10 个空槽，对应目录为 `public/media/music/sound-12-redacted/` 至 `sound-21-redacted/`，各自保留 `.gitkeep`。
 
 它们在网页中均显示纯黑图片与 `ARCHIVE / REDACTED`、`MATERIAL LOCKED` 状态。填入真实素材与文案后再移除对应的 `pending: true`。
 
