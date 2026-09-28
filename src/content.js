@@ -225,7 +225,7 @@ const importedAlbumFiles = ({ id, code, folder, title, files, hasLyrics = true }
     src: `${folder}/${file}`, lrc: hasLyrics ? `${folder}/${file.replace(/\.mp3$/i, '.lrc')}` : '',
   })),
 });
-const emptyMusicSlots = Array.from({ length: 10 }, (_, index) => String(index + 12).padStart(2, '0')).map(code => ({
+const emptyMusicSlots = Array.from({ length: 9 }, (_, index) => String(index + 13).padStart(2, '0')).map(code => ({
   id: `sound-${code}-redacted`, archiveCode: `SOUND-${code}`, title: 'ARCHIVE / REDACTED',
   mood: 'SOUND / MATERIAL LOCKED', analysis: '████████ ████████ ████████',
   image: '/media/placeholders/archive-black.svg', pending: true, tracks: [],
@@ -254,7 +254,7 @@ export const musicTracks = [
   importedAlbumFiles({ id: 'sound-06-luv-sic', code: 'SOUND-06', title: 'LUV(SIC) HEXALOGY', folder: '/media/music/sound-06-redacted', files: ["Luv(sic) Hexalogy/Luv (sic.) pt 3 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 Ta-ku Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic.) pt3 Ta-ku Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic)  12 Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (Sic) - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) 12 Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) Grand Finale - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) Grand Finale Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 2 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 4 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt 4 LASTorder Remix  Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2  Acoustica - Haruka Nakamura,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2  Acoustica Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt2 - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt4  LASTorder Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt4 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5  Jumpster Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 - Nujabes,Shing02.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt5 Jumpster Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv (sic) pt6  Uyama Hiroto Remix - Nujabes.mp3", "Luv(sic) Hexalogy/Luv(sic) pt6 Uyama Hiroto Remix Instrumentals - Nujabes.mp3", "Luv(sic) Hexalogy/Perfect Circle - Nujabes.mp3", "Luv(sic) Hexalogy/Perfect Circle Instrumentals - Nujabes.mp3"] }),
   importedAlbumFiles({ id: 'sound-07-gokusai-shiki', code: 'SOUND-07', title: '極彩色', folder: '/media/music/sound-07-redacted', hasLyrics: false, files: ["極彩色/Reol - -nil-.mp3", "極彩色/Reol - -orderly-.mp3", "極彩色/Reol - 生命線.mp3", "極彩色/Reol - 水底游歩道.mp3", "極彩色/Reol - Behind The Night.mp3", "極彩色/Reol - ROXY.mp3", "極彩色/Reol - ハルシアン.mp3", "極彩色/Reol - ロジックエージェント.mp3", "極彩色/Reol,monacafactory - Syrup.mp3"] }),
   importedAlbumFiles({ id: 'sound-08-modal-soul', code: 'SOUND-08', title: 'MODAL SOUL', folder: '/media/music/sound-08-redacted', files: ["modal soul/Eclipse (feat. Substantial) - Nujabes,Substantial.mp3", "modal soul/Feather (feat.Cise Starr & Akin from CYNE) - Nujabes,Cise Starr,Akin Yai.mp3", "modal soul/Flowers - Nujabes.mp3", "modal soul/Horizon - Nujabes.mp3", "modal soul/Light on the Land - Nujabes.mp3", "modal soul/Luv(sic.) Part 3 (feat. Shing02) - Nujabes,Shing02.mp3", "modal soul/Modal Soul (feat.Uyama Hiroto) - Nujabes,Uyama Hiroto.mp3", "modal soul/Music is mine - Nujabes.mp3", "modal soul/Ordinary Joe (feat. Terry Callier) - Nujabes,Terry Callier.mp3", "modal soul/Reflection Eternal - Nujabes.mp3", "modal soul/Sea of Cloud - Nujabes.mp3", "modal soul/Thank you (feat.Apani B) - Nujabes,Apani B Fly MC.mp3", "modal soul/The Sign (feat. Pase Rock) - Nujabes,Pase Rock.mp3", "modal soul/World's End Rhapsody - Nujabes.mp3"] }),
-  importedAlbumFiles({ id: 'sound-09-bad-mode', code: 'SOUND-09', title: 'BADモード', folder: '/media/music/sound-09-redacted', files: ["BADモード/君に夢中 - 宇多田ヒカル.mp3", "BADモード/気分じゃないの (Not In The Mood) - 宇多田ヒカル.mp3", "BADモード/誰にも言わない - 宇多田ヒカル.mp3", "BADモード/BADモード - 宇多田ヒカル.mp3", "BADモード/Beautiful World (Da Capo Version) - 宇多田ヒカル.mp3", "BADモード/Face My Fears (A.G. Cook Remix) - 宇多田ヒカル.mp3", "BADモード/Find Love - 宇多田ヒカル.mp3", "BADモード/One Last Kiss - 宇多田ヒカル.mp3", "BADモード/PINK BLOOD - 宇多田ヒカル.mp3", "BADモード/Somewhere Near Marseilles ーマルセイユ辺りー - 宇多田ヒカル.mp3", "BADモード/Time - 宇多田ヒカル.mp3", "BADモード/キレイな人 (Find Love) - 宇多田ヒカル.mp3"] }),
+  importedAlbumFiles({ id: 'sound-09-bad-mode', code: 'SOUND-09', title: 'BADモード', folder: '/media/music/sound-09-redacted', files: ["BADモード/君に夢中 - 宇多田ヒカル.mp3", "BADモード/気分じゃないの (Not In The Mood) - 宇多田ヒカル.mp3", "BADモード/誰にも言わない - 宇多田ヒカル.mp3", "BADモード/BADモード - 宇多田ヒカル.mp3", "BADモード/Beautiful World (Da Capo Version) - 宇多田ヒカル.mp3", "BADモード/Face My Fears (A.G. Cook Remix) - 宇多田ヒカル.mp3", "BADモード/Face My Fears (English Version) - 宇多田ヒカル,Skrillex.mp3", "BADモード/Face My Fears (Japanese Version) - 宇多田ヒカル,Skrillex.mp3", "BADモード/Find Love - 宇多田ヒカル.mp3", "BADモード/One Last Kiss - 宇多田ヒカル.mp3", "BADモード/PINK BLOOD - 宇多田ヒカル.mp3", "BADモード/Somewhere Near Marseilles ーマルセイユ辺りー - 宇多田ヒカル.mp3", "BADモード/Time - 宇多田ヒカル.mp3", "BADモード/キレイな人 (Find Love) - 宇多田ヒカル.mp3"] }),
   importedAlbumFiles({ id: 'sound-10-this-is-the-one', code: 'SOUND-10', title: 'THIS IS THE ONE', folder: '/media/music/sound-10-redacted', files: ["This Is The One/Apple And Cinnamon - 宇多田ヒカル.mp3", "This Is The One/Automatic Part II - 宇多田ヒカル.mp3", "This Is The One/Come Back To Me - 宇多田ヒカル.mp3", "This Is The One/Dirty Desire - 宇多田ヒカル.mp3", "This Is The One/Me Muero - 宇多田ヒカル.mp3", "This Is The One/Merry Christmas Mr. Lawrence - FYI - 宇多田ヒカル.mp3", "This Is The One/On And On - 宇多田ヒカル.mp3", "This Is The One/Poppin' - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Ending) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Sanctuary (Opening) (Bonus Track) - 宇多田ヒカル.mp3", "This Is The One/Simple And Clean - 宇多田ヒカル.mp3", "This Is The One/Taking My Money Back - 宇多田ヒカル.mp3", "This Is The One/This One (Crying Like A Child) - 宇多田ヒカル.mp3"] }),
   importedAlbumFiles({
     id: 'sound-11-mtv-unplugged', code: 'SOUND-11', title: 'MTV UNplugged',
@@ -269,6 +269,22 @@ export const musicTracks = [
       'MEMORY - BENI.mp3',
       'stardust - BENI.mp3',
       'もう二度と・・・恋焦がれてサインずっと二人で (medley) - BENI.mp3',
+    ],
+  }),
+  importedAlbumFiles({
+    id: 'sound-12-outer-wilds', code: 'SOUND-12', title: 'Outer Wilds - Original Soundtrack',
+    folder: '/media/music/sound-12-redacted/Outer Wilds - Original Soundtrack',
+    files: [
+      '14.3 Billion Years - Andrew Prahlow.mp3', '22 Minutes - Andrew Prahlow.mp3', 'A Terrible Fate - Andrew Prahlow.mp3',
+      'Arrow of Time - Andrew Prahlow.mp3', 'Campfire Song - Andrew Prahlow.mp3', 'Castaways - Andrew Prahlow.mp3',
+      'Curiosity - Andrew Prahlow.mp3', 'Dark Bramble - Andrew Prahlow.mp3', 'End Times - Andrew Prahlow.mp3',
+      'Final Voyage - Andrew Prahlow.mp3', "Giant's Deep - Andrew Prahlow.mp3", 'Into The Wilds - Andrew Prahlow.mp3',
+      'Let There Be Light - Andrew Prahlow.mp3', 'Main Title - Andrew Prahlow.mp3', 'Morning - Andrew Prahlow.mp3',
+      'Nomai Ruins - Andrew Prahlow.mp3', 'Outer Wilds - Andrew Prahlow.mp3', 'Space - Andrew Prahlow.mp3',
+      'The Ancient Glade - Andrew Prahlow.mp3', 'The Ash Twin Project - Andrew Prahlow.mp3', 'The Museum - Andrew Prahlow.mp3',
+      'The Nomai - Andrew Prahlow.mp3', 'The Search - Andrew Prahlow.mp3', 'The Sun Station - Andrew Prahlow.mp3',
+      'The Uncertainty Principle - Andrew Prahlow.mp3', 'Timber Hearth - Andrew Prahlow.mp3', 'Travelers - Andrew Prahlow.mp3',
+      'We Have Liftoff - Andrew Prahlow.mp3',
     ],
   }),
   ...emptyMusicSlots,
