@@ -1,0 +1,166 @@
+{
+  "checkedAt": "2026-10-22",
+  "projects": [
+    {
+      "id": "five-second-real-man",
+      "store": "https://www.taptap.cn/app/865053",
+      "shortLink": "https://tap.cn/lQx4DMWR6",
+      "descriptionSource": "TapTap store description; paraphrased in src/content.js",
+      "images": [
+        {
+          "name": "icon",
+          "kind": "icon",
+          "source": "https://img-tc.tapimg.com/market/images/FmdkOgjE_ekCgV-CMjQrBEqXvpDT.png",
+          "folder": "work-03-five-second-real-man",
+          "width": 512,
+          "height": 512,
+          "src": "/media/games/work-03-five-second-real-man/icon.webp"
+        },
+        {
+          "name": "banner",
+          "kind": "artwork",
+          "source": "https://img-tc.tapimg.com/market/images/FssOAJIXfW5m321IctfUMgV9270v.jpg",
+          "folder": "work-03-five-second-real-man",
+          "width": 1920,
+          "height": 1080,
+          "src": "/media/games/work-03-five-second-real-man/banner.webp"
+        },
+        {
+          "name": "promotion",
+          "kind": "artwork",
+          "source": "https://img-tc.tapimg.com/market/images/FrKaaJo5qBDdRBacQP64ACvYvGKM.png",
+          "folder": "work-03-five-second-real-man",
+          "width": 1536,
+          "height": 718,
+          "src": "/media/games/work-03-five-second-real-man/promotion.webp"
+        },
+        {
+          "name": "poster",
+          "kind": "poster",
+          "source": "https://img-tc.tapimg.com/market/images/Fg8ZbI4Lpy9DGQZrNrRm3xKG41Je.png",
+          "folder": "work-03-five-second-real-man",
+          "width": 1024,
+          "height": 1536,
+          "src": "/media/games/work-03-five-second-real-man/poster.webp"
+        },
+        {
+          "name": "screenshot-1",
+          "kind": "screenshot",
+          "source": "https://img-tc.tapimg.com/market/images/Fm71_4NbvG2CsZzL6ofZp3FCFhAC.png",
+          "folder": "work-03-five-second-real-man",
+          "width": 1376,
+          "height": 768,
+          "src": "/media/games/work-03-five-second-real-man/screenshot-1.webp"
+        },
+        {
+          "name": "screenshot-2",
+          "kind": "screenshot",
+          "source": "https://img-tc.tapimg.com/market/images/FnUX1gfks8Io-kuwD_-UxB0_ldlM.png",
+          "folder": "work-03-five-second-real-man",
+          "width": 1376,
+          "height": 768,
+          "src": "/media/games/work-03-five-second-real-man/screenshot-2.webp"
+        },
+        {
+          "name": "screenshot-3",
+          "kind": "screenshot",
+          "source": "https://img-tc.tapimg.com/market/images/Fnyy7oOhGLEU_IGRRFAbt8BkPaqO.jpg",
+          "folder": "work-03-five-second-real-man",
+          "width": 1376,
+          "height": 768,
+          "src": "/media/games/work-03-five-second-real-man/screenshot-3.webp"
+        }
+      ]
+    },
+    {
+      "id": "paoyong",
+      "store": "https://www.taptap.cn/app/987601",
+      "shortLink": "https://tap.cn/leEHTvlbA",
+      "descriptionSource": "TapTap store description and gameplay instructions visible in user-supplied images",
+      "posterNote": "Nine attachments received. The final wide image is used as the poster described as image 10 in the request.",
+      "images": [
+        {
+          "name": "icon",
+          "kind": "icon",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_20261021222342_3126_582.png",
+          "folder": "work-04-paoyong",
+          "width": 1254,
+          "height": 1254,
+          "src": "/media/games/work-04-paoyong/icon.webp"
+        },
+        {
+          "name": "screenshot-1",
+          "kind": "screenshot",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_2026-10-20_135256_692.png",
+          "folder": "work-04-paoyong",
+          "width": 1920,
+          "height": 987,
+          "src": "/media/games/work-04-paoyong/screenshot-1.webp"
+        },
+        {
+          "name": "screenshot-2",
+          "kind": "screenshot",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_20261021042037_3117_444.png",
+          "folder": "work-04-paoyong",
+          "width": 3440,
+          "height": 1440,
+          "src": "/media/games/work-04-paoyong/screenshot-2.webp"
+        },
+        {
+          "name": "screenshot-3",
+          "kind": "screenshot",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_20261021042135_3119_444.png",
+          "folder": "work-04-paoyong",
+          "width": 3440,
+          "height": 1440,
+          "src": "/media/games/work-04-paoyong/screenshot-3.webp"
+        },
+        {
+          "name": "screenshot-4",
+          "kind": "screenshot",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_20261021042532_3124_444.png",
+          "folder": "work-04-paoyong",
+          "width": 3440,
+          "height": 1440,
+          "src": "/media/games/work-04-paoyong/screenshot-4.webp"
+        },
+        {
+          "name": "screenshot-5",
+          "kind": "screenshot",
+          "source": "G:\\project\\TapTapGJ21\\docs\\微信图片_20261017231611_2326_582.png",
+          "folder": "work-04-paoyong",
+          "width": 4729,
+          "height": 1473,
+          "src": "/media/games/work-04-paoyong/screenshot-5.webp"
+        },
+        {
+          "name": "promotion-portrait",
+          "kind": "artwork",
+          "source": "G:\\project\\TapTapGJ21\\docs\\66\\泡涌：幻彩水下果冻精灵.png",
+          "folder": "work-04-paoyong",
+          "width": 1024,
+          "height": 1536,
+          "src": "/media/games/work-04-paoyong/promotion-portrait.webp"
+        },
+        {
+          "name": "promotion-landscape",
+          "kind": "artwork",
+          "source": "G:\\project\\TapTapGJ21\\docs\\66\\泡涌：云海深处的蓝色水母.png",
+          "folder": "work-04-paoyong",
+          "width": 1672,
+          "height": 941,
+          "src": "/media/games/work-04-paoyong/promotion-landscape.webp"
+        },
+        {
+          "name": "poster",
+          "kind": "poster",
+          "source": "G:\\project\\TapTapGJ21\\docs\\66\\梦境泡影：蓝色水母遨游遗迹.png",
+          "folder": "work-04-paoyong",
+          "width": 2172,
+          "height": 724,
+          "src": "/media/games/work-04-paoyong/poster.webp"
+        }
+      ]
+    }
+  ]
+}

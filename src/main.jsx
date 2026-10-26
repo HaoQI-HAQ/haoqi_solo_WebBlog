@@ -1,42 +1,22 @@
 import { createElement, lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
-import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.js';
+import './fonts.css';
+import { copy as legacyCopy, gameWorks, languages, mapCities, musicTracks, photoAlbums, socials } from './content.deploy.js';
+import HomePortfolio, { homeCopy } from './home-portfolio/HomePortfolio.jsx';
+import { createSiteAudioPlayer } from './audio/siteAudioPlayer.js';
+import { SiteSoundProvider, useSiteSound } from './audio/SiteSoundProvider.jsx';
+import SiteSoundToggle from './audio/SiteSoundToggle.jsx';
+import { emitSiteSound } from './audio/siteSoundEvents.js';
+import ModalDialog from './ui/ModalDialog.jsx';
+import { applyPageMetadata, pageKey } from './siteMetadata.js';
+const NotFound = lazy(() => import('./NotFound.jsx'));
 const WorkArchive = lazy(() => import('./work-archive/WorkArchive.jsx'));
+const PortfolioPages = lazy(() => import('./portfolio-pages/PortfolioPages.jsx'));
 const workArchiveGroups = [
   { id: 'games', items: gameWorks.map((work) => ({ ...work, videoSrc: work.videoUrl?.startsWith('http') ? work.videoUrl : '', bilibiliUrl: work.bilibiliUrl || '' })) },
   { id: 'photo', items: photoAlbums.map((album) => ({ ...album, image: album.cover, type: `${album.city} / ${album.year}` })) },
   { id: 'music', items: musicTracks.map((track, index) => ({ ...track, number: String(index + 1).padStart(2, '0'), image: track.image || '/assets/tool-contact.jpg', type: track.mood, summary: track.analysis })) },
-];
-
-const projectItems = [
-  {
-    number: '01',
-    archiveCode: 'WORK-01',
-    title: 'Worlds in motion',
-    subtitle: 'Game direction / narrative systems',
-    detail: '把玩法、叙事与节奏组织成可进入的世界。',
-    image: '/assets/desktop-a-contact.jpg',
-    tone: 'project-amber',
-  },
-  {
-    number: '02',
-    archiveCode: 'WORK-02',
-    title: 'A visual language',
-    subtitle: 'Visual identity / art direction',
-    detail: '从一张海报到一套可以持续生长的视觉系统。',
-    image: '/assets/desktop-b-contact.jpg',
-    tone: 'project-mint',
-  },
-  {
-    number: '03',
-    archiveCode: 'WORK-03',
-    title: 'Sound as material',
-    subtitle: 'AI composition / sound studies',
-    detail: '用算法和直觉，寻找画面之外的情绪线索。',
-    image: '/assets/tool-contact.jpg',
-    tone: 'project-sand',
-  },
 ];
 
 const capabilityItems = [
@@ -114,6 +94,7 @@ function LanguageSwitcher({ language, setLanguage }) {
   const [isSwitching, setIsSwitching] = useState(false);
   const selectLanguage = (nextLanguage) => {
     if (nextLanguage === language) return;
+    emitSiteSound('filter');
     setIsSwitching(true);
     setLanguage(nextLanguage);
     window.setTimeout(() => setIsSwitching(false), 360);
@@ -127,6 +108,69 @@ function NavigationItems({ language, currentPage, onNavigate, mobile = false }) 
     const active = item.id === currentPage;
     return <a key={item.id} href={item.href} className={active ? 'is-active' : undefined} aria-current={active ? 'page' : undefined} onClick={onNavigate}>{t.nav[item.labelIndex]} {mobile && <span>{item.number}</span>}</a>;
   });
+}
+
+function SiteHeader({ language, setLanguage, currentPage = 'home', isScrolled = false, contact = false }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuState = useRef(false);
+  const headerRef = useRef(null);
+  const toggleRef = useRef(null);
+  const t = languageText[language] || mixedText;
+  const setMenu = (next, audible = false) => {
+    if (audible && menuState.current !== next) emitSiteSound(next ? 'menu-open' : 'menu-close');
+    menuState.current = next;
+    setMenuOpen(next);
+  };
+  const closeMenu = () => setMenu(false);
+
+  useEffect(() => { setMenu(false); }, [currentPage]);
+  useEffect(() => {
+    const closeOnHistory = () => setMenu(false);
+    const desktop = window.matchMedia('(min-width: 1201px)');
+    const closeOnDesktop = (event) => { if (event.matches) setMenu(false); };
+    window.addEventListener('popstate', closeOnHistory);
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => {
+      window.removeEventListener('popstate', closeOnHistory);
+      desktop.removeEventListener('change', closeOnDesktop);
+    };
+  }, []);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOutside = (event) => {
+      if (!headerRef.current?.contains(event.target)) setMenu(false, true);
+    };
+    const closeWithEscape = (event) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      event.stopPropagation();
+      setMenu(false, true);
+      toggleRef.current?.focus();
+    };
+    document.addEventListener('pointerdown', closeOutside, true);
+    document.addEventListener('focusin', closeOutside);
+    window.addEventListener('keydown', closeWithEscape, true);
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside, true);
+      document.removeEventListener('focusin', closeOutside);
+      window.removeEventListener('keydown', closeWithEscape, true);
+    };
+  }, [menuOpen]);
+
+  const headerClass = contact ? 'contact-page-header' : `site-header ${isScrolled ? 'is-scrolled' : ''} ${currentPage === 'home' ? '' : 'functional-header'}`;
+  return <header ref={headerRef} className={`${headerClass} site-navigation ${menuOpen ? 'menu-is-open' : ''}`} onKeyDown={menuOpen ? (event) => event.stopPropagation() : undefined}>
+    <a className="brand-lockup" href={currentPage === 'home' ? '#top' : '/'} onClick={closeMenu} aria-label="回到首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
+    {!contact && <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage={currentPage} /></nav>}
+    {contact ? <div className="contact-page-actions"><span className="header-divider" aria-hidden="true">/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /><a className="contact-back" href="/">{t.backTop} <span aria-hidden="true">↗</span></a></div> : <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>}
+    <button ref={toggleRef} className="menu-toggle" type="button" aria-expanded={menuOpen} aria-controls="mobile-nav" onClick={() => setMenu(!menuState.current, true)}>
+      <span>{menuOpen ? 'Close' : 'Menu'}</span>
+      <span className="menu-icon" aria-hidden="true"><i /><i /></span>
+    </button>
+    <nav id="mobile-nav" className="mobile-nav" aria-label="移动端导航" inert={!menuOpen}>
+      <NavigationItems language={language} currentPage={currentPage} onNavigate={closeMenu} mobile />
+      <div className="mobile-language"><span>/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
+    </nav>
+  </header>;
 }
 
 function SocialIcon({ service }) {
@@ -255,11 +299,14 @@ function useArchiveExtract() {
   const [focus, setFocus] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const openArchive = (kind, item, event) => {
+    emitSiteSound('open');
     const rect = event.currentTarget.getBoundingClientRect();
     setIsClosing(false);
-    setFocus({ kind, item, origin: { x: rect.left, y: rect.top, width: rect.width, height: rect.height } });
+    setFocus({ kind, item, opener: event.currentTarget, origin: { x: rect.left, y: rect.top, width: rect.width, height: rect.height } });
   };
   const closeArchive = () => {
+    if (!focus || isClosing) return;
+    emitSiteSound('page-close');
     setIsClosing(true);
     window.setTimeout(() => { setFocus(null); setIsClosing(false); }, 380);
   };
@@ -267,25 +314,17 @@ function useArchiveExtract() {
 }
 
 function ArchiveExtract({ focus, isClosing, onClose }) {
-  useEffect(() => {
-    if (!focus) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKeyDown = (event) => { if (event.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', onKeyDown);
-    return () => { document.body.style.overflow = previousOverflow; window.removeEventListener('keydown', onKeyDown); };
-  }, [focus, onClose]);
   if (!focus) return null;
   const { item, kind, origin } = focus;
-  const image = kind === 'photo' ? item.cover : item.image;
+  const image = kind === 'photo' ? item.images?.[0]?.src || item.cover : item.image;
   const detail = kind === 'photo' ? `${item.city} / ${item.year} · ${item.frameCount} frames` : item.type;
-  return <div className={`archive-extract ${isClosing ? 'is-closing' : ''}`} role="dialog" aria-modal="true" aria-label={`${item.title} archive`} onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+  return <ModalDialog className={`archive-extract ${isClosing ? 'is-closing' : ''}`} label={`${item.title} archive`} onRequestClose={onClose} returnFocus={focus.opener}>
     <div className="archive-origin-echo" style={{ '--origin-x': `${origin.x}px`, '--origin-y': `${origin.y}px`, '--origin-w': `${origin.width}px`, '--origin-h': `${origin.height}px` }} aria-hidden="true" />
     <article className="archive-extract-panel">
-      <div className="archive-extract-bar"><span>ARCHIVE / EXTRACTED</span><span className="archive-code">{item.archiveCode}</span><button type="button" onClick={onClose}>Close <i>×</i></button></div>
-      <div className="archive-extract-body"><div className={`archive-extract-image ${kind === 'work' && item.videoSrc ? 'is-video' : ''}`}>{kind === 'work' && item.videoSrc ? <div className="work-video-deck"><span className="work-video-deck-sheet work-video-deck-sheet-a" aria-hidden="true" /><span className="work-video-deck-sheet work-video-deck-sheet-b" aria-hidden="true" /><div className="work-video-frame"><video controls playsInline preload="metadata" poster={image} aria-label={`${item.title} video preview`}><source src={item.videoSrc} type="video/mp4" />Your browser does not support this video.</video><div className="work-video-hud" aria-hidden="true"><span>{item.archiveCode} / VIDEO READOUT</span><span>{item.videoLabel || 'Archive preview'}</span></div></div></div> : <><img src={image} alt={item.title} /><span className="archive-extract-scan" aria-hidden="true" /></>}</div><div className="archive-extract-copy"><small>{detail}</small><h2>{item.title}</h2><p>{item.summary || item.detail}</p><div className="archive-extract-meta"><span>{kind === 'photo' ? 'PHOTO GROUP' : 'WORK FILE'}</span><span>{kind === 'work' && item.videoSrc ? 'VIDEO / READY' : 'RETURN / CARD POSITION'}</span></div></div></div>
+      <div className="archive-extract-bar"><span>ARCHIVE / EXTRACTED</span><span className="archive-code">{item.archiveCode}</span><button type="button" data-modal-close onClick={onClose}>Close <i>×</i></button></div>
+      <div className="archive-extract-body"><div className={`archive-extract-image ${kind === 'work' && item.videoSrc ? 'is-video' : ''}`}>{kind === 'work' && item.videoSrc ? <div className="work-video-deck"><span className="work-video-deck-sheet work-video-deck-sheet-a" aria-hidden="true" /><span className="work-video-deck-sheet work-video-deck-sheet-b" aria-hidden="true" /><div className="work-video-frame"><video controls playsInline preload="none" poster={image} aria-label={`${item.title} video preview`}><source src={item.videoSrc} type="video/mp4" />Your browser does not support this video.</video><div className="work-video-hud" aria-hidden="true"><span>{item.archiveCode} / VIDEO READOUT</span><span>{item.videoLabel || 'Archive preview'}</span></div></div></div> : <><img src={image} alt={item.title} /><span className="archive-extract-scan" aria-hidden="true" /></>}</div><div className="archive-extract-copy"><small>{detail}</small><h2>{item.title}</h2><p>{item.summary || item.detail}</p><div className="archive-extract-meta"><span>{kind === 'photo' ? 'PHOTO GROUP' : 'WORK FILE'}</span><span>{kind === 'work' && item.videoSrc ? 'VIDEO / READY' : 'RETURN / CARD POSITION'}</span></div></div></div>
     </article>
-  </div>;
+  </ModalDialog>;
 }
 
 function Lightbox({ album, index, onChange, onClose }) {
@@ -303,7 +342,7 @@ function Lightbox({ album, index, onChange, onClose }) {
   }, [album, index, onChange, onClose]);
   return <div className="archive-lightbox" role="dialog" aria-modal="true" aria-label={album.title}>
     <button type="button" onClick={onClose}>Close ×</button>
-    <img src={image.src} alt={image.caption} />
+    <img src={image.src} alt={image.caption} loading="lazy" decoding="async" />
     <p>{album.title} / {image.caption} / {index + 1} — {album.images.length}</p>
     <button type="button" onClick={() => onChange((index - 1 + album.images.length) % album.images.length)} aria-label="上一张">←</button>
     <button type="button" onClick={() => onChange((index + 1) % album.images.length)} aria-label="下一张">→</button>
@@ -337,6 +376,7 @@ function CustomCursor() {
 }
 
 function MusicTools({ language }) {
+  const { sound } = useSiteSound();
   const playableTracks = musicTracks.flatMap((album) => (album.tracks || []).filter((track) => track.src).map((track) => ({
     ...track,
     albumId: album.id,
@@ -351,72 +391,42 @@ function MusicTools({ language }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef(null);
+  const playerRef = useRef(null);
+  const playableTracksRef = useRef(playableTracks);
   const current = playableTracks.find((track) => track.id === activeTrack) || playableTracks[0] || musicTracks[0];
   const t = languageText[language] || mixedText;
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !current?.src) return undefined;
-    const prepare = () => {
-      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
-      if (isPlaying) audio.play().catch(() => setIsPlaying(false));
-    };
-    const persist = () => {
-      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
-    };
-    const advance = () => {
-      const index = playableTracks.findIndex((track) => track.id === current.id);
-      setActiveTrack(playableTracks[(index + 1) % playableTracks.length].id);
-    };
-    audio.addEventListener('loadedmetadata', prepare, { once: true });
-    audio.addEventListener('timeupdate', persist);
-    audio.addEventListener('ended', advance);
-    return () => { audio.removeEventListener('loadedmetadata', prepare); audio.removeEventListener('timeupdate', persist); audio.removeEventListener('ended', advance); };
-  }, [current?.id, current?.src, isPlaying, playableTracks.length, setActiveTrack, setIsPlaying]);
+    if (!audio) return undefined;
+    const player = createSiteAudioPlayer(audio, playableTracksRef.current, {
+      onState: (state) => {
+        if (state.trackId) setActiveTrack(state.trackId);
+        setIsPlaying(state.isPlaying);
+        setProgress(state.duration ? state.currentTime / state.duration : 0);
+      },
+    });
+    playerRef.current = player;
+    return () => { player.dispose(); playerRef.current = null; };
+  }, []);
 
-  const togglePlayback = () => {
-    const audio = audioRef.current;
-    if (!audio || !current?.src) return;
-    if (audio.paused) audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-    else { audio.pause(); setIsPlaying(false); }
-  };
-  const changeTrack = (direction) => {
-    if (!playableTracks.length) return;
-    const index = playableTracks.findIndex((track) => track.id === current.id);
-    setActiveTrack(playableTracks[(index + direction + playableTracks.length) % playableTracks.length].id);
-  };
-  const playRequestedTrack = (trackId) => {
-    const next = playableTracks.find((track) => track.id === trackId);
-    if (!next) return;
-    if (next.id === current?.id && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-      return;
-    }
-    setActiveTrack(next.id);
-    setIsPlaying(true);
-  };
-  useEffect(() => {
-    const handleTrackRequest = (event) => playRequestedTrack(event.detail?.trackId);
-    window.addEventListener('haoqi-play-track', handleTrackRequest);
-    return () => window.removeEventListener('haoqi-play-track', handleTrackRequest);
-  }, [current?.id, playableTracks.length]);
+  const togglePlayback = () => { sound.activate('ui-tick'); playerRef.current?.toggle(); };
+  const changeTrack = (direction) => { sound.activate(direction < 0 ? 'gallery-prev' : 'gallery-next'); playerRef.current?.changeTrack(direction); };
   const seek = (event) => {
     const audio = audioRef.current;
-    if (!audio?.duration) return;
-    const next = Number(event.target.value);
-    audio.currentTime = audio.duration * next;
-    setProgress(next);
+    if (!audio || !Number.isFinite(audio.duration)) return;
+    playerRef.current?.seek(audio.duration * Number(event.target.value));
   };
 
   return <aside className={`music-dock ${open ? 'is-open' : ''} ${isPlaying ? 'is-playing' : ''}`}>
-    <audio ref={audioRef} src={current?.src || undefined} preload="metadata" loop={playableTracks.length === 1} />
-    <button className="music-dock-toggle" type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? '隐藏音乐播放器' : '打开音乐播放器'}><span className="music-dock-handle" aria-hidden="true"><i /><i /><i /></span><span>{t.nowPlaying}</span><b aria-hidden="true">{open ? '−' : '+'}</b></button>
+    <audio ref={audioRef} preload="none" loop={playableTracks.length === 1} />
+    <button className="music-dock-toggle" type="button" onClick={() => { sound.activate(open ? 'menu-close' : 'menu-open'); setOpen(!open); }} aria-expanded={open} aria-label={open ? '隐藏音乐播放器' : '打开音乐播放器'}><span className="music-dock-handle" aria-hidden="true"><i /><i /><i /></span><span>{t.nowPlaying}</span><b aria-hidden="true">{open ? '−' : '+'}</b></button>
     <div className="music-dock-panel">
       <div className="music-record-wrap" aria-hidden="true"><div className="music-tonearm"><span /></div><div className="music-record"><img src={current?.image || '/assets/tool-contact.jpg'} alt="" /></div></div>
       <div className="music-track-meta"><small>{current?.albumCode || 'SOUND-01'} / {isPlaying ? 'PLAYING' : 'PAUSED'}</small><strong>{current?.title || 'Audio pending'}</strong><span>{current?.artist || current?.albumMood || t.audioPending}</span></div>
       <input className="music-progress" type="range" min="0" max="1" step="0.001" value={progress} onChange={seek} aria-label="播放进度" />
       <div className="music-controls"><button type="button" onClick={() => changeTrack(-1)} disabled={playableTracks.length < 2} aria-label="上一首">‹‹</button><button className="music-play" type="button" onClick={togglePlayback} disabled={!current?.src} aria-label={isPlaying ? '暂停' : '播放'}>{isPlaying ? 'Ⅱ' : '▶'}</button><button type="button" onClick={() => changeTrack(1)} disabled={playableTracks.length < 2} aria-label="下一首">››</button></div>
+      <div className="music-site-sound"><SiteSoundToggle language={language} /></div>
     </div>
   </aside>;
 }
@@ -432,21 +442,17 @@ function FunctionalPage({ page, language, setLanguage }) {
   const pageTitle = page === 'games' ? t.pageGames : page === 'photo' ? t.pagePhoto : page === 'music' ? t.pageMusic : page === 'about' ? t.pageAbout : t.pageContact;
   const currentPage = page === 'games' ? 'work' : page;
   return <div className="site-shell functional-shell">
-    <header className="site-header is-scrolled functional-header">
-      <a className="brand-lockup" href="/" aria-label="回到首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
-      <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage={currentPage} /></nav>
-      <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
-    </header>
+    <SiteHeader language={language} setLanguage={setLanguage} currentPage={currentPage} isScrolled />
     {page === 'games' ? <Suspense fallback={<div className="archive-page section-light">Loading archive…</div>}><WorkArchive groups={workArchiveGroups} language={language} /></Suspense> : <section className="archive-page section-light">
       <div className="page-width archive-page-inner">
         <div className="section-marker"><span>/{page}</span><span>Archive view</span></div>
         <TypewriterHeadline as="h1" className="archive-page-title" markup={pageTitle} />
-        {page === 'about' && <div className="about-archive"><div><p className="archive-intro">{t.heroKicker}</p><TypewriterHeadline as="h2" markup={t.aboutTitle} /><p>{t.aboutLarge}</p></div><div className="about-archive-profile"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span>HAOQI / PRACTICE / 2026</span></div></div>}
-        {page === 'games' && <div className="archive-grid">{gameWorks.map((work) => <article className="archive-card" key={work.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('work', work, event)}><img src={work.image} alt={work.title} /><span>{work.archiveCode} / extract ↗</span></button><small className="archive-code">{work.archiveCode} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p><a href={work.downloadUrl}>下载 / 跳转 ↗</a></article>)}</div>}
+        {page === 'about' && <div className="about-archive"><div><p className="archive-intro">{t.heroKicker}</p><TypewriterHeadline as="h2" markup={t.aboutTitle} /><p>{t.aboutLarge}</p></div><div className="about-archive-profile"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" loading="lazy" decoding="async" /><span>HAOQI / PRACTICE / 2026</span></div></div>}
+        {page === 'games' && <div className="archive-grid">{gameWorks.map((work) => <article className="archive-card" key={work.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('work', work, event)}><img src={work.image} alt={work.title} loading="lazy" decoding="async" /><span>{work.archiveCode} / extract ↗</span></button><small className="archive-code">{work.archiveCode} / {work.type}</small><h2>{work.title}</h2><p>{work.summary}</p><a href={work.downloadUrl}>下载 / 跳转 ↗</a></article>)}</div>}
         {page === 'photo' && <>
           <p className="archive-intro">{t.photoIntro}</p>
           <div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}<span>{t.year}</span>{['all', ...new Set(photoAlbums.map((album) => album.year))].map((value) => <button type="button" className={year === value ? 'is-active' : ''} onClick={() => setYear(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div>
-          <div className="archive-grid" key={`${city}-${year}`}>{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('photo', album, event)}><img src={album.cover} alt={album.title} /><span>{album.archiveCode} / {album.frameCount} frames ↗</span></button><small className="archive-code">{album.archiveCode} / {album.city} / {album.year} · {album.date}</small><h2>{album.title}</h2><p>{album.summary}</p></article>)}</div>
+          <div className="archive-grid" key={`${city}-${year}`}>{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={(event) => openArchive('photo', album, event)}><img src={album.cover} alt={album.title} loading="lazy" decoding="async" /><span>{album.archiveCode} / {album.frameCount} frames ↗</span></button><small className="archive-code">{album.archiveCode} / {album.city} / {album.year} · {album.date}</small><h2>{album.title}</h2><p>{album.summary}</p></article>)}</div>
           <div className="archive-map"><div><small>Map inside photography</small><TypewriterHeadline as="h2" className="map-typewriter" markup={t.mapTitle} /><p>{t.mapNote}</p></div><div className="archive-map-shape">{mapCities.map((item) => <button type="button" key={item.city} style={{ left: `${item.x}%`, top: `${item.y}%` }} className={item.count ? 'has-work' : ''}>{item.city}</button>)}</div></div>
         </>}
         {page === 'music' && <div className="music-archive"><div><p className="archive-intro">{t.musicTitle}</p>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small><b className="archive-code">{track.archiveCode}</b> / {track.mood}</small></button>)}</div><aside key={activeTrack}><small>{t.nowPlaying} / <b className="archive-code">{activeMusicTrack.archiveCode}</b></small><h2>{activeMusicTrack.title}</h2><p>{activeMusicTrack.analysis}</p><span>{t.audioPending}</span></aside></div>}
@@ -455,17 +461,6 @@ function FunctionalPage({ page, language, setLanguage }) {
     </section>}
     <ArchiveExtract focus={focus} isClosing={isClosing} onClose={closeArchive} />
   </div>;
-}
-
-function HomeArchiveFlow({ language, onOpenArchive }) {
-  const [city, setCity] = useState('all');
-  const [activeTrack, setActiveTrack] = usePersistentState('haoqi-track', musicTracks[0].id);
-  const t = languageText[language] || mixedText;
-  const albums = photoAlbums.filter((album) => city === 'all' || album.city === city);
-  return <>
-    <section id="photo" className="archive-flow section-dark"><div className="page-width archive-flow-inner"><div className="section-marker section-marker-dark"><span>04</span><span>Photography archive</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.photoTitle} /><div className="archive-filters"><span>{t.city}</span>{['all', ...new Set(photoAlbums.map((album) => album.city))].map((value) => <button type="button" className={city === value ? 'is-active' : ''} onClick={() => setCity(value)} key={value}>{value === 'all' ? t.all : value}</button>)}</div><div className="archive-grid" key={city}>{albums.map((album) => <article className="archive-card" key={album.id}><button className="archive-image-button" type="button" onClick={(event) => onOpenArchive('photo', album, event)}><img src={album.cover} alt={album.title} /><span>{album.archiveCode} / {album.frameCount} frames ↗</span></button><small className="archive-code">{album.archiveCode} / {album.city} / {album.year} · {album.date}</small><h3>{album.title}</h3><p>{album.summary}</p></article>)}</div></div></section>
-    <section id="music" className="archive-flow section-light"><div className="page-width archive-flow-inner"><div className="section-marker"><span>05</span><span>Sound studies</span></div><TypewriterHeadline as="h2" className="archive-flow-typewriter" markup={t.musicTitle} /><div className="music-archive"><div>{musicTracks.map((track) => <button type="button" className={`track-row ${activeTrack === track.id ? 'is-active' : ''}`} onClick={() => setActiveTrack(track.id)} key={track.id}><span>{track.title}</span><small><b className="archive-code">{track.archiveCode}</b> / {track.mood}</small></button>)}</div><aside key={activeTrack}><small>{t.nowPlaying} / <b className="archive-code">{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).archiveCode}</b></small><h3>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).title}</h3><p>{(musicTracks.find((track) => track.id === activeTrack) || musicTracks[0]).analysis}</p><span>{t.audioPending}</span></aside></div></div></section>
-  </>;
 }
 
 function ContactPage({ language, setLanguage }) {
@@ -519,10 +514,7 @@ function ContactPage({ language, setLanguage }) {
 
   return (
     <div className="contact-page">
-      <header className="contact-page-header">
-        <a className="brand-lockup" href="/" aria-label="返回首页"><span className="brand-orbit" aria-hidden="true" /><span>HAOQI<span className="brand-slash">/</span>STUDIO</span></a>
-        <div className="contact-page-actions"><span className="header-divider" aria-hidden="true">/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /><a className="contact-back" href="/">{t.backTop} <span aria-hidden="true">↗</span></a></div>
-      </header>
+      <SiteHeader language={language} setLanguage={setLanguage} currentPage="contact" contact />
       <main className="contact-page-main">
         <div className="contact-page-label">{ct.label}</div>
         <div className="contact-page-grid">
@@ -556,7 +548,7 @@ function ContactPage({ language, setLanguage }) {
               </div>
             </div>
           </div>
-          <div className="contact-page-portrait"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" /><span className="portrait-tag">{ct.portrait}</span></div>
+          <div className="contact-page-portrait"><img src="/assets/haoqi-portrait.jpg" alt="HAOQI portrait" loading="lazy" decoding="async" /><span className="portrait-tag">{ct.portrait}</span></div>
         </div>
       </main>
       <footer className="contact-page-footer"><span>Available for selected collaborations / 2026</span><span>25° 02' N / 121° 32' E</span></footer>
@@ -565,17 +557,32 @@ function ContactPage({ language, setLanguage }) {
 }
 
 function App({ language, setLanguage }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 24);
   const [currentTime, setCurrentTime] = useState('');
   const { focus, isClosing, openArchive, closeArchive } = useArchiveExtract();
   const t = languageText[language] || mixedText;
+  const home = homeCopy[language] || homeCopy.mixed;
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 24);
-    handleScroll();
+    let previousState = window.scrollY > 24;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const nextState = window.scrollY > 24;
+      if (nextState !== previousState) {
+        previousState = nextState;
+        setIsScrolled(nextState);
+      }
+    };
+    const handleScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    update();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
@@ -612,61 +619,25 @@ function App({ language, setLanguage }) {
     return () => observer.disconnect();
   }, []);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
-    <div className="site-shell">
+    <div className="site-shell home-page">
       <BootSequence />
-      <header className={`site-header ${menuOpen ? 'menu-is-open' : ''} ${isScrolled ? 'is-scrolled' : ''}`}>
-        <a className="brand-lockup" href="#top" onClick={closeMenu} aria-label="回到首页">
-          <span className="brand-orbit" aria-hidden="true" />
-          <span>HAOQI<span className="brand-slash">/</span>STUDIO</span>
-        </a>
-      <nav className="desktop-nav" aria-label="主导航"><NavigationItems language={language} currentPage="home" /></nav>
-        <div className="header-actions"><LanguageSwitcher language={language} setLanguage={setLanguage} /><span className="header-divider" aria-hidden="true">/</span><a className="header-contact" href="/contact.html">{t.contactMe} <span aria-hidden="true">↗</span></a></div>
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span>{menuOpen ? 'Close' : 'Menu'}</span>
-          <span className="menu-icon" aria-hidden="true"><i /><i /></span>
-        </button>
-        <nav id="mobile-nav" className="mobile-nav" aria-label="移动端导航">
-          <NavigationItems language={language} currentPage="home" onNavigate={closeMenu} mobile />
-          <div className="mobile-language"><span>/</span><LanguageSwitcher language={language} setLanguage={setLanguage} /></div>
-        </nav>
-      </header>
+      <SiteHeader language={language} setLanguage={setLanguage} isScrolled={isScrolled} />
 
       <main>
         <section id="top" className="hero-section">
-          <video
-            className="hero-video"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="/assets/hero-poster.png"
-            aria-hidden="true"
-          >
-            <source src="https://videos.pexels.com/video-files/3129977/3129977-hd_1920_1080_25fps.mp4" type="video/mp4" />
-          </video>
-          <div className="hero-noise" aria-hidden="true" />
-          <div className="hero-vignette" aria-hidden="true" />
-          <div className="hero-grid" aria-hidden="true" />
+          <img className="hero-background-image" src="/assets/hero-background.png" alt="" fetchPriority="high" decoding="async" />
           <div className="hero-inner page-width">
             <div className="hero-topline">
               <span>Independent practice / 2026</span>
               <span className="hero-topline-status"><i /> {t.status}</span>
             </div>
             <div className="hero-content">
-              <p className="eyebrow">{t.heroKicker}</p>
-              <TypewriterHeadline as="h1" className="hero-typewriter" markup={t.heroTitle} stripPunctuation />
+              <h1 dangerouslySetInnerHTML={{ __html: home.title }} />
+              <p className="hero-intro">{home.intro}</p>
               <div className="hero-bottomline">
-                <a className="round-link" href="/work.html" aria-label="进入游戏作品档案">
-                  <span>{t.explore}</span>
+                <a className="round-link" href="#work" aria-label={home.scroll}>
+                  <span>{home.scroll}</span>
                   <span className="round-link-arrow" aria-hidden="true">↓</span>
                 </a>
               </div>
@@ -674,17 +645,18 @@ function App({ language, setLanguage }) {
             <div className="hero-footer">
               <span>25° 02' N / 121° 32' E</span>
               <span>{currentTime || '— : —'} / UTC+8</span>
-              <span className="hero-footer-scroll">{t.scroll} <span aria-hidden="true">↓</span></span>
+              <a className="hero-footer-scroll" href="#work">{home.scroll} <span aria-hidden="true">↓</span></a>
             </div>
           </div>
         </section>
 
+        <HomePortfolio language={language} selectedTitle={t.selectedWork} onOpenArchive={openArchive} />
+
         <section id="about" className="about-section section-light">
           <div className="page-width about-layout">
-            <div className="section-marker" data-reveal><span>01</span><span>{t.aboutMarker}</span></div>
+            <div className="section-marker" data-reveal><span>HAOQI</span><span>{t.aboutMarker}</span></div>
             <div className="about-copy" data-reveal>
-              <p className="section-kicker">{t.aboutKicker}</p>
-              <TypewriterHeadline as="h2" className="about-typewriter" markup={t.aboutTitle} />
+              <h2 dangerouslySetInnerHTML={{ __html: t.aboutTitle }} />
               <p className="large-copy">{t.aboutLarge}</p>
               <p className="body-copy">{t.aboutBody}</p>
               <div className="about-links">
@@ -695,7 +667,7 @@ function App({ language, setLanguage }) {
             <div className="profile-column" data-reveal>
               <div className="profile-card">
                 <div className="profile-scanline" aria-hidden="true" />
-                <img className="profile-image" src="/assets/haoqi-portrait.jpg" alt="浩祈个人头像" />
+                <img className="profile-image" src="/assets/haoqi-portrait.jpg" alt="浩祈个人头像" loading="lazy" decoding="async" />
                 <div className="profile-overlay" aria-hidden="true" />
                 <div className="profile-coordinates">HAOQI<br />PRACTICE / 2026</div>
                 <div className="profile-caption">Game design / visual<br />sound studies</div>
@@ -703,61 +675,21 @@ function App({ language, setLanguage }) {
               <div className="profile-note"><span>{t.currently}</span><strong>{t.playable}</strong></div>
             </div>
           </div>
-          <div className="stats-row page-width" data-reveal>
-            <div className="stat-item"><strong>03</strong><span>{t.disciplines}</span></div>
-            <div className="stat-item"><strong>∞</strong><span>{t.iterations}</span></div>
-            <div className="stat-item"><strong>01</strong><span>{t.practice}</span></div>
-            <div className="stats-note" dangerouslySetInnerHTML={{ __html: t.statsNote }} />
-          </div>
-        </section>
-
-        <section id="work" className="work-section section-dark">
-          <div className="page-width">
-            <div className="section-heading-row" data-reveal>
-              <div className="section-marker section-marker-dark"><span>02</span><span>{t.selectedWork}</span></div>
-              <p className="section-note" dangerouslySetInnerHTML={{ __html: t.selectedNote }} />
-            </div>
-            <div className="work-intro" data-reveal>
-              <TypewriterHeadline as="h2" className="work-typewriter" markup={t.workIntro} />
-              <span className="work-count">[ 03 / 03 ]</span>
-            </div>
-            <div className="project-grid">
-              {projectItems.map((project) => (
-                <article className={`project-card ${project.tone}`} key={project.number} data-reveal>
-                  <button className="project-image-wrap" type="button" onClick={(event) => openArchive('work', project, event)} aria-label={`打开项目档案 ${project.title}`}>
-                    <img src={project.image} alt={project.title} />
-                    <div className="project-image-overlay" />
-                    <span className="project-open" aria-hidden="true">↗</span>
-                  </button>
-                  <div className="project-meta">
-                    <span className="project-number archive-code">{project.archiveCode}</span>
-                    <div>
-                      <h3>{project.title}</h3>
-                      <p>{project.subtitle}</p>
-                      <small>{project.detail}</small>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="work-footer" data-reveal><span>{t.archiveProgress}</span><a href="#contact">{t.viewNotes} <span aria-hidden="true">↗</span></a></div>
-          </div>
         </section>
 
           <section id="capabilities" className="capabilities-section section-light">
           <div className="page-width">
             <div className="section-heading-row" data-reveal>
-              <div className="section-marker"><span>03</span><span>{t.capabilities}</span></div>
+              <div className="section-marker"><span>STUDIO</span><span>{t.capabilities}</span></div>
               <p className="section-note" dangerouslySetInnerHTML={{ __html: t.capabilitiesNote }} />
             </div>
             <div className="capability-lead" data-reveal>
-              <p className="section-kicker">{t.capabilitiesKicker}</p>
-              <TypewriterHeadline as="h2" className="capabilities-typewriter" markup={t.capabilitiesTitle} />
+              <h2 dangerouslySetInnerHTML={{ __html: t.capabilitiesTitle }} />
             </div>
             <div className="capability-grid">
               {capabilityItems.map((item) => (
                 <article className="capability-card" key={item.index} data-reveal>
-                  <div className="capability-top"><span>{item.index}</span><span className="capability-plus" aria-hidden="true">+</span></div>
+                  <span className="capability-plus" aria-hidden="true">+</span>
                   <div className="capability-title"><h3>{item.title}</h3><span>{item.chinese}</span></div>
                   <p>{item.body}</p>
                   <div className="tag-list">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
@@ -767,16 +699,13 @@ function App({ language, setLanguage }) {
           </div>
           </section>
 
-          <HomeArchiveFlow language={language} onOpenArchive={openArchive} />
-
           <section id="contact" className="contact-section section-dark">
           <div className="contact-orbit contact-orbit-a" aria-hidden="true" />
           <div className="contact-orbit contact-orbit-b" aria-hidden="true" />
           <div className="page-width contact-inner">
-            <div className="section-marker section-marker-dark" data-reveal><span>06</span><span>{t.contactTitle}</span></div>
+            <div className="section-marker section-marker-dark" data-reveal><span>HELLO</span><span>{t.contactTitle}</span></div>
             <div className="contact-content" data-reveal>
-              <p className="section-kicker">{t.contactKicker}</p>
-              <TypewriterHeadline as="h2" className="contact-typewriter" markup={t.contactHeading} />
+              <h2 dangerouslySetInnerHTML={{ __html: home.contact }} />
               <a className="contact-email" href="mailto:1370228191@qq.com">1370228191@qq.com <span aria-hidden="true">↗</span></a>
             </div>
             <div className="contact-footer" data-reveal>
@@ -791,33 +720,41 @@ function App({ language, setLanguage }) {
   );
 }
 
-const pageByRoute = { 'about.html': 'about', 'work.html': 'games', 'photography.html': 'photo', 'music.html': 'music' };
+const pageByRoute = { about: 'about', work: 'games', photo: 'photo', music: 'music', contact: 'contact' };
 
 function SiteRouter() {
+  const { sound } = useSiteSound();
   const [language, setLanguage] = usePersistentState('haoqi-language', 'mixed');
-  const [route, setRoute] = useState(() => window.location.pathname.split('/').pop() || 'index.html');
+  const [route, setRoute] = useState(() => window.location.pathname);
+  useEffect(() => { if (pageKey(route) === 'home') sound.play('home-enter'); }, [route, sound]);
   useEffect(() => {
-    document.documentElement.lang = language === 'mixed' ? 'zh-CN' : language;
+    applyPageMetadata(route, language);
     document.documentElement.dataset.language = language;
-  }, [language]);
+  }, [route, language]);
   useEffect(() => {
-    const onPopState = () => setRoute(window.location.pathname.split('/').pop() || 'index.html');
+    const onPopState = () => setRoute(window.location.pathname);
     const onLinkClick = (event) => {
       const link = event.target.closest('a[href]');
-      if (!link || link.target || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (!link || link.target || link.hasAttribute('download') || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const destination = new URL(link.href, window.location.href);
       if (destination.origin !== window.location.origin || destination.hash || !['/', '/about.html', '/work.html', '/photography.html', '/music.html', '/contact.html'].includes(destination.pathname)) return;
       event.preventDefault();
       window.history.pushState({}, '', destination.pathname);
-      setRoute(destination.pathname.split('/').pop() || 'index.html');
+      setRoute(destination.pathname);
       window.scrollTo(0, 0);
     };
     window.addEventListener('popstate', onPopState);
     document.addEventListener('click', onLinkClick);
     return () => { window.removeEventListener('popstate', onPopState); document.removeEventListener('click', onLinkClick); };
   }, []);
-  const page = route === 'contact.html' ? <ContactPage language={language} setLanguage={setLanguage} /> : pageByRoute[route] ? <FunctionalPage page={pageByRoute[route]} language={language} setLanguage={setLanguage} /> : <App language={language} setLanguage={setLanguage} />;
+  const key = pageKey(route), routePage = pageByRoute[key];
+  const header = key !== 'home' && routePage !== 'games' ? <SiteHeader language={language} setLanguage={setLanguage} currentPage={routePage} isScrolled /> : null;
+  const page = key === 'notFound'
+    ? <Suspense fallback={<div className="site-shell functional-shell">{header}<main className="archive-page section-light" /></div>}><NotFound language={language} header={header} /></Suspense>
+    : routePage && routePage !== 'games'
+    ? <Suspense fallback={<div className="site-shell functional-shell">{header}<main className="archive-page section-light" /></div>}><PortfolioPages page={routePage} language={language} header={header} /></Suspense>
+    : routePage ? <FunctionalPage page={routePage} language={language} setLanguage={setLanguage} /> : <App language={language} setLanguage={setLanguage} />;
   return <><CustomCursor />{page}<MusicTools language={language} /></>;
 }
 
-createRoot(document.getElementById('root')).render(<SiteRouter />);
+createRoot(document.getElementById('root')).render(<SiteSoundProvider><SiteRouter /></SiteSoundProvider>);

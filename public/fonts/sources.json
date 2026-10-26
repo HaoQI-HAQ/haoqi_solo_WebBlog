@@ -1,0 +1,19 @@
+{
+  "retrievedOn": "2026-10-25",
+  "license": "SIL Open Font License 1.1",
+  "files": [
+    { "file": "ibm-plex-mono-latin-400.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2", "bytes": 14708, "sha256": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7" },
+    { "file": "ibm-plex-mono-latin-ext-400.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1iEq129k.woff2", "bytes": 13348, "sha256": "6bc0f226a5b7884a8170e3f62c63d7675609d4631bdc5931b5cdab81821f00eb" },
+    { "file": "ibm-plex-mono-cyrillic-400.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1isq129k.woff2", "bytes": 8356, "sha256": "7635422bd10ddbbcb0e0caa1154b928298f5c8319b8c00b30978d4395f4783ce" },
+    { "file": "ibm-plex-mono-latin-500.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2", "bytes": 14888, "sha256": "01d285447409c8a588692162439a038b8cbd7871309ee20267b0d2d91c6e8e22" },
+    { "file": "ibm-plex-mono-latin-ext-500.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwl5FgtIU.woff2", "bytes": 13432, "sha256": "6bb06407c97584b0867a959e05e8874693bfeb8c317de190811c51598f2d99ea" },
+    { "file": "ibm-plex-mono-cyrillic-500.woff2", "url": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlRFgtIU.woff2", "bytes": 8460, "sha256": "1d89462e86cb8e87e7e9d6f6635605bd7c3081baca6caaecee84916bf7b60edc" },
+    { "file": "space-grotesk-latin-400-700.woff2", "url": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2", "bytes": 22288, "sha256": "0640890476fc1198ab4de571fb658de443c4d85b66466ec09534a8737ab1ce9d" },
+    { "file": "space-grotesk-latin-ext-400-700.woff2", "url": "https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPb94C-s0.woff2", "bytes": 18940, "sha256": "952dddb45d2f96f71cbf3b7f510b24379afc3c89ea02fcf89d377b45d62c0166" },
+    { "file": "syne-latin-400-800.woff2", "url": "https://fonts.gstatic.com/s/syne/v24/8vIH7w4qzmVxm2BL9A.woff2", "bytes": 34608, "sha256": "68b623f0e45b905041b2edb9b2e4f563a505f13db1cd06b5f1946eb2e1f47048" },
+    { "file": "syne-latin-ext-400-800.woff2", "url": "https://fonts.gstatic.com/s/syne/v24/8vIH7w4qzmVxm25L9Hz_.woff2", "bytes": 14724, "sha256": "83885b130cf2a67bc2fd6175d6f3c2875833552c1762b5943b51335038ae01f2" },
+    { "file": "OFL-IBM-Plex-Mono.txt", "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexmono/OFL.txt", "bytes": 4456, "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da" },
+    { "file": "OFL-Space-Grotesk.txt", "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/spacegrotesk/OFL.txt", "bytes": 4495, "sha256": "564ce565c371c5e5bbf286006565a7c9aa55a9f56e7ca58d56e05d649dd61a72" },
+    { "file": "OFL-Syne.txt", "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/syne/OFL.txt", "bytes": 4402, "sha256": "cc43cdce6f91c57989af8459341c276655e34224e954fa69c2ad700831a742d8" }
+  ]
+}

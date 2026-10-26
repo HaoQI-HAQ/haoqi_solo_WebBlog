@@ -1,0 +1,57 @@
+.ai-hello { max-width: 1200px; margin: 0 auto 68px; text-align: center; }
+.ai-hello h1 { font-size: clamp(34px, 5.3vw, 76px); font-weight: 600; line-height: 1.18; letter-spacing: -.035em; text-wrap: balance; }
+.ai-hello p { margin-top: 20px !important; font-size: clamp(16px, 1.6vw, 22px); line-height: 1.6; }
+.ai-quick-links { display: flex; flex-wrap: wrap; justify-content: center; column-gap: 28px; margin-top: 18px; }
+.ai-quick-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 15px; text-decoration: underline; text-underline-offset: 5px; }
+.ai-quick-links a:hover { text-decoration-thickness: 2px; }
+.ai-quick-links a:first-child { padding: 0 18px; background: var(--ink); color: var(--paper); text-decoration: none; }
+.ai-interests { max-width: 1280px; margin: auto; display: grid; gap: 82px; }
+.ai-interest { --interest-tone: #dcebf0; display: grid; grid-template-columns: 1.25fr 1fr; align-items: center; column-gap: clamp(40px, 8vw, 130px); padding: 22px 0; }
+.ai-interest-photo { min-width: 0; padding: 12px 12px 0; background: #fffefa; border: 3px solid var(--ink); border-radius: 6px; box-shadow: 7px 7px 0 var(--ink); transform: rotate(2deg); transition: transform 320ms var(--ca-ease), box-shadow 320ms var(--ca-ease); } /* taste-skill-ignore: explicit huxx reference uses printed frames with hard offset shadows. */
+.ai-interest-photo img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--interest-tone); }
+.ai-interest-photo figcaption { min-height: 48px; display: flex; align-items: center; padding: 10px 3px; font-size: 14px; line-height: 1.5; }
+.ai-interest-copy { display: flex; align-items: flex-start; gap: 25px; padding: 26px 0; border-bottom: 4px solid var(--ink); transition: transform 320ms var(--ca-ease); }
+.ai-interest-icon { flex: 0 0 clamp(56px, 6vw, 80px); width: clamp(56px, 6vw, 80px); height: auto; stroke: currentColor; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.ai-interest-copy h2 { font-size: clamp(28px, 3.2vw, 46px); font-weight: 600; letter-spacing: -.03em; line-height: 1.25; text-wrap: balance; }
+.ai-interest-tags { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 18px 0; list-style: none; }
+.ai-interest-tags li { padding: 7px 11px; color: var(--paper); background: var(--ink); font-size: 14px; line-height: 1.4; transform: rotate(-2deg); }
+.ai-interest-tags li:nth-child(even) { transform: rotate(1deg); }
+.ai-interest-copy p { max-width: 34ch; font-size: 17px; line-height: 1.8; }
+.ai-interest-copy a { display: inline-flex; gap: 20px; align-items: center; min-height: 44px; margin-top: 18px; font-size: 16px; font-weight: 500; }
+.ai-interest-copy a svg { width: 23px; height: 23px; stroke: currentColor; stroke-width: 1.8; transition: transform 180ms var(--ca-ease); }
+.ai-interest-copy a:hover svg { transform: translateX(5px); }
+.ai-interest-photo { grid-column: 2; grid-row: 1; }
+.ai-interest-copy { grid-column: 1; grid-row: 1; }
+.ai-interest:nth-child(even) { grid-template-columns: 1fr 1.25fr; }
+.ai-interest:nth-child(even) .ai-interest-photo { grid-column: 1; transform: rotate(-2deg); }
+.ai-interest:nth-child(even) .ai-interest-copy { grid-column: 2; }
+.ai-interest-kind-music .ai-interest-photo img { object-fit: contain; }
+@media (hover: hover) {
+  .ai-interest:hover .ai-interest-photo { transform: rotate(0deg) translateY(-4px); box-shadow: 9px 11px 0 var(--ink); } /* taste-skill-ignore: explicit huxx reference uses printed frames with hard offset shadows. */
+  .ai-interest:hover .ai-interest-copy { transform: translateY(-4px); }
+}
+@media (max-width: 900px) {
+  .ai-interests { gap: 56px; }
+  .ai-interest, .ai-interest:nth-child(even) { column-gap: 36px; grid-template-columns: 1fr 1fr; }
+  .ai-interest-copy { gap: 14px; }
+  .ai-interest-icon { flex-basis: 50px; width: 50px; }
+  .ai-interest-copy h2 { font-size: 30px; }
+  .ai-interest-copy p { font-size: 16px; }
+}
+@media (max-width: 640px) {
+  .ai-hello { margin-bottom: 40px; }
+  .ai-hello h1 { font-size: clamp(30px, 7.5vw, 46px); }
+  .ai-hello p { max-width: 28ch; margin: 14px auto 0 !important; font-size: 16px; }
+  .ai-interests { gap: 52px; }
+  .ai-interest, .ai-interest:nth-child(even) { grid-template-columns: 1fr; gap: 26px; padding: 0 3px; }
+  .ai-interest-copy, .ai-interest:nth-child(even) .ai-interest-copy { grid-column: 1; grid-row: 1; gap: 16px; padding: 18px 0 24px; }
+  .ai-interest-copy h2 { font-size: clamp(25px, 6.5vw, 34px); }
+  .ai-interest-copy p { font-size: 16px; max-width: none; }
+  .ai-interest-copy a { font-size: 15px; }
+  .ai-interest-icon { width: 48px; flex-basis: 48px; }
+  .ai-interest-tags { gap: 8px; margin: 16px 0; }
+  .ai-interest-tags li { font-size: 13px; padding: 6px 8px; }
+  .ai-interest-photo, .ai-interest:nth-child(even) .ai-interest-photo { grid-column: 1; grid-row: 2; max-width: 460px; width: calc(100% - 12px); justify-self: center; }
+}
+.ca-about[data-motion='reduced'] :is(.ai-interest-photo,.ai-interest-copy,.ai-interest-copy a svg) { transition: none; }
+.ca-about[data-motion='reduced'] .ai-interest:hover :is(.ai-interest-photo,.ai-interest-copy) { transform: none; }

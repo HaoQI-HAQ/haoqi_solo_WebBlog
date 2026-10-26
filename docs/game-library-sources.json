@@ -1,0 +1,668 @@
+{
+  "favorites": {
+    "verifiedAt": "2026-10-22",
+    "scope": "User-supplied 22 favorite games only. These are metadata sources, not evidence of Steam ownership, playtime, completion or personal reviews.",
+    "preferenceSource": "User directly supplied the 22-title favorite list in this chat.",
+    "coverPolicy": "Official publisher/platform artwork, plus the exact Capcom PSP retail cover preserved by TheGamesDB. Archive-hosted packaging is documented as such, not presented as a publisher-hosted image.",
+    "pendingVersionConfirmation": [],
+    "records": [
+      {
+        "id": "zelda-breath-of-the-wild",
+        "steamAppId": null,
+        "titleSource": "https://ec.nintendo.com/HK/zh/titles/70010000009367",
+        "genreSource": [
+          "https://ec.nintendo.com/HK/zh/titles/70010000009367",
+          "https://www.nintendo.com/us/store/products/the-legend-of-zelda-breath-of-the-wild-switch/"
+        ],
+        "coverSource": "https://img-eshop.cdn.nintendo.net/i/3c336cf3721b57aaca9a11333884b3d525e20dc50f3244b97f286c49f0be7b81.jpg",
+        "coverVerification": "HTTP 200; image/jpeg; 1920×1080 official Nintendo product key art. Landscape fallback, not portrait retail art.",
+        "notes": [
+          "The cover frame may crop this authentic key art to 2:3; the source itself is landscape. No personal comment inferred."
+        ]
+      },
+      {
+        "id": "steam-367520",
+        "steamAppId": 367520,
+        "titleSource": "https://store.steampowered.com/app/367520/",
+        "genreSource": "https://store.steampowered.com/app/367520/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-851100",
+        "steamAppId": 851100,
+        "titleSource": "https://store.steampowered.com/app/851100/",
+        "genreSource": "https://store.steampowered.com/app/851100/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/851100/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-1364780",
+        "steamAppId": 1364780,
+        "titleSource": "https://store.steampowered.com/app/1364780/",
+        "genreSource": "https://store.steampowered.com/app/1364780/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1364780/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "street-fighter-alpha",
+        "steamAppId": null,
+        "titleSource": "https://www.esrb.org/ratings/20936/street-fighter-alpha-3-max/",
+        "genreSource": "https://www.esrb.org/ratings/20936/street-fighter-alpha-3-max/",
+        "coverSource": "https://cdn.thegamesdb.net/images/original/boxart/front/7119-1.jpg",
+        "coverVerification": "Original PSP packaging scan, with Street Fighter Alpha 3 MAX / PSP / Capcom marks; verify downloaded image locally.",
+        "additionalSource": "https://news.capcomusa.com/grant008/blog/2008/08/11/street_fighter__surprise",
+        "notes": [
+          "Haoqi explicitly confirmed the PSP version of 少年街霸3 on 2026-10-23. PSP edition verified as Street Fighter Alpha 3 MAX via ESRB and PlayStation official publications; no longer a generic Alpha-series record."
+        ],
+        "platformSource": "https://blog.playstation.com/?p=17845",
+        "coverArchivePage": "https://thegamesdb.net/game.php?id=7119"
+      },
+      {
+        "id": "kof-2002",
+        "steamAppId": null,
+        "titleSource": "https://www.snk-corp.co.jp/us/games/kof-portal/series/2002/",
+        "genreSource": "https://www.snk-corp.co.jp/us/games/acaneogeo/kof2002/",
+        "coverSource": "https://www.snk-corp.co.jp/kof30th/assets/img/img_poster02.jpg",
+        "coverVerification": "Exact official poster URL resolved from KOF 30th anniversary poster page; direct image fetch failed during current SNK maintenance.",
+        "notes": [
+          "2002 original and 2002 UNLIMITED MATCH are distinct versions on the official portal. Do not map this favorite to Steam 222440 until the user confirms UM. The image is SNK’s original KOF 2002 poster, not UM artwork."
+        ],
+        "coverPage": "https://www.snk-corp.co.jp/kof30th/jp/poster/index.html",
+        "relatedSteamAppId": 222440
+      },
+      {
+        "id": "steam-582010",
+        "steamAppId": 582010,
+        "titleSource": "https://store.steampowered.com/app/582010/",
+        "genreSource": "https://store.steampowered.com/app/582010/",
+        "coverSource": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/582010/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "arknights",
+        "steamAppId": null,
+        "titleSource": "https://ak.hypergryph.com/",
+        "genreSource": [
+          "https://www.yostar.co.jp/arknights_page.html",
+          "https://apps.apple.com/us/app/arknights/id1464872022"
+        ],
+        "coverPage": "https://www.yostar.co.jp/arknights_page.html",
+        "coverSource": "https://www.yostar.co.jp/images/backgrounds/arknights_bg_m.png",
+        "coverVerification": "HTTP 200; image/png; 1080×1920; visually checked official Arknights portrait art with Amiya and Kal’tsit.",
+        "notes": [
+          "Main portrait visual has black space toward bottom; prefer top alignment. It is Arknights artwork, not Arknights: Endfield."
+        ]
+      },
+      {
+        "id": "steam-698780",
+        "steamAppId": 698780,
+        "titleSource": "https://store.steampowered.com/app/698780/",
+        "genreSource": "https://store.steampowered.com/app/698780/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/698780/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "minecraft",
+        "steamAppId": null,
+        "titleSource": "https://www.minecraft.net/en-us/about-minecraft",
+        "genreSource": "https://www.minecraft.net/en-us/about-minecraft",
+        "coverSource": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/game-characters/MC-About_Key-Art_Gather_Resources_600x800.png",
+        "coverVerification": "HTTP 200; image/png; 600×800 official portrait key art, not retail box art.",
+        "notes": [
+          "Edition not specified. Link refers to Minecraft generally; portrait key art can be cropped within the 2:3 presentation frame. Do not assert Java or Bedrock."
+        ]
+      },
+      {
+        "id": "steam-601150",
+        "steamAppId": 601150,
+        "titleSource": "https://store.steampowered.com/app/601150/",
+        "genreSource": "https://store.steampowered.com/app/601150/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/601150/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-379720",
+        "steamAppId": 379720,
+        "titleSource": "https://store.steampowered.com/app/379720/",
+        "genreSource": "https://store.steampowered.com/app/379720/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/379720/library_600x900.jpg",
+        "coverVerification": "Official page artwork; downloaded and verified in local cover cache.",
+        "notes": [
+          "Edition explicitly confirmed by Haoqi in this chat on 2026-10-22. Nintendo cover uses official landscape key art within the portrait frame."
+        ]
+      },
+      {
+        "id": "animal-crossing",
+        "steamAppId": null,
+        "titleSource": "https://www.nintendo.com/jp/switch/acbaa/index.html",
+        "genreSource": "https://www.nintendo.com/jp/switch/acbaa/index.html",
+        "coverSource": "https://www.nintendo.com/jp/switch/acbaa/sns.png?20260306",
+        "coverVerification": "Official page artwork; downloaded and verified in local cover cache.",
+        "notes": [
+          "Edition explicitly confirmed by Haoqi in this chat on 2026-10-22. Nintendo cover uses official landscape key art within the portrait frame."
+        ]
+      },
+      {
+        "id": "steam-340170",
+        "steamAppId": 340170,
+        "titleSource": "https://store.steampowered.com/app/340170/",
+        "genreSource": "https://store.steampowered.com/app/340170/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/340170/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": [
+          "User supplied 最终幻想零式 without platform. Steam 340170 is the HD port; the display title preserves TYPE-0 without asserting that the user meant HD."
+        ]
+      },
+      {
+        "id": "steam-813230",
+        "steamAppId": 813230,
+        "titleSource": "https://store.steampowered.com/app/813230/",
+        "genreSource": "https://store.steampowered.com/app/813230/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/813230/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-1073440",
+        "steamAppId": 1073440,
+        "titleSource": "https://store.steampowered.com/app/1073440/",
+        "genreSource": "https://store.steampowered.com/app/1073440/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1073440/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": [
+          "User supplied 恋爱活动1. Steam 1073440 is the first Koikatsu title’s international Party release, not Sunshine. Japanese and international editions differ; this store link/artwork does not assert which edition was played."
+        ]
+      },
+      {
+        "id": "steam-2005010",
+        "steamAppId": 2005010,
+        "titleSource": "https://store.steampowered.com/app/2005010/",
+        "genreSource": "https://store.steampowered.com/app/2005010/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2005010/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-753640",
+        "steamAppId": 753640,
+        "titleSource": "https://store.steampowered.com/app/753640/",
+        "genreSource": "https://store.steampowered.com/app/753640/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/753640/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-366250",
+        "steamAppId": 366250,
+        "titleSource": "https://store.steampowered.com/app/366250/",
+        "genreSource": "https://store.steampowered.com/app/366250/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/366250/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "steam-292120",
+        "steamAppId": 292120,
+        "titleSource": "https://store.steampowered.com/app/292120/",
+        "genreSource": "https://store.steampowered.com/api/appdetails?appids=292120&l=english&cc=us",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292120/library_600x900_2x.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": [
+          "Steam public appdetails API verified success:true, name FINAL FANTASY XIII, genre RPG. Store page is age-gated."
+        ]
+      },
+      {
+        "id": "steam-2358720",
+        "steamAppId": 2358720,
+        "titleSource": "https://store.steampowered.com/app/2358720/",
+        "genreSource": "https://store.steampowered.com/app/2358720/",
+        "coverSource": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2358720/library_600x900.jpg",
+        "coverVerification": "HTTP 200; image/jpeg fetched from official Steam CDN on 2026-10-22.",
+        "notes": []
+      },
+      {
+        "id": "mario-kart-8",
+        "steamAppId": null,
+        "titleSource": "https://www.nintendo.com/jp/switch/aabpa/index.html",
+        "genreSource": "https://www.nintendo.com/jp/switch/aabpa/index.html",
+        "coverSource": "https://www.nintendo.com/jp/switch/aabpa/sns.png",
+        "coverVerification": "Official page artwork; downloaded and verified in local cover cache.",
+        "relatedOfficialImage": "https://www.nintendo.co.jp/wiiu/amkj/detail/img/img_main_02.jpg",
+        "notes": [
+          "Edition explicitly confirmed by Haoqi in this chat on 2026-10-22. Nintendo cover uses official landscape key art within the portrait frame."
+        ]
+      }
+    ]
+  },
+  "steam": {
+    "schemaVersion": 1,
+    "steamId": "76561199136053781",
+    "profileUrl": "https://steamcommunity.com/profiles/76561199136053781/",
+    "fullLibraryUrl": "https://steamcommunity.com/profiles/76561199136053781/games/?tab=all",
+    "fetchedAt": "2026-10-22T14:53:32.4694140Z",
+    "collectionStatus": "partial-public-play-records",
+    "recordCount": 6,
+    "publicProfileReadable": true,
+    "profilePrivacyState": "public",
+    "profileReportedGameCount": 117,
+    "fullLibraryReadableAnonymously": false,
+    "completenessNote": "公开资料页显示117款游戏；完整游戏列表及游戏XML均重定向Steam登录页。本文件仅保存公开首页、资料XML和评测列表中可核实的6款游戏，不是117款完整库导入，也不核实当前所有权或授权状态。",
+    "method": "匿名读取Steam公开HTML/XML，以及无需密钥的官方公开商店名称与应用类型数据；未登录、未使用API密钥、未读取参考huxx游戏清单。",
+    "sources": [
+      {
+        "id": "profile-html",
+        "url": "https://steamcommunity.com/profiles/76561199136053781/",
+        "status": "readable",
+        "httpStatus": 200,
+        "evidence": "最近活动含Monster Hunter Wilds总时数13.8小时及NieR:Automata总时数0.8小时；成就展柜包含Devil May Cry 5；游戏计数117。"
+      },
+      {
+        "id": "profile-xml",
+        "url": "https://steamcommunity.com/profiles/76561199136053781/?xml=1",
+        "status": "readable",
+        "httpStatus": 200,
+        "evidence": "privacyState=public；mostPlayedGames包含Warhammer 40,000: Space Marine 2，hoursOnRecord=46。仅使用累计hoursOnRecord，没有使用最近两周hoursPlayed。"
+      },
+      {
+        "id": "public-reviews",
+        "url": "https://steamcommunity.com/profiles/76561199136053781/recommended/?l=schinese",
+        "status": "readable",
+        "httpStatus": 200,
+        "evidence": "公开评测列表显示Devil May Cry 5总时数52.9小时、F1 24总时数17.0小时、黑神话：悟空总时数102.8小时。未采用括号中旧的评测时长，也未导入评测正文。"
+      },
+      {
+        "id": "official-store-metadata",
+        "urlTemplate": "https://store.steampowered.com/api/appdetails?appids={APPID}&l=schinese&filters=basic",
+        "status": "readable-without-key",
+        "verifiedAppIds": [
+          2246340,
+          524220,
+          2183900,
+          601150,
+          2488620,
+          2358720,
+          3030630,
+          717250,
+          1905180
+        ],
+        "additionalEnglishTitleUrl": "https://store.steampowered.com/api/appdetails?appids=2358720&l=english&filters=basic",
+        "evidence": "核实名称与已知试玩版/DLC类型；未从商店数据推断用户拥有游戏。"
+      },
+      {
+        "id": "official-covers",
+        "urlTemplate": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/{APPID}/library_600x900.jpg",
+        "method": "HEAD",
+        "verifiedAppIds": [
+          2246340,
+          524220,
+          2183900,
+          601150,
+          2488620,
+          2358720
+        ],
+        "httpStatusForAll": 200,
+        "contentTypeForAll": "image/jpeg"
+      }
+    ],
+    "fullLibraryAttempts": [
+      {
+        "url": "https://steamcommunity.com/profiles/76561199136053781/games/?tab=all",
+        "httpStatus": 200,
+        "result": "redirected-to-sign-in",
+        "finalUrl": "https://steamcommunity.com/login/?redir=https%3A%2F%2Fsteamcommunity.com%2Fprofiles%2F76561199136053781%2Fgames%2F%3Ftab%3Dall"
+      },
+      {
+        "url": "https://steamcommunity.com/profiles/76561199136053781/games/?xml=1",
+        "httpStatus": 200,
+        "result": "redirected-to-sign-in",
+        "finalUrl": "https://steamcommunity.com/login/?redir=https%3A%2F%2Fsteamcommunity.com%2Fprofiles%2F76561199136053781%2Fgames%2F%3Fxml%3D1"
+      },
+      {
+        "url": "https://steamcommunity.com/profiles/76561199136053781/games/?tab=all&xml=1",
+        "httpStatus": 200,
+        "result": "redirected-to-sign-in"
+      },
+      {
+        "url": "https://steamcommunity.com/profiles/76561199136053781/games?xml=1",
+        "httpStatus": 200,
+        "result": "redirected-to-sign-in"
+      }
+    ],
+    "recordEvidence": {
+      "steam-2246340": {
+        "sourceId": "profile-html",
+        "playtimeField": "total-hours-on-record",
+        "displayedPlaytime": "13.8 hrs on record"
+      },
+      "steam-524220": {
+        "sourceId": "profile-html",
+        "playtimeField": "total-hours-on-record",
+        "displayedPlaytime": "0.8 hrs on record"
+      },
+      "steam-2183900": {
+        "sourceId": "profile-xml",
+        "playtimeField": "hoursOnRecord",
+        "displayedPlaytime": "46",
+        "precisionNote": "保留XML原始显示精度，不补造小数。"
+      },
+      "steam-601150": {
+        "sourceId": "public-reviews",
+        "reviewUrl": "https://steamcommunity.com/profiles/76561199136053781/recommended/601150/",
+        "playtimeField": "total-hours-on-record",
+        "displayedPlaytime": "总时数 52.9 小时"
+      },
+      "steam-2488620": {
+        "sourceId": "public-reviews",
+        "reviewUrl": "https://steamcommunity.com/profiles/76561199136053781/recommended/2488620/",
+        "playtimeField": "total-hours-on-record",
+        "displayedPlaytime": "总时数 17.0 小时"
+      },
+      "steam-2358720": {
+        "sourceId": "public-reviews",
+        "reviewUrl": "https://steamcommunity.com/profiles/76561199136053781/recommended/2358720/",
+        "playtimeField": "total-hours-on-record",
+        "displayedPlaytime": "总时数 102.8 小时"
+      }
+    },
+    "excludedPublicApps": [
+      {
+        "appId": 1905180,
+        "title": "OBS Studio",
+        "reason": "录制与直播软件，排除出本次游戏条目集合。",
+        "sourceId": "profile-html"
+      },
+      {
+        "appId": 3030630,
+        "title": "章节六的镇魂曲 Demo",
+        "reason": "官方商店类型为demo；未用试玩记录推断拥有完整版2551590。",
+        "sourceId": "public-reviews"
+      },
+      {
+        "appId": 717250,
+        "title": "Doki Doki Literature Club Fan Pack",
+        "reason": "官方商店类型为dlc；未用DLC评测推断基础游戏698780的公开库记录或游玩时长。",
+        "sourceId": "public-reviews"
+      }
+    ],
+    "favoriteMatches": [
+      {
+        "id": "steam-601150",
+        "userSuppliedName": "鬼泣5"
+      },
+      {
+        "id": "steam-2358720",
+        "userSuppliedName": "黑神话悟空"
+      }
+    ],
+    "favoriteMatchBasis": "仅匹配本次对话中用户明确确认的22个最爱名称；公开时长、推荐评测与成就展示均未被推断为最爱。匹配结果仅覆盖这6款公开记录。",
+    "supplementalMetadataSources": [
+      {
+        "urlTemplate": "https://store.steampowered.com/api/appdetails?appids={APPID}&l=schinese&filters=basic,genres,categories",
+        "verifiedAppIds": [
+          2246340,
+          524220,
+          2183900,
+          601150,
+          2488620
+        ],
+        "fields": [
+          "genres",
+          "categories"
+        ],
+        "note": "类型直接映射action/adventure/rpg/racing；多人或在线合作类别映射multiplayer。鬼泣5的multiplayer来自官方多人/在线合作类别，不表示玩法以多人为主。"
+      },
+      {
+        "url": "https://store.steampowered.com/app/2358720",
+        "verifiedAppIds": [
+          2358720
+        ],
+        "note": "商店HTML的Genre明确列出Action、Adventure、RPG；分类接口网络EOF后，使用公开商店页面核对。"
+      }
+    ],
+    "localizedTitleNote": "title补充通行中文展示名，titleEn保留官方英文名称；官方品牌名F1® 24保持原样。中文展示名不代表Steam API逐字返回的名称。",
+    "tagsNote": "仅映射本轮已核实的官方商店类型与多人类别，限定action/adventure/rpg/fps/multiplayer/racing；这6款没有添加fps标签。"
+  },
+  "covers": {
+    "zelda-breath-of-the-wild": {
+      "source": "https://img-eshop.cdn.nintendo.net/i/3c336cf3721b57aaca9a11333884b3d525e20dc50f3244b97f286c49f0be7b81.jpg",
+      "cover": "/media/game-library/zelda-breath-of-the-wild.webp",
+      "originalSize": [
+        1920,
+        1080
+      ],
+      "bytes": 50156
+    },
+    "steam-367520": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-367520.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 64390
+    },
+    "steam-851100": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/851100/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-851100.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 83792
+    },
+    "steam-1364780": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1364780/library_600x900.jpg",
+      "cover": "/media/game-library/steam-1364780.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 42752
+    },
+    "street-fighter-alpha": {
+      "source": "https://cdn.thegamesdb.net/images/original/boxart/front/7119-1.jpg",
+      "cover": "/media/game-library/street-fighter-alpha.webp",
+      "originalSize": [
+        1146,
+        1980
+      ],
+      "bytes": 87000
+    },
+    "kof-2002": {
+      "source": "https://www.snk-corp.co.jp/kof30th/assets/img/img_poster02.jpg",
+      "cover": "/media/game-library/kof-2002.webp",
+      "originalSize": [
+        1200,
+        1698
+      ],
+      "bytes": 76402
+    },
+    "steam-582010": {
+      "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/582010/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-582010.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 189964
+    },
+    "arknights": {
+      "source": "https://www.yostar.co.jp/images/backgrounds/arknights_bg_m.png",
+      "cover": "/media/game-library/arknights.webp",
+      "originalSize": [
+        1080,
+        1920
+      ],
+      "bytes": 46354
+    },
+    "steam-698780": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/698780/library_600x900.jpg",
+      "cover": "/media/game-library/steam-698780.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 27412
+    },
+    "minecraft": {
+      "source": "https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/game-characters/MC-About_Key-Art_Gather_Resources_600x800.png",
+      "cover": "/media/game-library/minecraft.webp",
+      "originalSize": [
+        600,
+        800
+      ],
+      "bytes": 24618
+    },
+    "steam-601150": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/601150/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-601150.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 187212
+    },
+    "steam-379720": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/379720/library_600x900.jpg",
+      "cover": "/media/game-library/steam-379720.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 40884
+    },
+    "animal-crossing": {
+      "source": "https://www.nintendo.com/jp/switch/acbaa/sns.png?20260306",
+      "cover": "/media/game-library/animal-crossing.webp",
+      "originalSize": [
+        1200,
+        630
+      ],
+      "bytes": 60292
+    },
+    "steam-340170": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/340170/library_600x900.jpg",
+      "cover": "/media/game-library/steam-340170.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 44844
+    },
+    "steam-813230": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/813230/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-813230.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 83660
+    },
+    "steam-1073440": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1073440/library_600x900.jpg",
+      "cover": "/media/game-library/steam-1073440.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 39410
+    },
+    "steam-2005010": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2005010/library_600x900.jpg",
+      "cover": "/media/game-library/steam-2005010.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 46098
+    },
+    "steam-753640": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/753640/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-753640.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 66474
+    },
+    "steam-366250": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/366250/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-366250.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 104342
+    },
+    "steam-292120": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292120/library_600x900_2x.jpg",
+      "cover": "/media/game-library/steam-292120.webp",
+      "originalSize": [
+        600,
+        900
+      ],
+      "bytes": 100824
+    },
+    "steam-2358720": {
+      "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2358720/library_600x900.jpg",
+      "cover": "/media/game-library/steam-2358720.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 33424
+    },
+    "mario-kart-8": {
+      "source": "https://www.nintendo.com/jp/switch/aabpa/sns.png",
+      "cover": "/media/game-library/mario-kart-8.webp",
+      "originalSize": [
+        1200,
+        630
+      ],
+      "bytes": 78760
+    },
+    "steam-2246340": {
+      "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2246340/library_600x900.jpg",
+      "cover": "/media/game-library/steam-2246340.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 49734
+    },
+    "steam-524220": {
+      "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/524220/library_600x900.jpg",
+      "cover": "/media/game-library/steam-524220.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 37668
+    },
+    "steam-2183900": {
+      "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2183900/library_600x900.jpg",
+      "cover": "/media/game-library/steam-2183900.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 55842
+    },
+    "steam-2488620": {
+      "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2488620/library_600x900.jpg",
+      "cover": "/media/game-library/steam-2488620.webp",
+      "originalSize": [
+        300,
+        450
+      ],
+      "bytes": 34000
+    }
+  }
+}

@@ -8,3 +8,13 @@ yarn-error.log*
 logs/*.log
 logs/work-array-*.png
 logs/reference-video-*.png
+.taste-skill/
+.impeccable/
+logs/homepage-build/
+.env
+.env.*
+!.env*.example
+logs/release-*/
+logs/ci-build/
+release-artifacts/
+.release/

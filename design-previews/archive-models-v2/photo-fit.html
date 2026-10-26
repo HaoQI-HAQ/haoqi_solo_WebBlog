@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>摄影档案：尺寸适配独立预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1f0eb;color:#17202c;font-family:'Microsoft YaHei',sans-serif}main{max-width:1640px;margin:auto;padding:30px 40px 24px}header{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:18px}h1{font-size:32px;font-weight:500;letter-spacing:-.03em;margin:0 0 9px}header p{font-size:14px;color:#555f69;margin:0;line-height:1.7}header>span{font-size:12px;color:#555f69;white-space:nowrap}.array{height:440px;position:relative;background:#f1f0eb;overflow:hidden}.array canvas{display:block;width:100%;height:100%}.array-note{position:absolute;left:24px;bottom:18px;max-width:320px;line-height:1.8;font-size:13px;color:#49576c;pointer-events:none}.array-note strong{display:block;color:#17202c;font-size:17px;font-weight:500}.views{display:grid;grid-template-columns:1fr .34fr 1fr;gap:32px;margin-top:18px}.view{margin:0;min-width:0;text-align:center}.view canvas{display:block;width:100%;height:260px}.view figcaption{font-size:15px;margin-top:4px}.notes{display:flex;justify-content:space-between;gap:24px;margin-top:18px;font-size:13px;color:#49576c;line-height:1.8}.notes b{color:#17202c;font-weight:500}footer{font-size:11px;color:#67717c;margin-top:15px;text-align:right}a{color:inherit} @media(max-width:700px){main{padding:20px}header{display:block}header>span{display:block;margin-top:14px}.array{height:360px}.views{gap:8px}.view canvas{height:180px}.notes{display:block}.notes span{display:block;margin-bottom:8px}}
+</style></head>
+<body><main><header><div><h1>摄影档案 / 阵列尺寸适配</h1><p>统一外框容纳横幅原片，用卡纸留白保留照片比例。</p></div><span>独立三维预览 · 正式 Work 已接入</span></header>
+<section class="array" id="array"><div class="array-note"><strong>与现有档案使用相同占位</strong>相框抽取展示，背景沿用原来的档案阵列。</div></section>
+<section class="views"><figure class="view"><canvas id="front"></canvas><figcaption>正面 · 横幅照片完整显示</figcaption></figure><figure class="view"><canvas id="side"></canvas><figcaption>侧面 · 同一厚度范围</figcaption></figure><figure class="view"><canvas id="back"></canvas><figcaption>背面 · 档案标识与固定夹</figcaption></figure></section>
+<div class="notes"><span><b>外框：</b>5.0 × 3.7 × 0.35<br><b>阵列间距：</b>列间 5.2，前后 0.62</span><span><b>内窗：</b>原片约 2.607:1，完整展示<br><b>查看：</b>正式 Work 的详情区可看原比例大图</span><span><b>材质：</b>灰蓝金属边框、晚霞粉细边、暖色卡纸<br>本页保留尺寸对照，正式 Work 已使用新方案</span></div><footer>HAOQI / DESIGN PREVIEW V2</footer>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {WorkScene} from '/src/work-archive/scene.js';
+const photo='/media/photos/2026-08-27-guangxi-guilin-yangshuo/01.png';
+const work={id:'photo-fit',archiveCode:'PHOTO-01',title:'阳朔 / 2026.08.27',image:photo};
+const host=document.querySelector('#array');
+const engine=new WorkScene(host,[{id:'photo',items:[work]}],()=>{},()=>{},()=>{},()=>{},true);
+await engine.load();
+const texture=await new THREE.TextureLoader().loadAsync(photo);texture.colorSpace=THREE.SRGBColorSpace;
+const frame=new THREE.Group();
+const metal=new THREE.MeshStandardMaterial({color:'#49576c',metalness:.65,roughness:.42});
+const rose=new THREE.MeshStandardMaterial({color:'#b18889',metalness:.35,roughness:.52});
+const paper=new THREE.MeshStandardMaterial({color:'#f1e9dc',roughness:.94});
+const backing=new THREE.MeshStandardMaterial({color:'#485464',roughness:.78});
+const clip=new THREE.MeshStandardMaterial({color:'#b7b8b4',metalness:.8,roughness:.45});
+function box(w,h,d,x,y,z,material){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;frame.add(mesh);return mesh;}
+box(4.9,3.6,.28,0,1.85,0,backing);
+box(5,.1,.35,0,3.65,0,metal);box(5,.1,.35,0,.05,0,metal);
+box(.1,3.5,.35,-2.45,1.85,0,metal);box(.1,3.5,.35,2.45,1.85,0,metal);
+box(4.8,.028,.026,0,3.59,.16,rose);box(4.8,.028,.026,0,.11,.16,rose);
+box(.028,3.45,.026,-2.385,1.85,.16,rose);box(.028,3.45,.026,2.385,1.85,.16,rose);
+const mount=new THREE.Mesh(new THREE.PlaneGeometry(4.74,3.44),paper);mount.position.set(0,1.85,.151);frame.add(mount);
+const photoWidth=4.38,photoHeight=photoWidth/(texture.image.width/texture.image.height);
+const image=new THREE.Mesh(new THREE.PlaneGeometry(photoWidth,photoHeight),new THREE.MeshBasicMaterial({map:texture}));image.position.set(0,1.98,.158);frame.add(image);
+function textTexture(w,h,paint){const c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');paint(ctx);const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;return tex;}
+const frontLabel=textTexture(1300,210,ctx=>{ctx.fillStyle='#f1e9dc';ctx.fillRect(0,0,1300,210);ctx.fillStyle='#49576c';ctx.font='28px sans-serif';ctx.fillText('HAOQI / PHOTOGRAPHIC ARCHIVE',28,47);ctx.fillStyle='#17202c';ctx.font='50px "Microsoft YaHei",sans-serif';ctx.fillText('阳朔 / 2026.08.27',28,138);ctx.font='bold 34px monospace';ctx.fillText('PHOTO-01',1000,138);});
+const caption=new THREE.Mesh(new THREE.PlaneGeometry(4.38,.707),new THREE.MeshBasicMaterial({map:frontLabel}));caption.position.set(0,.51,.158);frame.add(caption);
+const rearLabel=textTexture(800,580,ctx=>{ctx.fillStyle='#f1e9dc';ctx.fillRect(0,0,800,580);ctx.fillStyle='#17202c';ctx.font='bold 70px monospace';ctx.fillText('PHOTO-01',45,115);ctx.font='48px "Microsoft YaHei",sans-serif';ctx.fillText('广西 · 桂林 · 阳朔',45,245);ctx.font='54px monospace';ctx.fillText('2026.08.27',45,345);ctx.fillStyle='#49576c';ctx.font='30px sans-serif';ctx.fillText('HAOQI / STUDIO',45,480);ctx.fillText('PHOTOGRAPHIC ARCHIVE',45,526);});
+const rear=new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.74),new THREE.MeshBasicMaterial({map:rearLabel}));rear.rotation.y=Math.PI;rear.position.set(-.7,1.5,-.145);frame.add(rear);
+for(const x of [-2.18,2.18])for(const y of [.35,3.35])box(.115,.33,.035,x,y,-.158,clip);
+box(.58,.095,.025,0,3.35,-.153,new THREE.MeshStandardMaterial({color:'#19212b',roughness:.9}));
+engine.detailModel.clear();engine.detailModel.add(frame);
+// Keep the real array, spacing and camera; only this isolated page receives the new frame.
+engine.targetDetail=.72;engine.camera.zoom=1.25;engine.invalidate();
+const bounds=new THREE.Box3().setFromObject(frame);window.__photoFitDimensions=bounds.getSize(new THREE.Vector3()).toArray();
+for(const [id,position]of [['front',[0,1.85,10]],['side',[10,1.85,0]],['back',[0,1.85,-10]]]){
+ const canvas=document.querySelector('#'+id),width=canvas.clientWidth,height=canvas.clientHeight;
+ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.25));renderer.setSize(width,height,false);renderer.setClearColor('#f1f0eb');renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ const scene=new THREE.Scene();scene.environment=engine.environment.texture;scene.environmentIntensity=.6;scene.add(new THREE.HemisphereLight('#ffffff','#a2a4a8',2));const light=new THREE.DirectionalLight('#ffffff',2.5);light.position.set(3,5,6);scene.add(light);const fill=new THREE.DirectionalLight('#ffffff',2);fill.position.set(-3,5,-6);scene.add(fill);scene.add(frame.clone(true));
+ const aspect=width/height,span=4.18,camera=new THREE.OrthographicCamera(-span*aspect/2,span*aspect/2,span/2,-span/2,.01,50);camera.position.set(...position);camera.lookAt(0,1.85,0);renderer.render(scene,camera);
+}
+window.__photoFitReady=true;
+</script></body></html>

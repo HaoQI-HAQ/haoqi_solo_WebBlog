@@ -1,0 +1,4 @@
+.site-modal { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border: 0; box-sizing: border-box; }
+.site-modal:not([open]) { display: none; }
+.site-modal::backdrop { background: transparent; }
+.site-modal :focus-visible { outline: 2px solid var(--acid, #d8ff4f); outline-offset: 4px; }

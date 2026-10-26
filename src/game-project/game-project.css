@@ -1,0 +1,69 @@
+.game-project { min-width: 0; color: var(--ink); }
+.game-project-identity { display: flex; align-items: center; gap: 20px; }
+.game-project-icon { display: block; width: 88px; height: 88px; object-fit: contain; flex: 0 0 auto; }
+.game-project-identity h3 { margin: 0 0 10px; font-size: clamp(28px, 3vw, 46px); font-weight: 500; letter-spacing: -.035em; line-height: 1.15; }
+.game-project-identity p { margin: 0; color: #515953; font-size: 13px; line-height: 1.6; }
+.game-project-summary { margin: 28px 0 14px; font-size: 20px; line-height: 1.65; text-wrap: pretty; }
+.game-project-description { margin: 14px 0; color: #515953; font-size: 15px; line-height: 1.85; }
+.game-project-features { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 24px 0; padding: 14px 0; border-block: 1px solid var(--line-light); list-style: none; color: #515953; font-size: 13px; line-height: 1.6; }
+.game-project-links { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 24px 0; }
+.game-project-links a { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 48px; font-size: 14px; text-decoration: underline; text-underline-offset: 5px; }
+.game-project-links .game-project-store { padding: 12px 18px; color: var(--paper); background: var(--ink); text-decoration: none; }
+.game-project-links .game-project-store:hover { color: var(--ink); background: var(--acid); }
+.game-project svg, .game-image-viewer svg { width: 22px; height: 22px; flex-shrink: 0; }
+.game-project :is(a, button):focus-visible, .game-image-viewer button:focus-visible { outline: 2px solid #607615; outline-offset: 3px; }
+.game-gallery { min-width: 0; }
+.game-gallery-filters { display: flex; flex-wrap: wrap; gap: 0 16px; margin-bottom: 12px; border-bottom: 1px solid var(--line-light); } /* taste-skill-ignore: Archive controls retain the existing ruled visual language. */
+.game-gallery-filters button { min-height: 44px; padding: 8px 0; border: 0; border-bottom: 2px solid transparent; color: #515953; background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+.game-gallery-filters button[aria-pressed=true] { color: var(--ink); border-bottom-color: var(--ink); }
+.game-gallery-filters button:hover { color: var(--ink); }
+.game-gallery-image { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 16 / 10; padding: 0; border: 0; background: #e1e1da; cursor: zoom-in; }
+.game-gallery-image img { display: block; width: 100%; height: 100%; min-height: 0; max-height: 100%; object-fit: contain; position: absolute; inset: 0; }
+.game-gallery-image>span { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 12px; padding: 8px 10px; color: var(--paper); background: var(--ink); font-size: 11px; }
+.game-gallery-image>span svg { width: 16px; height: 16px; }
+.game-gallery-navigation { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; border-bottom: 1px solid var(--line-light); } /* taste-skill-ignore: This rule separates image navigation from thumbnail controls. */
+.game-gallery-navigation button, .game-viewer-controls button { display: grid; place-items: center; min-width: 44px; min-height: 44px; border: 0; padding: 8px; background: transparent; color: inherit; cursor: pointer; }
+.game-gallery-navigation button:hover:not(:disabled) { background: var(--acid); }
+.game-gallery-navigation button:disabled { opacity: .3; cursor: default; }
+.game-gallery-navigation p { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0; padding: 8px; font-size: 12px; line-height: 1.6; }
+.game-gallery-navigation p span { white-space: nowrap; font-size: 11px; font-variant-numeric: tabular-nums; }
+.game-gallery-thumbnails { display: flex; gap: 8px; overflow-x: auto; padding: 12px 2px 6px; scrollbar-color: #71786c transparent; scrollbar-width: thin; }
+.game-gallery-thumbnails button { flex: 0 0 76px; min-height: 50px; padding: 3px; border: 1px solid transparent; background: #e1e1da; cursor: pointer; } /* taste-skill-ignore: The border reserves space for the selected thumbnail indicator. */
+.game-gallery-thumbnails button[aria-pressed=true] { border-color: var(--ink); background: var(--acid); }
+.game-gallery-thumbnails img { display: block; width: 100%; height: 46px; object-fit: contain; }
+.game-image-viewer { position: fixed; inset: 0; box-sizing: border-box; width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 68px max(20px, 4vw) 85px; border: 0; color: var(--paper); background: #0d0f10; }
+.game-image-viewer::backdrop { background: #0d0f10; }
+.game-image-viewer[open] { display: grid; place-items: center; }
+.game-image-viewer>img { display: block; max-width: 100%; width: auto; height: auto; min-height: 0; max-height: calc(100dvh - 153px); object-fit: contain; }
+.game-viewer-close { position: absolute; right: max(20px, 4vw); top: 14px; display: flex; align-items: center; gap: 24px; min-height: 44px; padding: 0; border: 0; color: var(--paper); background: none; font: inherit; font-size: 14px; cursor: pointer; }
+.game-viewer-close span { font-size: 28px; }
+.game-viewer-controls { position: absolute; left: max(20px, 4vw); right: max(20px, 4vw); bottom: 18px; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 14px; border-top: 1px solid #515953; } /* taste-skill-ignore: Viewer navigation follows the archive's existing ruled controls. */
+.game-viewer-controls p { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 20px; margin: 12px 0 0; font-size: 13px; line-height: 1.6; }
+.game-viewer-controls p span { color: var(--acid); font-variant-numeric: tabular-nums; }
+.game-viewer-controls button:hover { color: var(--acid); }
+.home-game-feature { padding: 44px 24px 48px; border-top: 1px solid var(--line-light); } /* taste-skill-ignore: Project boundaries preserve the established archive layout. */
+.home-game-feature>.home-game-code { display: block; margin-bottom: 24px; }
+.home-game-feature .game-project { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; gap: clamp(24px, 4vw, 64px); }
+.work-detail-game .game-project-icon { width: 60px; height: 60px; }
+.work-detail-game .game-project-summary { margin-top: 20px; font-size: 17px; }
+.work-detail-game .game-project-description { font-size: 13px; }
+.work-detail-game .game-project-features { font-size: 12px; }
+@media (max-width: 900px) {
+  .home-game-feature { padding-inline: 0; }
+  .home-game-feature .game-project { grid-template-columns: 1fr; gap: 8px; }
+  .game-project-copy { max-width: 68ch; }
+}
+@media (max-width: 700px) {
+  .game-project-identity { gap: 16px; }
+  .game-project-icon { width: 64px; height: 64px; }
+  .game-project-identity h3 { font-size: 29px; }
+  .game-project-summary { font-size: 18px; margin-top: 22px; }
+  .game-project-description { font-size: 15px; }
+  .game-gallery-filters { gap: 0 14px; }
+  .game-gallery-navigation p { flex-wrap: wrap; gap: 0 12px; padding-inline: 4px; }
+  .game-gallery-navigation p span { font-size: 10px; }
+  .game-gallery-image>span { bottom: 8px; right: 8px; padding: 5px 8px; }
+  .game-viewer-controls p { font-size: 12px; }
+  .work-detail-game .game-gallery-filters { gap: 0 12px; }
+  .work-detail-game .game-gallery-filters button { font-size: 12px; }
+}

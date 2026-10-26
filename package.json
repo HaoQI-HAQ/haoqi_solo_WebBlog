@@ -6,7 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "build:deploy": "node scripts/build-deploy.mjs",
+    "build:full": "node scripts/build-deploy.mjs --full",
+    "build:external": "node scripts/build-deploy.mjs --external",
+    "test": "node scripts/run-tests.mjs",
+    "check:release": "node scripts/check-release.mjs",
+    "snapshot:source": "node scripts/snapshot-source.mjs",
+    "preview": "vite preview",
+    "verify:deploy": "node scripts/verify-deploy.mjs",
+    "verify:fonts": "node scripts/verify-local-fonts.mjs",
+    "verify:assets": "node scripts/verify-site-assets.mjs"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25"
   },
   "dependencies": {
     "@kitlangton/rolling-number": "^0.4.1",

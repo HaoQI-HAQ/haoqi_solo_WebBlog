@@ -1,0 +1,23 @@
+name: Local release checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run verify:deploy
+      - run: npm run verify:fonts
+      - run: npm run verify:assets
+      - run: npm run build:full
+      - run: npm run check:release

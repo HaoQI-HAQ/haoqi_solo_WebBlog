@@ -150,6 +150,12 @@ export const copy = {
   },
 };
 
+const gameGallery = (folder, images) => images.map(([file, kind, caption, width, height]) => ({
+  src: `/media/games/${folder}/${file}.webp`,
+  thumbnail: `/media/games/${folder}/thumbnails/${file}.webp`,
+  kind, caption, width, height,
+}));
+
 export const gameWorks = [
   {
     id: 'fragmented-life',
@@ -182,17 +188,48 @@ export const gameWorks = [
     number: '03',
     archiveCode: 'WORK-03',
     title: '五秒真男人',
-    type: '游戏项目 / 作品记录',
-    summary: '《五秒真男人》游戏项目。完整演示可在 B 站观看；本地项目视频待补充。',
-    image: '/media/placeholders/archive-black.svg',
+    type: '卡牌动作 / 48 小时 GameJam',
+    summary: '只有五秒，打出你的最强一击。',
+    description: ['在倒计时与感官逐渐被剥夺的压力下，组合元素卡牌，寻找击败 Boss 的机会。将卡牌决策与即时动作压缩进短促、紧张的战斗节奏。'],
+    features: ['五秒倒计时', '元素卡牌组合', '感官剥夺'],
+    image: '/media/games/work-03-five-second-real-man/banner.webp',
+    icon: '/media/games/work-03-five-second-real-man/icon.webp',
+    storeUrl: 'https://www.taptap.cn/app/865053',
+    gallery: gameGallery('work-03-five-second-real-man', [
+      ['banner', 'artwork', '五秒真男人 / 商店宣传图', 1920, 1080],
+      ['promotion', 'artwork', '五秒真男人 / 横版宣传图', 1536, 718],
+      ['poster', 'poster', '五秒真男人 / 竖版海报', 1024, 1536],
+      ['screenshot-1', 'screenshot', '五秒真男人 / 实机截图 01', 1376, 768],
+      ['screenshot-2', 'screenshot', '五秒真男人 / 实机截图 02', 1376, 768],
+      ['screenshot-3', 'screenshot', '五秒真男人 / 实机截图 03', 1376, 768],
+      ['icon', 'icon', '五秒真男人 / 游戏图标', 512, 512],
+    ]),
     videoUrl: '#video-pending',
     downloadUrl: '#download-pending',
     bilibiliUrl: 'https://www.bilibili.com/video/BV12dNT61EMR',
-    status: 'Bilibili demo',
+    status: 'TapTap / Bilibili',
   },
   {
-    id: 'work-04-redacted', number: '04', archiveCode: 'WORK-04', title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED',
-    summary: '████████ ████████ ████████', image: '/media/placeholders/archive-black.svg', videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'Material pending', pending: true,
+    id: 'paoyong', number: '04', archiveCode: 'WORK-04', title: '泡涌',
+    type: '海底解谜 / 21 天 GameJam',
+    summary: '吐一个泡泡，寻找通往深海的答案。',
+    description: ['化身软乎乎的小水母，在海底遗迹中漂游、探索。通过移动、冲刺和吐泡泡，尝试炸弹泡泡与弹力泡泡的组合，破解挡路的障碍。', '幽蓝的遗迹、穿透海水的光束与成片水草，构成这段水下旅程。实机画面、场景制作对比与宣传视觉，一并收录于此。'],
+    features: ['泡泡组合解谜', '水下遗迹探索', '水母主角'],
+    image: '/media/games/work-04-paoyong/promotion-landscape.webp',
+    icon: '/media/games/work-04-paoyong/icon.webp',
+    storeUrl: 'https://www.taptap.cn/app/987601',
+    gallery: gameGallery('work-04-paoyong', [
+      ['promotion-landscape', 'artwork', '泡涌 / 云海深处的蓝色水母', 1672, 941],
+      ['promotion-portrait', 'artwork', '泡涌 / 幻彩水下果冻精灵', 1024, 1536],
+      ['poster', 'poster', '泡涌 / 梦境泡影：蓝色水母遨游遗迹', 2172, 724],
+      ['screenshot-1', 'screenshot', '泡涌 / 水下遗迹实机画面', 1920, 987],
+      ['screenshot-2', 'screenshot', '泡涌 / 岩谷与移动教学', 3440, 1440],
+      ['screenshot-3', 'screenshot', '泡涌 / 炸弹泡泡与弹力泡泡', 3440, 1440],
+      ['screenshot-4', 'screenshot', '泡涌 / 水母与海底光束', 3440, 1440],
+      ['screenshot-5', 'screenshot', '泡涌 / 场景制作与画面对比', 4729, 1473],
+      ['icon', 'icon', '泡涌 / 游戏图标', 1254, 1254],
+    ]),
+    videoUrl: '', downloadUrl: '', bilibiliUrl: '', status: 'TapTap',
   },
   {
     id: 'work-05-redacted', number: '05', archiveCode: 'WORK-05', title: 'ARCHIVE / REDACTED', type: 'GAME / MATERIAL LOCKED',
@@ -218,7 +255,7 @@ const importedAlbum = ({ id, code, folder, title, tracks }) => ({
 });
 const importedAlbumFiles = ({ id, code, folder, title, files, hasLyrics = true }) => ({
   id, archiveCode: code, title, mood: 'ID3 / APIC ARCHIVED',
-  analysis: '专辑、曲目、艺术家与封面将从 MP3 内嵌详细信息读取。', image: archiveCover(title, code),
+  analysis: '个人聆听收藏，曲目与艺术家信息整理自原专辑标签。', image: archiveCover(title, code),
   tracks: files.map((file, index) => ({
     id: `${id}-${String(index + 1).padStart(2, '0')}`,
     title: 'READING MP3 METADATA', artist: 'ID3 ARCHIVE',
@@ -301,7 +338,7 @@ export const photoAlbums = [
     date: '2026.08.27',
     frameCount: 1,
     camera: 'Camera / Pending',
-    cover: '/media/photos/2026-08-27-guangxi-guilin-yangshuo/01.png',
+    cover: '/media/photos/2026-08-27-guangxi-guilin-yangshuo/preview.webp',
     summary: '2026 年 8 月 27 日摄于广西桂林阳朔。',
     coordinates: { x: 57, y: 73 },
     tags: ['广西', '桂林', '阳朔', '2026.08.27'],

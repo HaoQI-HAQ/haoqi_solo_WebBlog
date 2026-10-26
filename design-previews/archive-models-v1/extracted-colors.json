@@ -1,0 +1,118 @@
+{
+  "game-paoyong": {
+    "source": "public/media/games/work-04-paoyong/promotion-landscape.webp",
+    "colors": [
+      {
+        "hex": "#f8e8d4",
+        "samples": 454
+      },
+      {
+        "hex": "#04346d",
+        "samples": 307
+      },
+      {
+        "hex": "#074e8f",
+        "samples": 276
+      },
+      {
+        "hex": "#096db3",
+        "samples": 249
+      },
+      {
+        "hex": "#052a55",
+        "samples": 206
+      },
+      {
+        "hex": "#0a74cc",
+        "samples": 206
+      }
+    ]
+  },
+  "game-five-seconds": {
+    "source": "public/media/games/work-03-five-second-real-man/banner.webp",
+    "colors": [
+      {
+        "hex": "#2a264e",
+        "samples": 410
+      },
+      {
+        "hex": "#2d1a4a",
+        "samples": 367
+      },
+      {
+        "hex": "#291738",
+        "samples": 342
+      },
+      {
+        "hex": "#191637",
+        "samples": 317
+      },
+      {
+        "hex": "#331111",
+        "samples": 197
+      },
+      {
+        "hex": "#4d2b51",
+        "samples": 151
+      }
+    ]
+  },
+  "photography-yangshuo": {
+    "source": "public/media/photos/2026-08-27-guangxi-guilin-yangshuo/01.png",
+    "colors": [
+      {
+        "hex": "#b18889",
+        "samples": 243
+      },
+      {
+        "hex": "#49576c",
+        "samples": 96
+      },
+      {
+        "hex": "#cc908f",
+        "samples": 90
+      },
+      {
+        "hex": "#f5cdb2",
+        "samples": 90
+      },
+      {
+        "hex": "#576477",
+        "samples": 76
+      },
+      {
+        "hex": "#74849b",
+        "samples": 69
+      }
+    ]
+  },
+  "music-luv-sic": {
+    "source": "design-previews/archive-models-v1/references/luv-sic-cover.jpg",
+    "colors": [
+      {
+        "hex": "#d3ca8b",
+        "samples": 912
+      },
+      {
+        "hex": "#f0eacb",
+        "samples": 511
+      },
+      {
+        "hex": "#b2b16e",
+        "samples": 401
+      },
+      {
+        "hex": "#ecd0b1",
+        "samples": 392
+      },
+      {
+        "hex": "#14512a",
+        "samples": 311
+      },
+      {
+        "hex": "#d5d0ae",
+        "samples": 272
+      }
+    ]
+  }
+}

@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { RollingNumber, RollingText } from '@kitlangton/rolling-number/react';
 import '@kitlangton/rolling-number/styles.css';
 import { WorkScene } from './scene.js';
-import { readAudioMetadata } from './audioMetadata.js';
+import GameProject from '../game-project/GameProject.jsx';
+import WorkBoot from './WorkBoot.jsx';
+import WorkSoundToggle from './WorkSoundToggle.jsx';
+import { createWorkSoundSession } from './workSound.js';
+import { useSiteSound } from '../audio/SiteSoundProvider.jsx';
+import ModalDialog from '../ui/ModalDialog.jsx';
 import './work-archive.css';
 
 const workText = {
@@ -30,6 +35,9 @@ const archiveMedia = {
   en: { games: { title: 'Game works', discipline: 'GAME DESIGN · VISUAL SYSTEMS · SOUND' }, photo: { title: 'Photography', discipline: 'CITY FRAMES · LIGHT STUDIES · ROUTE RECORDS' }, music: { title: 'Music records', discipline: 'AI COMPOSITION · SOUND STUDIES · EMOTIONAL STRUCTURE' } },
   ru: { games: { title: 'Игровые работы', discipline: 'ГЕЙМ-ДИЗАЙН · ВИЗУАЛЬНЫЕ СИСТЕМЫ · ЗВУК' }, photo: { title: 'Фотографии', discipline: 'ГОРОДСКИЕ КАДРЫ · ИССЛЕДОВАНИЕ СВЕТА · МАРШРУТЫ' }, music: { title: 'Музыкальные записи', discipline: 'AI-КОМПОЗИЦИЯ · ИССЛЕДОВАНИЕ ЗВУКА · ЭМОЦИОНАЛЬНАЯ СТРУКТУРА' } },
 };
+const entranceSkipText = { mixed: '跳过入场', zh: '跳过入场', en: 'Skip entrance', ja: '入場をスキップ', ru: 'Пропустить вход' };
+const unpublishedText = { mixed: '尚未公开', zh: '尚未公开', en: 'NOT YET PUBLIC', ja: '未公開', ru: 'ЕЩЁ НЕ ОПУБЛИКОВАНО' };
+const unpublishedHint = { mixed: '此位置为预留档案，可继续浏览其他作品。', zh: '此位置为预留档案，可继续浏览其他作品。', en: 'This archive slot is reserved. Continue browsing other work.', ja: '予約済みのアーカイブです。他の作品をご覧ください。', ru: 'Это место зарезервировано. Посмотрите другие работы.' };
 
 const detailCopy = {
   mixed: { blankReturn: '点击空白处归位', video: '项目演示', videoPending: '项目视频待添加', download: '游戏下载', bilibili: 'B站视频', linkPending: '链接待补充', description: '作品背景', gallery: '图片合集', enlarge: '点击放大查看', previousImage: '上一张图片', nextImage: '下一张图片', record: '黑胶唱片', track: '曲目', playRecord: '播放唱片', pauseRecord: '暂停唱片', noAudio: '音源待添加' },
@@ -48,8 +56,19 @@ export default function WorkArchive({ groups, language }) {
   const host = useRef(null), engine = useRef(null), stage = useRef(null), access = useRef(null), close = useRef(null), openDetailRef = useRef(null), closeDetailRef = useRef(null);
   const [selected, setSelected] = useState(0), [column, setColumn] = useState(0), [hovered, setHovered] = useState(null);
   const [status, setStatus] = useState('loading'), [detail, setDetail] = useState(false);
+  const [booting, setBooting] = useState(true), [bootPhase, setBootPhase] = useState('access');
+  const [entering, setEntering] = useState(true);
   const [galleryIndex, setGalleryIndex] = useState(0), [lightbox, setLightbox] = useState(false), [selectedTrackId, setSelectedTrackId] = useState('');
-  const [audioMetadata, setAudioMetadata] = useState({});
+  const sound = useRef(null), soundSelection = useRef({ groupIndex: 0, itemIndex: 0 });
+  const { sound: siteSound, state: soundState } = useSiteSound();
+  useEffect(() => {
+    sound.current = siteSound ? createWorkSoundSession(siteSound) : null;
+    return () => { sound.current = null; };
+  }, [siteSound]);
+  // Every visit starts with the authored animation; manual simplification is
+  // scoped to the current page and never becomes the next visit's default.
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => { setReduced(false); }, []);
   const t = workText[language] || workText.mixed;
   const group = groups[column], works = group.items, work = works[selected], media = (archiveMedia[language] || archiveMedia.mixed)[group.id];
   const detailT = detailCopy[language] || detailCopy.mixed;
@@ -57,35 +76,59 @@ export default function WorkArchive({ groups, language }) {
   useEffect(() => {
     let scene;
     try {
-      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => { setColumn(groupIndex); setSelected(itemIndex); }, setHovered, () => openDetailRef.current?.(), () => closeDetailRef.current?.(), false);
-      engine.current = scene; scene.onError = () => setStatus('error');
-      scene.load().then(() => { if (!scene.disposed) setStatus('ready'); }).catch(() => { if (!scene.disposed) setStatus('error'); });
-    } catch { setStatus('error'); }
+      scene = new WorkScene(host.current, groups, ({ groupIndex, itemIndex }) => {
+        const previous = soundSelection.current;
+        if (previous.groupIndex !== groupIndex) {
+          const delta = (groupIndex - previous.groupIndex + groups.length) % groups.length;
+          sound.current?.play('column', (delta <= groups.length / 2 ? 1 : -1) * .45);
+        }
+        else if (previous.itemIndex !== itemIndex) sound.current?.play('tick');
+        soundSelection.current = { groupIndex, itemIndex };
+        setColumn(groupIndex); setSelected(itemIndex);
+      }, setHovered, () => openDetailRef.current?.(), () => closeDetailRef.current?.(), reduced);
+      scene.onInspect = () => sound.current?.play('inspect');
+      scene.prepareEntrance();
+      scene.onEntranceComplete = () => { setEntering(false); requestAnimationFrame(() => stage.current?.focus({ preventScroll: true })); };
+      engine.current = scene; scene.onError = () => { setStatus('error'); setEntering(false); };
+      scene.load().then(() => { if (!scene.disposed) setStatus('ready'); }).catch(() => { if (!scene.disposed) { setStatus('error'); setEntering(false); } });
+    } catch { setStatus('error'); setEntering(false); }
     return () => { scene?.dispose(); engine.current = null; };
   }, [groups]);
+  useEffect(() => {
+    engine.current?.setReduced(reduced);
+  }, [reduced]);
+  const toggleMotion = () => {
+    const next = !reduced;
+    setReduced(next);
+    sound.current?.play('ui-tick');
+  };
   const openDetail = () => {
-    if (status !== 'ready') return;
-    engine.current.setDetail(true); setDetail(true); setHovered(null);
+    if (status === 'loading' || work.pending || booting || entering) return;
+    sound.current?.play('open');
+    engine.current?.setDetail(true); setDetail(true); setHovered(null);
   };
   openDetailRef.current = openDetail;
-  const returnToArray = () => { engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
+  const returnToArray = () => { if (detail) sound.current?.play('back'); engine.current?.setDetail(false); setDetail(false); setLightbox(false); access.current?.focus({ preventScroll: true }); };
+  const skipEntrance = () => { sound.current?.play('confirm'); engine.current?.finishEntrance(true); setEntering(false); };
+  const changePhoto = delta => { sound.current?.play('ui-tick'); setGalleryIndex(index => (index + delta + photoFrames.length) % photoFrames.length); };
+  const toggleLightbox = next => { sound.current?.play(next ? 'page-open' : 'page-close'); setLightbox(next); };
   closeDetailRef.current = returnToArray;
   useEffect(() => { setGalleryIndex(0); setLightbox(false); setSelectedTrackId(work.tracks?.[0]?.id || ''); }, [work.id]);
   useEffect(() => {
-    let active = true;
-    if (!detail || group.id !== 'music' || !work.tracks?.length) { setAudioMetadata({}); return () => { active = false; }; }
-    Promise.all(work.tracks.map(async track => [track.id, await readAudioMetadata(track.src)])).then(entries => {
-      if (active) setAudioMetadata(Object.fromEntries(entries));
-    });
-    return () => { active = false; };
-  }, [detail, group.id, work.id]);
-  useEffect(() => {
     if (detail) close.current?.focus({ preventScroll: true });
+  }, [detail, work.id]);
+  useEffect(() => {
     const keyboard = e => {
+      if (e.defaultPrevented || e.target.closest('dialog[open]')) return;
+      if (booting) return;
+      if (entering) {
+        if ((e.key === 'Enter' || e.key === 'Escape') && !e.target.closest('a,button')) { e.preventDefault(); skipEntrance(); }
+        return;
+      }
       if (e.target.closest('input,select,textarea,video') || e.ctrlKey || e.metaKey || e.altKey) return;
       if (detail) {
-        if (e.key === 'Escape') { e.preventDefault(); returnToArray(); }
-        if (group.id === 'photo' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); setGalleryIndex(index => (index + (e.key === 'ArrowRight' ? 1 : -1) + photoFrames.length) % photoFrames.length); }
+        if (e.key === 'Escape') { e.preventDefault(); if (lightbox) toggleLightbox(false); else returnToArray(); }
+        if (group.id === 'photo' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { e.preventDefault(); changePhoto(e.key === 'ArrowRight' ? 1 : -1); }
         return;
       }
       const step = { ArrowUp: ['row',-1], ArrowDown: ['row',1], ArrowLeft: ['lane',-1], ArrowRight: ['lane',1] }[e.key];
@@ -93,22 +136,36 @@ export default function WorkArchive({ groups, language }) {
       if (e.key === 'Enter' && !e.target.closest('a,button')) { e.preventDefault(); openDetail(); }
     };
     window.addEventListener('keydown',keyboard); return () => window.removeEventListener('keydown',keyboard);
-  }, [detail,status,group.id,work.id,photoFrames.length]);
+  }, [booting,entering,detail,status,group.id,work.id,photoFrames.length,lightbox]);
   const choose = index => {
     if (status === 'ready') engine.current.selectItemIndex(index);
     else setSelected(index);
   };
   const navigate = (axis, delta) => engine.current?.navigate(axis, delta);
   const albumTracks = work.tracks || [];
-  const albumMetadata = audioMetadata[albumTracks[0]?.id] || {};
-  const albumTitle = albumMetadata.album || work.title;
+  const albumTitle = work.title;
   const bilibiliEmbed = group.id === 'games' ? bilibiliEmbedSource(work.bilibiliUrl) : '';
   const playAlbumTrack = (track) => {
+    sound.current?.play('ui-tick');
     setSelectedTrackId(track.id);
     window.dispatchEvent(new CustomEvent('haoqi-play-track', { detail: { trackId: track.id } }));
   };
-  const roll = { duration: 460, animated: true, motionBlur: true };
-  return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} aria-label={t.ariaLabel} tabIndex={-1}>
+  const roll = { duration: 460, animated: !reduced, motionBlur: !reduced };
+  return <main ref={stage} className={`work-array ${detail ? 'is-reading' : ''}`} data-motion={reduced ? 'reduced' : 'full'} data-boot={booting ? bootPhase : entering ? 'array' : 'complete'} aria-label={t.ariaLabel} tabIndex={-1}>
+    {booting && <WorkBoot language={language} motion={reduced ? 'reduced' : 'full'} ready={status !== 'loading'}
+      onPhaseChange={setBootPhase}
+      onFrame={(frame, isReduced) => sound.current?.bootFrame(frame, isReduced)}
+      onGesture={event => sound.current?.gesture(event)}
+      soundControl={<WorkSoundToggle language={language} state={soundState} onClick={() => sound.current?.toggle()} />}
+      onReveal={({ skipped }) => { sound.current?.reveal(); engine.current?.startEntrance(skipped); }}
+      onComplete={({ skipped }) => {
+        engine.current?.finishEntrance(skipped);
+        if (skipped || !engine.current || status === 'error') setEntering(false);
+        setBooting(false);
+        if (skipped || !engine.current || status === 'error') requestAnimationFrame(() => stage.current?.focus({ preventScroll: true }));
+      }} />}
+    {!booting && entering && <button type="button" className="work-array-enter-skip" onClick={skipEntrance}>{entranceSkipText[language] || entranceSkipText.mixed}<kbd>ENTER / ESC</kbd></button>}
+    <div className="work-array-content" inert={booting || entering}>
     <div className="work-array-canvas" ref={host} aria-hidden={detail || status === 'error'} />
     <div className="work-array-atmosphere" aria-hidden="true" />
     {detail && <span className="work-array-dismiss" aria-hidden="true">{detailT.blankReturn}</span>}
@@ -121,33 +178,39 @@ export default function WorkArchive({ groups, language }) {
       <div className="work-array-code"><RollingText {...roll} text={work.archiveCode} transition="direct" stagger="none" /></div>
       <div className="work-array-title"><RollingText {...roll} text={work.title} transition="direct" stagger="none" /></div>
       <p className="work-array-type">{work.type}</p>
-      <button ref={access} type="button" className="work-array-access" onClick={openDetail} disabled={status!=='ready'}>{t.access} <span>↗</span></button>
-      <span className="work-array-hint">{t.selectionHint}</span>
+      <button ref={access} type="button" className="work-array-access" onClick={openDetail} disabled={status==='loading' || work.pending || booting || entering}>{work.pending ? unpublishedText[language] || unpublishedText.mixed : t.access} {!work.pending && <span>↗</span>}</button>
+      <span className="work-array-hint">{work.pending ? unpublishedHint[language] || unpublishedHint.mixed : t.selectionHint}</span>
     </section>
     {detail && <section className="work-array-detail" aria-label={`${work.archiveCode} ${t.detail}`}>
       <button type="button" className="work-array-return" ref={close} onClick={returnToArray}>← {t.return} <kbd>ESC</kbd></button>
       <div className="work-detail-index"><span>FILE {work.archiveCode}</span><span>REFERENCE AREA</span></div>
       <small>{work.archiveCode} / {work.type}</small><h2>{work.title}</h2>
       <div className="work-detail-meta"><div><small>ARCHIVE TYPE / 类型</small><span>{media.title}</span></div><div><small>COLLECTION / 编号</small><span>{work.archiveCode}</span></div><div><small>FORMAT / 格式</small><span>{work.type}</span></div><div><small>STATUS / 状态</small><span><i /> ARCHIVED / 可读取</span></div></div>
-      <div className="work-detail-tabs"><span className="is-active">01 概述</span><span>02 素材</span><span>03 注记</span></div>
       {group.id === 'games' && <div className="work-detail-game">
+        {work.gallery?.length ? <>
+          <GameProject key={work.id} work={work} language={language} />
+          {bilibiliEmbed && <><small>{detailT.video}</small><div className="work-detail-bilibili-frame"><iframe key={work.id} src={bilibiliEmbed} title={`${work.title} · ${detailT.bilibili}`} allow="autoplay; fullscreen" allowFullScreen /></div></>}
+        </> : <>
         <small>{detailT.video}</small>
         {work.videoSrc ? <video key={work.id} controls playsInline preload="metadata" poster={work.image} src={work.videoSrc} /> : bilibiliEmbed ? <div className="work-detail-bilibili-frame"><iframe key={work.id} src={bilibiliEmbed} title={`${work.title} · ${detailT.bilibili}`} allow="autoplay; fullscreen" allowFullScreen /> <span>{work.archiveCode} / BILIBILI STREAM</span></div> : <div className="work-detail-video-pending"><img src={work.image} alt={work.title} /><span>{detailT.videoPending}</span></div>}
-        <div className="work-detail-actions"><a href={work.downloadUrl?.startsWith('http') ? work.downloadUrl : undefined} target={work.downloadUrl?.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className={`work-detail-download ${!work.downloadUrl?.startsWith('http') ? 'is-pending' : ''}`}>{detailT.download} <span>↗</span><small>{!work.downloadUrl?.startsWith('http') && detailT.linkPending}</small></a><a href={work.bilibiliUrl?.startsWith('http') ? work.bilibiliUrl : undefined} target={work.bilibiliUrl?.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className={`work-detail-bilibili ${!work.bilibiliUrl?.startsWith('http') ? 'is-pending' : ''}`}>{detailT.bilibili} <span>↗</span><small>{!work.bilibiliUrl?.startsWith('http') && detailT.linkPending}</small></a></div>
+        <div className="work-detail-actions">{work.downloadUrl?.startsWith('http') && <a href={work.downloadUrl} target="_blank" rel="noreferrer" className="work-detail-download">{detailT.download} <span>↗</span></a>}{work.bilibiliUrl?.startsWith('http') && <a href={work.bilibiliUrl} target="_blank" rel="noreferrer" className="work-detail-bilibili">{detailT.bilibili} <span>↗</span></a>}</div>
         <div className="work-detail-description"><small>{detailT.description}</small><p>{work.summary}</p></div>
+        </>}
       </div>}
       {group.id === 'photo' && <div className="work-detail-photo">
         <div className="work-detail-gallery-heading"><small>{detailT.gallery}</small><span>{String(galleryIndex + 1).padStart(2, '0')} / {String(photoFrames.length).padStart(2, '0')}</span></div>
-        <button type="button" className="work-detail-photo-frame" onClick={() => setLightbox(true)} aria-label={detailT.enlarge}><img src={photoFrames[galleryIndex].src} alt={photoFrames[galleryIndex].caption || work.title} /><span>{detailT.enlarge} ↗</span></button>
-        <div className="work-detail-photo-nav"><button type="button" onClick={() => setGalleryIndex(index => (index - 1 + photoFrames.length) % photoFrames.length)} aria-label={detailT.previousImage}>←</button><span>{photoFrames[galleryIndex].caption || work.title}</span><button type="button" onClick={() => setGalleryIndex(index => (index + 1) % photoFrames.length)} aria-label={detailT.nextImage}>→</button></div>
+        <button type="button" className="work-detail-photo-frame" onClick={() => toggleLightbox(true)} aria-label={detailT.enlarge}><img src={photoFrames[galleryIndex].preview || photoFrames[galleryIndex].thumbnail || work.image} alt={photoFrames[galleryIndex].caption || work.title} /><span>{detailT.enlarge} ↗</span></button>
+        <div className="work-detail-photo-nav"><button type="button" onClick={() => changePhoto(-1)} aria-label={detailT.previousImage} disabled={photoFrames.length < 2}>←</button><span>{photoFrames[galleryIndex].caption || work.title}</span><button type="button" onClick={() => changePhoto(1)} aria-label={detailT.nextImage} disabled={photoFrames.length < 2}>→</button></div>
       </div>}
       {group.id === 'music' && <div className="work-detail-music">
-        <div className="work-album-cover"><img src={albumMetadata.cover || work.image} alt={`${albumTitle} cover`} /><span>{work.archiveCode} / ALBUM</span></div>
-        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{albumTitle}</strong><span>{work.mood || work.type}</span><div className="work-album-tracks" aria-label={`${albumTitle} ${detailT.track}`}>{albumTracks.length ? albumTracks.map((track, index) => { const metadata = audioMetadata[track.id] || {}; return <button type="button" className={selectedTrackId === track.id ? 'is-active' : ''} onClick={() => playAlbumTrack(track)} key={track.id}><b>{String(index + 1).padStart(2, '0')}</b><span>{metadata.title || track.title}</span><em>{metadata.artist || track.artist}</em><i aria-hidden="true">▶</i></button>; }) : <em>{detailT.noAudio}</em>}</div></div>
+        <div className="work-album-cover"><img src={work.image} alt={`${albumTitle} cover`} /><span>{work.archiveCode} / ALBUM</span></div>
+        <div className="work-detail-track"><small>{detailT.record} / {detailT.track}</small><strong>{albumTitle}</strong><span>{work.mood || work.type}</span><div className="work-album-tracks" aria-label={`${albumTitle} ${detailT.track}`}>{albumTracks.length ? albumTracks.map((track, index) => <button type="button" className={selectedTrackId === track.id ? 'is-active' : ''} onClick={() => playAlbumTrack(track)} key={track.id}><b>{String(index + 1).padStart(2, '0')}</b><span>{track.title}</span><em>{track.artist}</em><i aria-hidden="true">▶</i></button>) : <em>{detailT.noAudio}</em>}</div></div>
       </div>}
       <div className="work-array-detail-footer"><span>HAOQI / STUDIO</span><span>{t.inspect}</span></div>
     </section>}
-    {lightbox && <div className="work-photo-lightbox" role="dialog" aria-modal="true" aria-label={detailT.enlarge} onClick={() => setLightbox(false)}><button type="button" aria-label={t.return} onClick={() => setLightbox(false)}>×</button><img src={photoFrames[galleryIndex].src} alt={photoFrames[galleryIndex].caption || work.title} /></div>}
+    {lightbox && <ModalDialog className="work-photo-lightbox" label={detailT.enlarge} onRequestClose={() => toggleLightbox(false)} onKeyDown={event => {
+      if (photoFrames.length > 1 && ['ArrowLeft', 'ArrowRight'].includes(event.key)) { event.preventDefault(); changePhoto(event.key === 'ArrowRight' ? 1 : -1); }
+    }}><button type="button" data-modal-close aria-label={t.return} onClick={() => toggleLightbox(false)}>×</button><img src={photoFrames[galleryIndex].src} alt={photoFrames[galleryIndex].caption || work.title} /></ModalDialog>}
     <div className="work-array-hover" aria-live="off">{hovered !== null && !detail ? `${(archiveMedia[language] || archiveMedia.mixed)[hovered.group.id].title} / ${hovered.item.archiveCode} / ${hovered.item.title}` : '\u00a0'}</div>
     <footer className="work-array-controls" hidden={detail}>
       <div className="work-array-counter"><small>{t.archiveSelect}</small><div><RollingNumber {...roll} value={selected+1} format={{ minimumIntegerDigits: 2 }} /><span>/ {String(works.length).padStart(2,'0')}</span></div></div>
@@ -155,7 +218,8 @@ export default function WorkArchive({ groups, language }) {
       <div className="work-array-lanes"><button aria-label={t.previousLane} disabled={status!=='ready'} onClick={()=>navigate('lane',-1)}>←</button><span>{media.title} <b>{String(column + 1).padStart(2, '0')} / {String(groups.length).padStart(2, '0')}</b></span><button aria-label={t.nextLane} disabled={status!=='ready'} onClick={()=>navigate('lane',1)}>→</button></div>
       <div className="work-array-instructions">↑ ↓ {t.select} <span>/</span> ← → {t.move} {media.title} <span>/</span> ENTER {t.open}</div>
     </footer>
-    <div className="work-array-bottom"><span>{t.independent}</span></div>
+    <div className="work-array-bottom"><span>{t.independent}</span><div className="work-array-preferences"><WorkSoundToggle language={language} state={soundState} onClick={() => sound.current?.toggle()} /><button type="button" className="work-array-motion" aria-pressed={!reduced} aria-label={reduced ? t.motionFull : t.motionReduced} onClick={toggleMotion}>{reduced ? t.motionReduced : t.motionFull}</button></div></div>
     <p className="work-array-announcement" aria-live="polite">{t.announce}: {work.archiveCode} {work.title}</p>
+    </div>
   </main>;
 }

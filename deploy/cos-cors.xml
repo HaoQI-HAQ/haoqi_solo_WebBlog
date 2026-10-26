@@ -1,0 +1,17 @@
+<CORSConfiguration>
+  <!-- 腾讯云 COS 控制台 → 存储桶 → 安全配置 → 跨域访问 CORS 设置，粘贴本文件内容。
+       为什么必须配：src/work-archive/audioMetadata.js 用 fetch() 读取 MP3 的 ID3 标签
+       （曲名、专辑、内嵌封面）。音频放在 COS 上属于跨域请求，不配 CORS 会直接被浏览器拦住，
+       音乐板块的曲名和黑胶封面会全部变成空白。
+       把 AllowedOrigin 换成你的正式域名；调试期可以先用 *。 -->
+  <CORSRule>
+    <AllowedOrigin>https://你的域名.com</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>HEAD</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+    <ExposeHeader>Content-Length</ExposeHeader>
+    <ExposeHeader>Content-Range</ExposeHeader>
+    <ExposeHeader>Accept-Ranges</ExposeHeader>
+    <MaxAgeSeconds>3600</MaxAgeSeconds>
+  </CORSRule>
+</CORSConfiguration>
